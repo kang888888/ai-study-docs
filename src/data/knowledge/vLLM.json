@@ -1,0 +1,96 @@
+{
+  "title": "vLLM：基于 PagedAttention 的高吞吐推理引擎",
+  "subtitle": "通过分页 KV Cache + 并行调度器，在单卡上即可实现数千 token/s 的生成能力。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "架构"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "PagedAttention",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "PagedAttention"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "调度器",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "调度器"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学/性能模型",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "吞吐上界",
+          "formulas": [
+            {
+              "display": "TPS \\approx \\frac{B_{eff} \\times d_{model} \\times H}{\\text{latency}_{\\text{step}}}"
+            },
+            {
+              "text": "vLLM 通过提升有效批次 $B_{eff}$ 与降低 step 延迟来逼近上界。",
+              "inline": "B_{eff}"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "分页命中率",
+          "formulas": [
+            {
+              "display": "\\text{HitRate} = 1 - \\frac{\\text{page\\_faults}}{\\text{total\\_access}}"
+            },
+            {
+              "text": "连续批处理能提高命中率，从而稳定延迟。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "启动 REST Server",
+          "language": "bash",
+          "code": "pip install vllm\npython -m vllm.entrypoints.openai.api_server \\\n  --model meta-llama/Llama-3-8b-Instruct \\\n  --gpu-memory-utilization 0.9 \\\n  --port 8000"
+        }
+      ]
+    }
+  ]
+}

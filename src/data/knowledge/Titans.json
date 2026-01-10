@@ -1,0 +1,121 @@
+{
+  "title": "Titans 神经网络架构",
+  "subtitle": "仿生记忆架构，融合短期记忆、长期记忆和注意力机制",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Titans 是由 Google Research 在 2025 年 1 月发布的新型神经网络架构。该架构采用仿生设计，融合了短期记忆、长期记忆和注意力机制，能够处理超过 200 万个 Token 的上下文长度。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 三种架构变体",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "MAC（Memory as a Context）\n                    将长期记忆作为上下文的一部分，允许注意力机制动态结合历史信息与当前数据。简单直接，易于实现，适合需要频繁访问历史信息的任务。"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "长文本理解：文档分析、书籍理解、法律文档、技术文档处理（200万+ Token 上下文能力）\n                    多轮对话：智能助手、客服系统、需要长期记忆的对话系统（内置长期记忆，无需外部记忆模块）\n                    代码分析：大型代码库理解、跨文件的代码依赖分析（超长上下文，理解代码依赖关系）\n                    科学计算：基因组序列分析、时间序列预测（长期记忆，识别历史模式）"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "TitansDiagram",
+              "caption": "Titans架构图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Titans架构图",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "TitansDiagram",
+              "caption": "Titans组件详解",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Titans组件详解",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🧠 仿生记忆系统",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "短期记忆（Short-Term Memory）\n                    快速反应，对当前输入快速处理，保存最近的上下文信息，类似 Transformer 的注意力机制"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🔬 记忆模块设计",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "1. 记忆编码器（Memory Encoder）：将历史信息编码为压缩表示，支持增量更新，高效存储大量历史数据\n                    2. 记忆检索器（Memory Retriever）：根据当前上下文检索相关记忆，使用注意力机制进行检索，选择性检索相关信息\n                    3. 记忆更新器（Memory Updater）：选择性更新长期记忆，遗忘不重要的信息，保持记忆的时效性和相关性"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💡 性能表现",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "语言建模：超越传统 Transformer，在长序列任务中表现卓越\n                    常识推理：利用长期记忆进行复杂推理，保持推理的连贯性\n                    基因组分析：处理超长生物序列，识别长距离依赖关系\n                    时间序列预测：利用历史模式进行预测，处理长期依赖"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "长期记忆模块的简化实现",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\nclass LongTermMemory(nn.Module):\n    \"\"\"长期记忆模块\"\"\"\n    def __init__(self, d_model, memory_size):\n        super(LongTermMemory, self).__init__()\n        self.d_model = d_model\n        self.memory_size = memory_size\n        \n        # 记忆编码器\n        self.memory_encoder = nn.Linear(d_model, d_model)\n        \n        # 记忆存储（可学习的）\n        self.memory = nn.Parameter(torch.randn(memory_size, d_model))\n        \n        # 记忆检索器（注意力机制）\n        self.query_proj = nn.Linear(d_model, d_model)\n        self.key_proj = nn.Linear(d_model, d_model)\n        self.value_proj = nn.Linear(d_model, d_model)\n        \n        # 记忆更新器（门控机制）\n        self.update_gate = nn.Linear(d_model * 2, d_model)\n    \n    def encode(self, x):\n        \"\"\"编码输入为记忆表示\"\"\"\n        return self.memory_encoder(x)\n    \n    def retrieve(self, query):\n        \"\"\"检索相关记忆\"\"\"\n        batch_size = query.shape[0]\n        \n        # 计算查询、键、值\n        q = self.query_proj(query)  # [batch_size, d_model]\n        k = self.key_proj(self.memory)  # [memory_size, d_model]\n        v = self.value_proj(self.memory)  # [memory_size, d_model]\n        \n        # 计算注意力权重\n        scores = torch.matmul(q, k.t()) / (self.d_model ** 0.5)\n        attention = F.softmax(scores, dim=-1)  # [batch_size, memory_size]\n        \n        # 加权求和\n        retrieved = torch.matmul(attention, v)  # [batch_size, d_model]\n        \n        return retrieved, attention\n    \n    def update(self, new_info, retrieved_memory):\n        \"\"\"更新记忆\"\"\"\n        # 合并新信息和检索到的记忆\n        combined = torch.cat([new_info, retrieved_memory], dim=-1)\n        \n        # 门控更新\n        gate = torch.sigmoid(self.update_gate(combined))\n        updated = gate * new_info + (1 - gate) * retrieved_memory\n        \n        return updated\n\n# 使用示例\nif __name__ == \"__main__\":\n    memory = LongTermMemory(d_model=512, memory_size=1000)\n    query = torch.randn(2, 512)\n    new_info = torch.randn(2, 512)\n    \n    # 检索记忆\n    retrieved, attention = memory.retrieve(query)\n    print(f\"检索到的记忆形状: {retrieved.shape}\")  # [2, 512]\n    \n    # 更新记忆\n    updated = memory.update(new_info, retrieved)\n    print(f\"更新后的记忆形状: {updated.shape}\")  # [2, 512]"
+        }
+      ]
+    }
+  ]
+}

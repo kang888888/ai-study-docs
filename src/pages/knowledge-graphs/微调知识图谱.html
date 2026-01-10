@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大模型微调技术知识图谱</title>
+    
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+    
+    <!-- 页面特定样式 -->
+    <style>
+        body {
+            background: radial-gradient(circle at top, var(--bg-primary) 0%, #030712 60%, #010409 100%);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- 知识图谱容器 -->
+        <div id="chart"></div>
+        
+        <!-- 标题栏 -->
+        <div class="title-bar">
+            <h1>大模型微调技术知识图谱</h1>
+            <p>从基础监督到偏好对齐，再到高效框架，立体化掌握微调全栈能力。</p>
+            <div class="legend">
+                <span><i style="background:#fbbf24"></i>核心主干</span>
+            <span><i style="background:#38bdf8"></i>参数高效</span>
+            <span><i style="background:#22c55e"></i>偏好对齐</span>
+            <span><i style="background:#a855f7"></i>工具框架</span>
+            </div>
+        </div>
+        
+        <!-- 控制栏 -->
+        <div class="control-bar">
+            <button class="control-btn" onclick="resetView()">重新布局</button>
+            <button class="control-btn" onclick="toggleAnimation()">暂停/继续动画</button>
+        </div>
+        
+        <!-- 侧边栏 -->
+        <div class="sidebar" id="sidebar">
+            <button class="close-btn" onclick="closeSidebar()">×</button>
+            <div class="sidebar-header">
+                <h2 class="sidebar-title" id="sidebar-title">大模型微调技术知识图谱</h2>
+                <div class="sidebar-tag" id="sidebar-tag">指南</div>
+            </div>
+            <div class="sidebar-body" id="sidebar-content">
+                <div class="sidebar-placeholder">
+                    <p>👇 在左侧图谱中选择一个节点即可查看详情。</p>
+                    <p>• 点击分类节点查看概览说明<br>• 点击具体技术节点，会在此侧边栏加载对应的 HTML 讲解页</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 公共脚本 -->
+    <script src="../common/knowledge-graph.js"></script>
+    
+    <!-- 页面特定数据 -->
+    <script>
+        // 页面配置
+        const pageConfig = {
+          "containerId": "chart",
+          "data": {
+                    "name": "大模型微调技术地图",
+                    "value": "根节点",
+                    "symbolSize": 70,
+                    "itemStyle": {
+                              "color": "#06b6d4",
+                              "borderColor": "#f8fafc",
+                              "borderWidth": 4
+                    },
+                    "children": [
+                              {
+                                        "name": "基础流程",
+                                        "value": "监督微调是所有后续技术的起点。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Core Stage",
+                                        "children": [
+                                                  {
+                                                            "name": "SFT",
+                                                            "value": "使用高质量指令/回应样本，最小化交叉熵损失。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Supervised"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "参数高效微调",
+                                        "value": "低显存场景下的首选策略。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "PEFT",
+                                        "children": [
+                                                  {
+                                                            "name": "LoRA",
+                                                            "value": "对注意力/FFN 权重添加低秩增量。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Low-Rank"
+                                                  },
+                                                  {
+                                                            "name": "QLoRA",
+                                                            "value": "NF4 量化 + LoRA，显存节省 70%以上。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "4bit + LoRA"
+                                                  },
+                                                  {
+                                                            "name": "PEFT",
+                                                            "value": "Adapter、Prefix/P-Tuning、BitFit 等方法合集。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Adapter Family"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "偏好对齐",
+                                        "value": "提升安全性、礼貌性、有用性的关键阶段。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Alignment",
+                                        "children": [
+                                                  {
+                                                            "name": "RLHF",
+                                                            "value": "奖励模型 + PPO 的标准流程。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "PPO"
+                                                  },
+                                                  {
+                                                            "name": "DPO",
+                                                            "value": "免奖励模型，直接优化对数似然差。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Direct Pref"
+                                                  },
+                                                  {
+                                                            "name": "ORPO",
+                                                            "value": "SFT + 偏好联合训练，成本更低。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "One-Stage"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "训练框架与自动化",
+                                        "value": "降低实验门槛、批量化生产微调模型。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Framework",
+                                        "children": [
+                                                  {
+                                                            "name": "Unsloth",
+                                                            "value": "面向 Colab / 低显存的极速微调方案。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "High Efficiency"
+                                                  },
+                                                  {
+                                                            "name": "Axolotl",
+                                                            "value": "YAML 驱动的企业级微调流水线。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Config Driven"
+                                                  }
+                                        ]
+                              }
+                    ]
+          },
+          "techPages": {
+                    "SFT": "../tech-docs/SFT.html",
+                    "LoRA": "../tech-docs/LoRA.html",
+                    "QLoRA": "../tech-docs/QLoRA.html",
+                    "PEFT": "../tech-docs/PEFT.html",
+                    "RLHF": "../tech-docs/RLHF.html",
+                    "DPO": "../tech-docs/DPO.html",
+                    "ORPO": "../tech-docs/ORPO.html",
+                    "Unsloth": "../tech-docs/Unsloth.html",
+                    "Axolotl": "../tech-docs/Axolotl.html"
+          },
+          "categoryDescriptions": {
+                    "基础流程": "从数据构建、指令模板到监督损失的完整闭环，奠定微调的语义与格式能力。",
+                    "参数高效微调": "通过 LoRA/QLoRA/Adapter 将可训练参数控制在 1% 以内，使消费级算力也能训练 70B+ 模型。",
+                    "偏好对齐": "SFT 后的模型需要进一步吸收人类偏好，DPO/ORPO/RLHF 分别提供不同成本与稳定性的方案。",
+                    "训练框架与自动化": "Unsloth、Axolotl 等框架将数据管道、策略配置、分布式调度封装成可复用模板。"
+          },
+          "force": {
+                    "repulsion": 1800,
+                    "gravity": 0.15,
+                    "edgeLength": [
+                              80,
+                              240
+                    ],
+                    "friction": 0.2
+          }
+};
+        
+        // 初始化页面
+        initKnowledgeGraph(pageConfig);
+        
+        // 窗口大小改变时重新调整
+        window.addEventListener('resize', function() {
+            if (typeof chart !== 'undefined' && chart) {
+                chart.resize();
+            }
+        });
+    </script>
+</body>
+</html>

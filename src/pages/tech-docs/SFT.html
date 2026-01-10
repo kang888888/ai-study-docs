@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SFT（监督微调）- 技术详解</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Supervised Fine-Tuning（SFT）监督微调</h1>
+        <p class="tagline">以高质量指令示例驱动大模型对特定任务的精准掌握，是所有微调流程的基础起点。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card">
+                <h3>核心目标</h3>
+                <p>通过最小化教师标签与模型输出之间的交叉熵，学习任务特定的映射关系。</p>
+            </div>
+            <div class="meta-card">
+                <h3>典型数据格式</h3>
+                <p>Alpaca / ShareGPT / Conversation JSON，强调 instruction-input-output 三元结构。</p>
+            </div>
+            <div class="meta-card">
+                <h3>适用场景</h3>
+                <p>通用指令对话、领域问答、分类、代码生成等所有需要显式示例的任务。</p>
+            </div>
+            <div class="meta-card">
+                <h3>优势亮点</h3>
+                <p>实现简单、可控性强、易于评估，是后续偏好优化与对齐的训练基座。</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📌 技术要点</h2>
+            <ul>
+                <li><strong>多轮指令建模：</strong>使用对话式数据保持上下文一致性，充分训练 system/human/assistant 角色。</li>
+                <li><strong>模板化数据生成：</strong>对非对话任务构造标准 prompt 模板，使模型理解输入与输出的结构性关系。</li>
+                <li><strong>学习率与梯度策略：</strong>通常使用 5e-5 ~ 1e-5 的小学习率，配合梯度累积与 mixed precision 控制显存。</li>
+                <li><strong>评估闭环：</strong>自动指标 + 人工评估双轨，确保输出的相关性、准确性与安全性。</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>📊 流程图解</h2>
+            <div class="diagram-gallery">
+                <div class="diagram-item">
+                    <img src="./assets/SFT数据流程.png" alt="SFT 数据清洗与模板化" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">SFT 数据清洗与模板化</div>
+                </div>
+                <div class="diagram-item">
+                    <img src="./assets/SFT训练循环.png" alt="训练循环" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">训练循环</div>
+                </div>
+                <div class="diagram-item">
+                    <img src="./assets/SFT评估流程.png" alt="评估闭环" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">评估闭环</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📐 数学原理</h2>
+            <div class="math-box">
+                <h3>交叉熵目标</h3>
+                <div class="math-formula">
+                    <p>SFT 通过最小化参考响应 $y$ 的条件概率负对数似然：</p>
+                    <p>$$\mathcal{L}_{\text{SFT}} = - \sum_{t=1}^{T} \log p_{\theta}(y_t \mid y_{<t}, x)$$</p>
+                    <p>其中 $x$ 为指令/输入，$y$ 为目标输出，$p_{\theta}$ 由预训练大模型参数化。</p>
+                </div>
+            </div>
+            <div class="math-box">
+                <h3>Label Smoothing</h3>
+                <div class="math-formula">
+                    <p>为提升鲁棒性常引入标签平滑，目标变为：</p>
+                    <p>$$\tilde{y}_k = (1-\epsilon) \cdot \mathbb{1}[k = y] + \frac{\epsilon}{K}$$</p>
+                    <p>缓解过拟合并提升泛化能力。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💻 Python 代码示例</h2>
+            <div class="code-box">
+                <h3>使用 Transformers 进行 SFT</h3>
+                <pre><code class="language-python">from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments
+from transformers import Trainer, DataCollatorForLanguageModeling
+from datasets import load_dataset
+
+model_name = "meta-llama/Llama-2-7b-hf"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    load_in_8bit=True,
+    device_map="auto"
+)
+
+# 假设数据集已经标准化为 instruction/input/output 字段
+def format_sample(example):
+    instruction = example["instruction"]
+    input_text = example.get("input", "")
+    output = example["output"]
+    prompt = f"指令：{instruction}\n输入：{input_text}\n回答："
+    return tokenizer(prompt + output, return_tensors="pt")
+
+dataset = load_dataset("json", data_files="data/alpaca.json")
+
+training_args = TrainingArguments(
+    output_dir="sft-llama2",
+    per_device_train_batch_size=1,
+    gradient_accumulation_steps=8,
+    learning_rate=2e-5,
+    num_train_epochs=3,
+    fp16=True,
+    logging_steps=20,
+    save_strategy="epoch"
+)
+
+data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
+
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=dataset["train"],
+    data_collator=data_collator
+)
+
+trainer.train()</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal();">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+{
+  "title": "QWen (通义千问) 阿里云大模型",
+  "subtitle": "阿里云开源的大语言模型系列",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "阿里云开源的大语言模型系列，从0.5B到72B多个规模。在中文、代码、数学等任务上表现优异，支持32K长上下文，并提供多模态版本。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "多规模：从0.5B到72B，覆盖不同场景需求",
+            "长上下文：支持32K tokens，适合长文档理解",
+            "GQA优化：使用分组查询注意力，提升推理效率",
+            "多模态：QWen-VL支持图像，QWen-Audio支持音频",
+            "代码能力强：在代码生成任务上表现突出"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "Grouped-Query Attention、RoPE、SwiGLU、Flash Attention"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "中文对话、代码生成、长文档理解、多模态理解、数学推理"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "QWen架构图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "QWen架构图",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "QWen组件详解",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "QWen组件详解",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "QWen对比图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "QWen对比图",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "Grouped-Query Attention (GQA)",
+          "formulas": [
+            {
+              "text": "GQA 将多个查询头分组共享键值："
+            },
+            {
+              "display": "\\text{GQA}(Q, K, V) = \\text{Concat}(\\text{head}_1, ..., \\text{head}_h)W^O"
+            },
+            {
+              "display": "\\text{head}_i = \\text{Attention}(Q_i, K_{group}, V_{group})"
+            },
+            {
+              "text": "相比MHA，GQA减少了KV Cache，提升推理效率"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "RoPE 位置编码",
+          "formulas": [
+            {
+              "text": "QWen使用旋转位置编码（RoPE），与LLaMA相同："
+            },
+            {
+              "display": "R_{\\Theta, m}^d = \\text{Rotary}(m, \\theta)"
+            },
+            {
+              "text": "支持长上下文扩展，可以处理32K tokens"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 Transformers 库加载 QWen",
+          "language": "python",
+          "code": "from transformers import AutoModelForCausalLM, AutoTokenizer\nimport torch\n\n# 加载模型和分词器\nmodel_path = \"Qwen/Qwen-7B-Chat\"\ntokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)\nmodel = AutoModelForCausalLM.from_pretrained(\n    model_path,\n    trust_remote_code=True,\n    torch_dtype=torch.float16,\n    device_map=\"auto\"\n)\n\n# 对话\nmessages = [\n    {\"role\": \"user\", \"content\": \"你好\"}\n]\ntext = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)\ninputs = tokenizer([text], return_tensors=\"pt\").to(model.device)\n\nwith torch.no_grad():\n    outputs = model.generate(**inputs, max_new_tokens=100)\n    response = tokenizer.decode(outputs[0], skip_special_tokens=True)\n    print(response)"
+        }
+      ]
+    }
+  ]
+}

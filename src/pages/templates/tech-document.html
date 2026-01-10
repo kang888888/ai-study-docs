@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{技术名称} - 技术详解</title>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+    
+    <!-- MathJax配置 -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Prism.js代码高亮 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 页面特定样式（可选） -->
+    <style>
+        body {
+            background: radial-gradient(circle at top, var(--bg-primary) 0%, #000 70%);
+            color: var(--text-primary);
+        }
+        /* 可以在这里添加页面特定的样式覆盖 */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面头部 -->
+        <header class="page-header">
+            <h1>{技术名称}</h1>
+            <p class="tagline">{技术描述}</p>
+            
+            <!-- 元信息网格 -->
+            <div class="meta-grid">
+                <div class="meta-card">
+                    <h3>分类</h3>
+                    <p>{分类名称}</p>
+                </div>
+                <div class="meta-card">
+                    <h3>标签</h3>
+                    <p>{标签}</p>
+                </div>
+                <!-- 更多元信息 -->
+            </div>
+        </header>
+        
+        <!-- 内容区域 -->
+        <main class="content">
+            <!-- 概述部分 -->
+            <section class="section">
+                <h2>📖 概述</h2>
+                <div class="desc-box">
+                    <p>{概述内容}</p>
+                </div>
+            </section>
+            
+            <!-- 核心概念 -->
+            <section class="section">
+                <h2>💡 核心概念</h2>
+                <ul class="features">
+                    <li>{核心概念1}</li>
+                    <li>{核心概念2}</li>
+                    <!-- 更多核心概念 -->
+                </ul>
+            </section>
+            
+            <!-- 技术原理 -->
+            <section class="section">
+                <h2>🔬 技术原理</h2>
+                <!-- 数学公式 -->
+                <div class="math-box">
+                    <h3>公式标题</h3>
+                    <div class="math-formula">
+                        $$公式内容$$
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 代码示例 -->
+            <section class="section">
+                <h2>💻 代码示例</h2>
+                <div class="code-box">
+                    <h3>示例标题</h3>
+                    <pre><code class="language-python">
+# 代码内容
+                    </code></pre>
+                </div>
+            </section>
+            
+            <!-- 架构图解 -->
+            <section class="section">
+                <h2>📊 架构图解</h2>
+                <div class="diagram-gallery">
+                    <div class="diagram-item">
+                        <img src="{图片路径}" alt="{图片描述}" onclick="openImageModal(this)">
+                        <div class="caption">{图片描述}</div>
+                    </div>
+                    <!-- 更多图片 -->
+                </div>
+            </section>
+            
+            <!-- 应用场景 -->
+            <section class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box">
+                    <p>{应用场景描述}</p>
+                </div>
+            </section>
+            
+            <!-- 相关资源 -->
+            <section class="section">
+                <h2>📚 相关资源</h2>
+                <ul class="features">
+                    <li>{资源1}</li>
+                    <li>{资源2}</li>
+                    <!-- 更多资源 -->
+                </ul>
+            </section>
+        </main>
+    </div>
+    
+    <!-- 图片放大模态框 -->
+    <div class="image-modal" id="imageModal">
+        <span class="image-modal-close" onclick="closeImageModal()">&times;</span>
+        <img class="image-modal-content" id="modalImage">
+        <div class="image-modal-caption" id="modalCaption"></div>
+    </div>
+    
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

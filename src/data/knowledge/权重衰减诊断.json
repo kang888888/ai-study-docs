@@ -1,0 +1,54 @@
+{
+  "title": "权重衰减诊断 (Weight Decay Diagnosis)",
+  "subtitle": "权重衰减参数调优与诊断方法",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "权重衰减诊断是一种训练稳定性技术，用于诊断和优化权重衰减（weight decay）参数。通过分析权重衰减对模型训练的影响，识别过拟合或欠拟合问题，调整权重衰减参数以优化模型性能。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "参数诊断：诊断权重衰减参数的影响",
+            "过拟合检测：识别和缓解过拟合问题",
+            "参数调优：优化权重衰减参数设置",
+            "性能提升：通过合理设置提升模型性能",
+            "自动化：支持自动诊断和调优"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "权重分析、过拟合检测、参数调优、验证集监控、自动化诊断"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "模型训练、超参数调优、过拟合控制、训练稳定性"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "title": "Minimind：从零训练GPT实践",
+  "subtitle": "在2小时内从零开始训练一个2600万参数的小型GPT模型。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Minimind实践架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Minimind实践架构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Minimind实践流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Minimind实践流程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "GPT模型实现示例",
+          "language": "python",
+          "code": "class GPTModel(nn.Module):\n    def __init__(self, vocab_size, n_layer, n_head, n_embd):\n        # 嵌入层\n        self.token_embedding = nn.Embedding(vocab_size, n_embd)\n        self.position_embedding = nn.Embedding(block_size, n_embd)\n        \n        # Transformer块\n        self.blocks = nn.ModuleList([\n            TransformerBlock(n_embd, n_head) \n            for _ in range(n_layer)\n        ])\n        \n        # 输出层\n        self.lm_head = nn.Linear(n_embd, vocab_size)\n    \n    def forward(self, idx):\n        # 前向传播\n        B, T = idx.shape\n        tok_emb = self.token_embedding(idx)\n        pos_emb = self.position_embedding(torch.arange(T))\n        x = tok_emb + pos_emb\n        \n        for block in self.blocks:\n            x = block(x)\n        \n        logits = self.lm_head(x)\n        return logits"
+        }
+      ]
+    }
+  ]
+}

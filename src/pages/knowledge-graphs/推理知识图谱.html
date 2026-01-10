@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大模型推理优化知识图谱</title>
+    
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+    
+    <!-- 页面特定样式 -->
+    <style>
+        body {
+            background: radial-gradient(circle at top, var(--bg-primary) 0%, #030712 60%, #010409 100%);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- 知识图谱容器 -->
+        <div id="chart"></div>
+        
+        <!-- 标题栏 -->
+        <div class="title-bar">
+            <h1>大模型推理优化知识图谱</h1>
+            <p>从推理基础到缓存调度，再到推理引擎、算子内核与生成加速，全面掌握推理优化技术。</p>
+            <div class="legend">
+                <span><i style="background:#a5b4fc"></i>推理基础</span>
+            <span><i style="background:#f97316"></i>缓存策略</span>
+            <span><i style="background:#38bdf8"></i>推理引擎</span>
+            <span><i style="background:#a855f7"></i>算子内核</span>
+            <span><i style="background:#f43f5e"></i>生成加速</span>
+            </div>
+        </div>
+        
+        <!-- 控制栏 -->
+        <div class="control-bar">
+            <button class="control-btn" onclick="resetView()">重新布局</button>
+            <button class="control-btn" onclick="toggleAnimation()">暂停/继续动画</button>
+        </div>
+        
+        <!-- 侧边栏 -->
+        <div class="sidebar" id="sidebar">
+            <button class="close-btn" onclick="closeSidebar()">×</button>
+            <div class="sidebar-header">
+                <h2 class="sidebar-title" id="sidebar-title">大模型推理优化知识图谱</h2>
+                <div class="sidebar-tag" id="sidebar-tag">指南</div>
+            </div>
+            <div class="sidebar-body" id="sidebar-content">
+                <div class="sidebar-placeholder">
+                    <p>👇 在左侧图谱中选择一个节点即可查看详情。</p>
+                    <p>• 点击分类节点查看概览说明<br>• 点击具体技术节点，会在此侧边栏加载对应的 HTML 讲解页</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 公共脚本 -->
+    <script src="../common/knowledge-graph.js"></script>
+    
+    <!-- 页面特定数据 -->
+    <script>
+        // 页面配置
+        const pageConfig = {
+          "containerId": "chart",
+          "data": {
+                    "name": "模型推理",
+                    "value": "KV Cache、FlashAttention、Speculative Decoding。",
+                    "symbolSize": 70,
+                    "itemStyle": {
+                              "color": "#facc15",
+                              "borderColor": "#f8fafc",
+                              "borderWidth": 4
+                    },
+                    "children": [
+                              {
+                                        "name": "推理",
+                                        "tag": "Base",
+                                        "value": "推理流程、性能指标与系统要点。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#facc15",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        }
+                              },
+                              {
+                                        "name": "推理优化",
+                                        "tag": "Optimize",
+                                        "value": "图/算子优化、量化、剪枝。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#facc15",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        }
+                              },
+                              {
+                                        "name": "TensorRT-LLM",
+                                        "tag": "Engine",
+                                        "value": "NVIDIA TensorRT-LLM 部署。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#facc15",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        }
+                              },
+                              {
+                                        "name": "vLLM",
+                                        "tag": "Engine",
+                                        "value": "连续批处理 + PagedAttention 框架。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#facc15",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        }
+                              },
+                              {
+                                        "name": "KV Cache",
+                                        "tag": "Cache",
+                                        "value": "注意力键值缓存复用。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#facc15",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        }
+                              },
+                              {
+                                        "name": "PagedAttention",
+                                        "tag": "Cache",
+                                        "value": "分页注意力,长序 KV 管理。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#facc15",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        }
+                              },
+                              {
+                                        "name": "Speculative Decoding",
+                                        "tag": "Speed",
+                                        "value": "草稿模型 + 验证模型加速。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#facc15",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        }
+                              },
+                              {
+                                        "name": "FlashAttention",
+                                        "tag": "Kernel",
+                                        "value": "IO 感知注意力算子。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#facc15",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        }
+                              }
+                    ]
+          },
+          "techPages": {
+                    "推理": "../tech-docs/推理基础.html",
+                    "推理优化": "../tech-docs/推理优化技术详解.html",
+                    "TensorRT-LLM": "../tech-docs/TensorRT-LLM.html",
+                    "vLLM": "../tech-docs/vLLM.html",
+                    "KV Cache": "../tech-docs/KV Cache.html",
+                    "PagedAttention": "../tech-docs/PagedAttention.html",
+                    "Speculative Decoding": "../tech-docs/Speculative Decoding.html",
+                    "FlashAttention": "../tech-docs/FlashAttention.html"
+          },
+          "categoryDescriptions": {
+                    "推理基础": "理解推理与训练的区别，掌握延迟、吞吐量、内存占用等关键指标，了解推理优化方向。",
+                    "推理缓存与调度": "解决长上下文与多会话并发的基础设施，包括 KV Cache、页式调度、缓存量化。",
+                    "推理引擎": "面向生产部署的高性能框架，负责批处理、并行、API 服务。",
+                    "算子内核": "FlashAttention、FlashDecoding 等决定算力利用率的底层内核。",
+                    "生成加速": "Speculative / Medusa / Tree Decoding 等减少大模型前向次数的策略。"
+          },
+          "force": {
+                    "repulsion": 1800,
+                    "gravity": 0.15,
+                    "edgeLength": [
+                              80,
+                              240
+                    ],
+                    "friction": 0.2
+          }
+};
+        
+        // 初始化页面
+        initKnowledgeGraph(pageConfig);
+        
+        // 窗口大小改变时重新调整
+        window.addEventListener('resize', function() {
+            if (typeof chart !== 'undefined' && chart) {
+                chart.resize();
+            }
+        });
+    </script>
+</body>
+</html>

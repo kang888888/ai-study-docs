@@ -1,0 +1,164 @@
+{
+  "title": "反向传播 (Backpropagation)",
+  "subtitle": "通过链式法则计算梯度，从输出层向输入层传播",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "反向传播（Backpropagation）是训练神经网络的核心算法，通过链式法则从输出层向输入层反向传播误差，计算损失函数对每个参数的梯度。反向传播使得深层神经网络的训练成为可能，是现代深度学习的基础。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "链式法则：利用复合函数求导的链式法则计算梯度",
+            "反向传播：从输出层向输入层逐层计算梯度",
+            "前向传播：先进行前向传播计算输出和损失",
+            "梯度累积：每个节点的梯度是后续节点梯度的加权和",
+            "计算高效：相比数值梯度，计算效率高得多"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "链式法则、计算图、自动微分、梯度检查、梯度累积"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "神经网络训练、深度学习、参数优化、梯度计算"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "反向传播流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "反向传播流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "反向传播示意图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "反向传播示意图",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "链式法则",
+          "formulas": [
+            {
+              "text": "对于复合函数 $z = f(g(x))$，梯度计算："
+            },
+            {
+              "display": "\\frac{\\partial z}{\\partial x} = \\frac{\\partial z}{\\partial g} \\cdot \\frac{\\partial g}{\\partial x}"
+            },
+            {
+              "text": "在神经网络中，从输出层 $L$ 到输入层 $x$："
+            },
+            {
+              "display": "\\frac{\\partial L}{\\partial x} = \\frac{\\partial L}{\\partial h_n} \\cdot \\frac{\\partial h_n}{\\partial h_{n-1}} \\cdots \\frac{\\partial h_1}{\\partial x}"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "反向传播算法",
+          "formulas": [
+            {
+              "text": "对于第 $l$ 层，梯度计算："
+            },
+            {
+              "display": "\\frac{\\partial L}{\\partial W_l} = \\frac{\\partial L}{\\partial h_l} \\cdot \\frac{\\partial h_l}{\\partial W_l}"
+            },
+            {
+              "text": "其中 $h_l$ 是第 $l$ 层的输出，$W_l$ 是第 $l$ 层的权重"
+            },
+            {
+              "text": "误差反向传播："
+            },
+            {
+              "display": "\\delta_l = \\frac{\\partial L}{\\partial h_l} = \\delta_{l+1} \\cdot \\frac{\\partial h_{l+1}}{\\partial h_l}"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "权重更新",
+          "formulas": [
+            {
+              "text": "计算梯度后，更新权重："
+            },
+            {
+              "display": "W_l \\leftarrow W_l - \\eta \\frac{\\partial L}{\\partial W_l}"
+            },
+            {
+              "text": "其中 $\\eta$ 是学习率",
+              "inline": "\\eta"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "PyTorch 中的反向传播",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\n# 1. 自动反向传播（最简单）\nx = torch.tensor([2.0], requires_grad=True)\ny = x ** 2\nz = y * 3\n\nz.backward()  # 自动计算梯度\nprint(f\"dz/dx = {x.grad}\")  # 输出: tensor([12.]) 因为 dz/dx = 3 * 2x = 12\n\n# 2. 多层网络的反向传播\nclass SimpleNet(nn.Module):\n    def __init__(self):\n        super(SimpleNet, self).__init__()\n        self.fc1 = nn.Linear(10, 5)\n        self.fc2 = nn.Linear(5, 1)\n    \n    def forward(self, x):\n        x = F.relu(self.fc1(x))\n        x = self.fc2(x)\n        return x\n\nmodel = SimpleNet()\ncriterion = nn.MSELoss()\noptimizer = torch.optim.SGD(model.parameters(), lr=0.01)\n\n# 前向传播\nx = torch.randn(32, 10)\ntarget = torch.randn(32, 1)\noutput = model(x)\n\n# 计算损失\nloss = criterion(output, target)\nprint(f\"Loss: {loss.item()}\")\n\n# 反向传播\noptimizer.zero_grad()  # 清零梯度\nloss.backward()  # 计算梯度\n\n# 查看梯度\nfor name, param in model.named_parameters():\n    if param.grad is not None:\n        print(f\"{name} 梯度形状: {param.grad.shape}\")\n\n# 更新参数\noptimizer.step()\n\n# 3. 手动实现反向传播（理解原理）\nclass ManualBackprop:\n    def __init__(self):\n        # 初始化权重\n        self.W1 = torch.randn(10, 5, requires_grad=False)\n        self.b1 = torch.randn(5, requires_grad=False)\n        self.W2 = torch.randn(5, 1, requires_grad=False)\n        self.b2 = torch.randn(1, requires_grad=False)\n    \n    def forward(self, x):\n        # 前向传播\n        self.z1 = x @ self.W1 + self.b1\n        self.h1 = torch.relu(self.z1)\n        self.z2 = self.h1 @ self.W2 + self.b2\n        return self.z2\n    \n    def backward(self, x, y, output, lr=0.01):\n        # 手动反向传播\n        m = x.size(0)\n        \n        # 输出层梯度\n        dz2 = (output - y) / m\n        \n        # 第二层梯度\n        dW2 = self.h1.t() @ dz2\n        db2 = dz2.sum(0)\n        \n        # 第一层梯度\n        dh1 = dz2 @ self.W2.t()\n        dz1 = dh1 * (self.z1 > 0).float()  # ReLU的导数\n        dW1 = x.t() @ dz1\n        db1 = dz1.sum(0)\n        \n        # 更新权重\n        self.W2 -= lr * dW2\n        self.b2 -= lr * db2\n        self.W1 -= lr * dW1\n        self.b1 -= lr * db1\n\n# 使用手动反向传播\nmanual_model = ManualBackprop()\nx = torch.randn(32, 10)\ny = torch.randn(32, 1)\n\nfor epoch in range(100):\n    output = manual_model.forward(x)\n    loss = F.mse_loss(output, y)\n    manual_model.backward(x, y, output)\n    \n    if (epoch + 1) % 20 == 0:\n        print(f\"Epoch {epoch+1}, Loss: {loss.item():.4f}\")\n\n# 4. 梯度检查（验证反向传播正确性）\ndef gradient_check(model, x, y, epsilon=1e-7):\n    \"\"\"数值梯度检查\"\"\"\n    model.zero_grad()\n    output = model(x)\n    loss = nn.MSELoss()(output, y)\n    loss.backward()\n    \n    # 获取解析梯度\n    analytical_grads = {}\n    for name, param in model.named_parameters():\n        if param.grad is not None:\n            analytical_grads[name] = param.grad.clone()\n    \n    # 计算数值梯度\n    numerical_grads = {}\n    for name, param in model.named_parameters():\n        if param.requires_grad:\n            grad = torch.zeros_like(param)\n            for i in range(param.numel()):\n                flat_param = param.view(-1)\n                orig_val = flat_param[i].item()\n                \n                # f(x + epsilon)\n                flat_param[i] = orig_val + epsilon\n                output_plus = model(x)\n                loss_plus = nn.MSELoss()(output_plus, y)\n                \n                # f(x - epsilon)\n                flat_param[i] = orig_val - epsilon\n                output_minus = model(x)\n                loss_minus = nn.MSELoss()(output_minus, y)\n                \n                # 数值梯度\n                grad.view(-1)[i] = (loss_plus - loss_minus) / (2 * epsilon)\n                flat_param[i] = orig_val  # 恢复原值\n            \n            numerical_grads[name] = grad\n    \n    # 比较梯度\n    for name in analytical_grads:\n        diff = (analytical_grads[name] - numerical_grads[name]).abs().max().item()\n        print(f\"{name}: 最大差异 = {diff:.2e}\")\n        if diff > 1e-5:\n            print(f\"警告: {name} 的梯度可能不正确！\")\n\n# 使用梯度检查\nmodel = SimpleNet()\ngradient_check(model, torch.randn(32, 10), torch.randn(32, 1))"
+        }
+      ]
+    }
+  ]
+}

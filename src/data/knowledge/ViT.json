@@ -1,0 +1,140 @@
+{
+  "title": "ViT (Vision Transformer) 视觉Transformer",
+  "subtitle": "将Transformer应用于计算机视觉",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Google提出的将Transformer应用于计算机视觉的架构。将图像切分成固定大小的Patch，然后作为序列输入Transformer，证明了纯Attention机制也能在视觉任务上达到SOTA。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "Patch Embedding：将图像切分为16×16的Patch，展平后作为Token",
+            "全局感受野：每个Patch都能关注到整张图像的所有其他Patch",
+            "数据饥渴：在小数据集上表现不如CNN，需要大规模预训练",
+            "Swin Transformer：通过移动窗口实现分层结构，降低复杂度",
+            "MAE预训练：通过掩码自编码器进行自监督预训练"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "Patch Embedding、Position Embedding、[CLS] Token、Shifted Window（Swin）"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "图像分类、目标检测（DETR）、图像分割、视频理解"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "ViTDiagram",
+              "caption": "ViT Patch可视化",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "ViT Patch可视化",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "ViTDiagram",
+              "caption": "ViT组件详解",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "ViT组件详解",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "Patch Embedding",
+          "formulas": [
+            {
+              "text": "将图像切分为 $P \\times P$ 的patch，每个patch展平后通过线性投影：",
+              "inline": "P \\times P"
+            },
+            {
+              "display": "z_0 = [x_{class}; x_p^1 E; x_p^2 E; \\ldots; x_p^N E] + E_{pos}"
+            },
+            {
+              "text": "其中："
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Self-Attention",
+          "formulas": [
+            {
+              "text": "ViT使用标准的Multi-Head Self-Attention："
+            },
+            {
+              "display": "\\text{Attention}(Q, K, V) = \\text{softmax}\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V"
+            },
+            {
+              "text": "每个patch都能关注到图像的所有其他patch，实现全局感受野"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 PyTorch 实现 ViT 核心组件",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nimport math\n\nclass PatchEmbedding(nn.Module):\n    \"\"\"Patch Embedding层\"\"\"\n    def __init__(self, img_size=224, patch_size=16, in_channels=3, embed_dim=768):\n        super(PatchEmbedding, self).__init__()\n        self.img_size = img_size\n        self.patch_size = patch_size\n        self.n_patches = (img_size // patch_size) ** 2\n        \n        self.proj = nn.Conv2d(in_channels, embed_dim, \n                              kernel_size=patch_size, stride=patch_size)\n    \n    def forward(self, x):\n        # x: [B, C, H, W]\n        x = self.proj(x)  # [B, embed_dim, H', W']\n        x = x.flatten(2)  # [B, embed_dim, n_patches]\n        x = x.transpose(1, 2)  # [B, n_patches, embed_dim]\n        return x\n\nclass VisionTransformer(nn.Module):\n    \"\"\"Vision Transformer模型\"\"\"\n    def __init__(self, img_size=224, patch_size=16, in_channels=3, \n                 num_classes=1000, embed_dim=768, depth=12, num_heads=12,\n                 mlp_ratio=4.0, dropout=0.1):\n        super(VisionTransformer, self).__init__()\n        self.patch_embed = PatchEmbedding(img_size, patch_size, in_channels, embed_dim)\n        num_patches = self.patch_embed.n_patches\n        \n        # 分类token\n        self.cls_token = nn.Parameter(torch.zeros(1, 1, embed_dim))\n        \n        # 位置编码\n        self.pos_embed = nn.Parameter(torch.zeros(1, num_patches + 1, embed_dim))\n        \n        # Transformer Encoder\n        self.blocks = nn.ModuleList([\n            TransformerBlock(embed_dim, num_heads, mlp_ratio, dropout)\n            for _ in range(depth)\n        ])\n        \n        self.norm = nn.LayerNorm(embed_dim)\n        self.head = nn.Linear(embed_dim, num_classes)\n        self.dropout = nn.Dropout(dropout)\n        \n        # 初始化\n        nn.init.trunc_normal_(self.pos_embed, std=0.02)\n        nn.init.trunc_normal_(self.cls_token, std=0.02)\n    \n    def forward(self, x):\n        B = x.shape[0]\n        \n        # Patch embedding\n        x = self.patch_embed(x)  # [B, n_patches, embed_dim]\n        \n        # 添加分类token\n        cls_tokens = self.cls_token.expand(B, -1, -1)\n        x = torch.cat([cls_tokens, x], dim=1)  # [B, n_patches+1, embed_dim]\n        \n        # 添加位置编码\n        x = x + self.pos_embed\n        x = self.dropout(x)\n        \n        # Transformer blocks\n        for block in self.blocks:\n            x = block(x)\n        \n        # 使用分类token的输出\n        x = self.norm(x)\n        cls_token_final = x[:, 0]\n        \n        # 分类头\n        x = self.head(cls_token_final)\n        \n        return x\n\nclass TransformerBlock(nn.Module):\n    \"\"\"Transformer编码器块\"\"\"\n    def __init__(self, embed_dim, num_heads, mlp_ratio=4.0, dropout=0.1):\n        super(TransformerBlock, self).__init__()\n        self.norm1 = nn.LayerNorm(embed_dim)\n        self.attn = nn.MultiheadAttention(embed_dim, num_heads, dropout=dropout, batch_first=True)\n        self.norm2 = nn.LayerNorm(embed_dim)\n        mlp_hidden_dim = int(embed_dim * mlp_ratio)\n        self.mlp = nn.Sequential(\n            nn.Linear(embed_dim, mlp_hidden_dim),\n            nn.GELU(),\n            nn.Dropout(dropout),\n            nn.Linear(mlp_hidden_dim, embed_dim),\n            nn.Dropout(dropout)\n        )\n    \n    def forward(self, x):\n        # Self-attention\n        x_norm = self.norm1(x)\n        attn_out, _ = self.attn(x_norm, x_norm, x_norm)\n        x = x + attn_out\n        \n        # MLP\n        x = x + self.mlp(self.norm2(x))\n        \n        return x\n\n# 使用示例\nif __name__ == \"__main__\":\n    model = VisionTransformer(\n        img_size=224,\n        patch_size=16,\n        num_classes=1000,\n        embed_dim=768,\n        depth=12,\n        num_heads=12\n    )\n    \n    # 模拟输入\n    x = torch.randn(4, 3, 224, 224)\n    output = model(x)\n    print(f\"输出形状: {output.shape}\")  # [4, 1000]"
+        }
+      ]
+    }
+  ]
+}

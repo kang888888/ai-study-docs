@@ -1,0 +1,56 @@
+{
+  "title": "LLMOps 全景指南",
+  "subtitle": "",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "LLMOps架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "LLMOps架构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "LLMOps流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "LLMOps流程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "定义：面向 LLM 的 MLOps 延伸，强调资源管理、版本治理、安全与反馈闭环。",
+            "特点：参数量巨大、GPU 昂贵、多租户、合规需求高。"
+          ]
+        }
+      ]
+    }
+  ]
+}

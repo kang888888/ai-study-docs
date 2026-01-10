@@ -1,0 +1,54 @@
+{
+  "title": "摩尔线程MUSA (Moore Threads Unified System Architecture)",
+  "subtitle": "摩尔线程MUSA框架，国产GPU生态适配",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "摩尔线程MUSA是摩尔线程开发的统一系统架构，为国产GPU提供统一的编程接口和运行时环境。MUSA支持CUDA兼容，使现有的CUDA程序可以在摩尔线程GPU上运行，同时提供针对国产GPU的优化能力。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "CUDA兼容：兼容CUDA编程接口",
+            "国产GPU：支持国产GPU硬件",
+            "生态适配：适配主流深度学习框架",
+            "性能优化：针对国产GPU进行优化",
+            "工具链：提供完整的开发和部署工具链"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "CUDA兼容、模型转换、算子优化、驱动开发、生态适配"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "国产GPU应用、CUDA迁移、模型训练、高性能计算"
+        }
+      ]
+    }
+  ]
+}

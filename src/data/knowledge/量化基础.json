@@ -1,0 +1,72 @@
+{
+  "title": "量化基础",
+  "subtitle": "统一梳理 PTQ/QAT、位宽选择、误差度量与典型工具链，为 GPTQ、AWQ、SmoothQuant 等专项方案奠定背景。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "量化基础",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "量化基础",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "量化方法对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "量化方法对比",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "量化效果",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "量化效果",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "量化类型：Post-Training Quantization（PTQ）与 Quantization-Aware Training（QAT）。PTQ 快速、QAT 精度高。",
+            "对称 vs 非对称：是否允许正负区间不对称，非对称对零点支持更友好。",
+            "逐张量/逐通道：scale 是否为全局或 per-channel，后者误差更低但存储更大。",
+            "权重量化/激活量化：权重易离线处理，激活依赖运行时校准。",
+            "KV Cache 量化：推理加速关键，常搭配 FP8/INT4 与误差补偿。"
+          ]
+        }
+      ]
+    }
+  ]
+}

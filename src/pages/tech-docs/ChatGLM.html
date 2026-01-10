@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGLM (智谱AI) - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ChatGLM (智谱AI)</h1>
+            <p>智谱AI开源的中英双语对话模型</p>
+        </div>
+        <div class="content">
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>智谱AI开源的中英双语对话模型，基于GLM（General Language Model）架构。采用混合注意力机制，在中文理解和生成上表现优异。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>中文优化：在大规模中文语料上训练，中文能力突出</li>
+                    <li>GLM架构：混合自回归和自编码的预训练目标</li>
+                    <li>工具调用：ChatGLM3支持Function Calling</li>
+                    <li>多模态：GLM-4支持图像理解</li>
+                    <li>开源可商用：6B参数，可在消费级GPU上运行</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box"><p><strong>GLM架构、双向注意力、旋转位置编码、Flash Attention</strong></p></div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box"><p>中文对话、知识问答、代码生成、工具调用、多模态理解</p></div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>GLM 预训练目标</h3>
+                    <div class="math-formula">
+                        <p>GLM 结合自回归和自编码：</p>
+                        <p>$$L = -\sum_{i \in M} \log P(x_i | x_{\backslash M}, M)$$</p>
+                        <p>其中 $M$ 是被掩码的连续span，模型需要自回归地预测这些span</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>双向注意力</h3>
+                    <div class="math-formula">
+                        <p>ChatGLM使用双向注意力，可以同时利用前后文信息：</p>
+                        <p>$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$</p>
+                        <p>与GPT的单向注意力不同，ChatGLM可以双向理解上下文</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 Transformers 库加载 ChatGLM</h3>
+                    <pre><code class="language-python">from transformers import AutoTokenizer, AutoModel
+import torch
+
+# 加载模型和分词器
+model_path = "THUDM/chatglm-6b"  # 需要HuggingFace访问权限
+tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
+model = AutoModel.from_pretrained(model_path, trust_remote_code=True).half().cuda()
+
+# 对话
+query = "你好"
+response, history = model.chat(tokenizer, query, history=[])
+print(response)
+
+# 继续对话
+query = "介绍一下深度学习"
+response, history = model.chat(tokenizer, query, history=history)
+print(response)</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

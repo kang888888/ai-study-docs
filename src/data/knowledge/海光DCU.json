@@ -1,0 +1,54 @@
+{
+  "title": "海光DCU (Deep Computing Unit)",
+  "subtitle": "海光DCU适配，GPU替代方案优化",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "海光DCU是海光信息开发的深度计算单元，作为GPU的替代方案用于AI计算。DCU适配包括模型转换、算子适配、性能优化等工作，使深度学习模型能够在DCU上高效运行，支持国产化AI计算需求。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "GPU替代：作为GPU的国产替代方案",
+            "模型适配：支持主流深度学习模型的适配",
+            "性能优化：针对DCU硬件进行性能优化",
+            "国产化：支持国产AI计算生态",
+            "兼容性：提供与GPU类似的编程接口"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "模型转换、算子适配、性能优化、驱动开发、工具链支持"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "国产AI计算、GPU替代、模型训练、高性能计算"
+        }
+      ]
+    }
+  ]
+}

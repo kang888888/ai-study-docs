@@ -1,0 +1,103 @@
+{
+  "title": "Supervised Fine-Tuning（SFT）监督微调",
+  "subtitle": "以高质量指令示例驱动大模型对特定任务的精准掌握，是所有微调流程的基础起点。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 流程图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "SFT 数据清洗与模板化",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "SFT 数据清洗与模板化"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "训练循环",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "训练循环"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "评估闭环",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "评估闭环"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "交叉熵目标",
+          "formulas": [
+            {
+              "text": "SFT 通过最小化参考响应 $y$ 的条件概率负对数似然：",
+              "inline": "y"
+            },
+            {
+              "display": "\\mathcal{L}_{\\text{SFT}} = - \\sum_{t=1}^{T} \\log p_{\\theta}(y_t \\mid y_{<t}, x)"
+            },
+            {
+              "text": "其中 $x$ 为指令/输入，$y$ 为目标输出，$p_{\\theta}$ 由预训练大模型参数化。",
+              "inline": "x"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Label Smoothing",
+          "formulas": [
+            {
+              "text": "为提升鲁棒性常引入标签平滑，目标变为："
+            },
+            {
+              "display": "\\tilde{y}_k = (1-\\epsilon) \\cdot \\mathbb{1}[k = y] + \\frac{\\epsilon}{K}"
+            },
+            {
+              "text": "缓解过拟合并提升泛化能力。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 Transformers 进行 SFT",
+          "language": "python",
+          "code": "from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments\nfrom transformers import Trainer, DataCollatorForLanguageModeling\nfrom datasets import load_dataset\n\nmodel_name = \"meta-llama/Llama-2-7b-hf\"\ntokenizer = AutoTokenizer.from_pretrained(model_name)\nmodel = AutoModelForCausalLM.from_pretrained(\n    model_name,\n    load_in_8bit=True,\n    device_map=\"auto\"\n)\n\n# 假设数据集已经标准化为 instruction/input/output 字段\ndef format_sample(example):\n    instruction = example[\"instruction\"]\n    input_text = example.get(\"input\", \"\")\n    output = example[\"output\"]\n    prompt = f\"指令：{instruction}\\n输入：{input_text}\\n回答：\"\n    return tokenizer(prompt + output, return_tensors=\"pt\")\n\ndataset = load_dataset(\"json\", data_files=\"data/alpaca.json\")\n\ntraining_args = TrainingArguments(\n    output_dir=\"sft-llama2\",\n    per_device_train_batch_size=1,\n    gradient_accumulation_steps=8,\n    learning_rate=2e-5,\n    num_train_epochs=3,\n    fp16=True,\n    logging_steps=20,\n    save_strategy=\"epoch\"\n)\n\ndata_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)\n\ntrainer = Trainer(\n    model=model,\n    args=training_args,\n    train_dataset=dataset[\"train\"],\n    data_collator=data_collator\n)\n\ntrainer.train()"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "title": "Sigmoid函数",
+  "subtitle": "将输出压缩到(0,1)区间的激活函数",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Sigmoid函数（也称为逻辑函数）将任意实数映射到(0,1)区间，输出可以解释为概率。它是早期神经网络中常用的激活函数，但现在在隐藏层中较少使用，主要用于二分类的输出层。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学表达",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "Sigmoid函数定义",
+          "formulas": [
+            {
+              "text": "Sigmoid函数定义为："
+            },
+            {
+              "display": "\\sigma(x) = \\frac{1}{1 + e^{-x}} = \\frac{e^x}{e^x + 1}"
+            },
+            {
+              "text": "等价形式："
+            },
+            {
+              "display": "\\sigma(x) = \\frac{1}{2} + \\frac{1}{2}\\tanh\\left(\\frac{x}{2}\\right)"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "导数",
+          "formulas": [
+            {
+              "text": "Sigmoid的导数具有很好的性质："
+            },
+            {
+              "display": "\\frac{d}{dx}\\sigma(x) = \\sigma(x)(1 - \\sigma(x)) = \\sigma(x) \\cdot \\sigma(-x)"
+            },
+            {
+              "text": "最大梯度在 $x=0$ 处，值为 $\\frac{1}{4}$"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "性质",
+          "formulas": [
+            {
+              "text": "重要性质："
+            },
+            {
+              "text": "- 输出范围：$(0, 1)$"
+            },
+            {
+              "text": "- 单调递增：$x_1 < x_2 \\Rightarrow \\sigma(x_1) < \\sigma(x_2)$"
+            },
+            {
+              "text": "- 关于点 $(0, 0.5)$ 中心对称"
+            },
+            {
+              "text": "- 当 $x \\to +\\infty$ 时，$\\sigma(x) \\to 1$"
+            },
+            {
+              "text": "- 当 $x \\to -\\infty$ 时，$\\sigma(x) \\to 0$"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "输出有界：输出在(0,1)区间，适合表示概率",
+            "平滑可导：处处可导，梯度连续",
+            "容易饱和：当|x|较大时，梯度接近0，导致梯度消失",
+            "非零中心：输出均值不为0，可能影响收敛速度",
+            "计算开销：涉及指数运算，计算相对较慢"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 函数图像",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "MathFunctionDiagram",
+              "caption": "Sigmoid函数图像",
+              "width": 1000,
+              "height": 600,
+              "interactive": true,
+              "props": {
+                "type": "activation",
+                "title": "Sigmoid函数图像",
+                "function": "sigmoid"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "二分类输出层、逻辑回归、LSTM/GRU的门控机制、注意力机制中的门控"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "Sigmoid实现与使用",
+          "language": "python",
+          "code": "import numpy as np\nimport torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nimport matplotlib.pyplot as plt\n\n# 1. 基础实现\ndef sigmoid(x):\n    \"\"\"Sigmoid函数实现\"\"\"\n    return 1 / (1 + np.exp(-x))\n\n# 测试\nx = np.array([-5, -2, 0, 2, 5])\nprint(f\"输入: {x}\")\nprint(f\"Sigmoid输出: {sigmoid(x)}\")\n# 输出接近: [0.007, 0.119, 0.5, 0.881, 0.993]\n\n# 2. PyTorch实现\nx_tensor = torch.tensor([-2.0, -1.0, 0.0, 1.0, 2.0])\nsigmoid_output = torch.sigmoid(x_tensor)\nprint(f\"PyTorch Sigmoid: {sigmoid_output}\")\n\n# 3. 数值稳定性改进（避免溢出）\ndef sigmoid_stable(x):\n    \"\"\"数值稳定的Sigmoid实现\"\"\"\n    # 对于大的负值，使用 1/(1+exp(x)) 形式\n    # 对于大的正值，使用 exp(x)/(1+exp(x)) 形式\n    return np.where(x >= 0, \n                    1 / (1 + np.exp(-x)), \n                    np.exp(x) / (1 + np.exp(x)))\n\n# 4. 可视化Sigmoid函数\nx = np.linspace(-10, 10, 100)\ny = sigmoid(x)\n\nplt.figure(figsize=(10, 6))\nplt.plot(x, y, linewidth=2, label='Sigmoid')\nplt.axhline(y=0.5, color='r', linestyle='--', alpha=0.5, label='y=0.5')\nplt.axvline(x=0, color='k', linestyle='--', alpha=0.3)\nplt.xlabel('x')\nplt.ylabel('σ(x)')\nplt.title('Sigmoid Activation Function')\nplt.grid(True, alpha=0.3)\nplt.legend()\nplt.ylim(-0.1, 1.1)\nplt.savefig('sigmoid_function.png')\n\n# 5. 可视化Sigmoid的导数\nx = np.linspace(-10, 10, 100)\ny = sigmoid(x)\ndy = y * (1 - y)  # 导数\n\nplt.figure(figsize=(10, 6))\nplt.plot(x, y, linewidth=2, label='Sigmoid')\nplt.plot(x, dy, linewidth=2, label='Derivative', linestyle='--')\nplt.xlabel('x')\nplt.ylabel('Value')\nplt.title('Sigmoid and its Derivative')\nplt.grid(True, alpha=0.3)\nplt.legend()\nplt.savefig('sigmoid_derivative.png')\n\n# 6. 在二分类中使用\nclass BinaryClassifier(nn.Module):\n    def __init__(self, input_size):\n        super(BinaryClassifier, self).__init__()\n        self.fc = nn.Linear(input_size, 1)\n        self.sigmoid = nn.Sigmoid()\n    \n    def forward(self, x):\n        x = self.fc(x)\n        x = self.sigmoid(x)  # 输出概率\n        return x\n\n# 7. 梯度检查\nx = torch.tensor([-2.0, 0.0, 2.0], requires_grad=True)\ny = torch.sigmoid(x)\ny.sum().backward()\nprint(f\"输入: {x}\")\nprint(f\"输出: {y}\")\nprint(f\"梯度: {x.grad}\")\nprint(f\"理论梯度: {y * (1 - y)}\")\n\n# 8. 对比Sigmoid和Tanh\nx = np.linspace(-5, 5, 100)\ny_sigmoid = sigmoid(x)\ny_tanh = np.tanh(x)\n\nplt.figure(figsize=(10, 6))\nplt.plot(x, y_sigmoid, linewidth=2, label='Sigmoid [0,1]')\nplt.plot(x, y_tanh, linewidth=2, label='Tanh [-1,1]')\nplt.axhline(y=0, color='k', linestyle='--', alpha=0.3)\nplt.axvline(x=0, color='k', linestyle='--', alpha=0.3)\nplt.xlabel('x')\nplt.ylabel('f(x)')\nplt.title('Sigmoid vs Tanh')\nplt.grid(True, alpha=0.3)\nplt.legend()\nplt.savefig('sigmoid_vs_tanh.png')"
+        }
+      ]
+    }
+  ]
+}

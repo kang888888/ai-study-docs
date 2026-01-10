@@ -1,0 +1,137 @@
+{
+  "title": "Swish/SiLU (Sigmoid Linear Unit)",
+  "subtitle": "自门控激活函数，性能优于ReLU",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Swish（也称为SiLU，Sigmoid Linear Unit）是一种自门控激活函数，由Google在2017年提出。它结合了Sigmoid的门控特性和线性特性，在多个任务上表现优于ReLU。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学表达",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "Swish函数定义",
+          "formulas": [
+            {
+              "text": "Swish函数定义为："
+            },
+            {
+              "display": "\\text{Swish}(x) = x \\cdot \\sigma(x) = \\frac{x}{1 + e^{-x}}"
+            },
+            {
+              "text": "其中 $\\sigma(x)$ 是Sigmoid函数"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "导数",
+          "formulas": [
+            {
+              "text": "Swish的导数："
+            },
+            {
+              "display": "\\frac{d}{dx}\\text{Swish}(x) = \\sigma(x) + x \\cdot \\sigma(x)(1 - \\sigma(x)) = \\sigma(x)(1 + x(1 - \\sigma(x)))"
+            },
+            {
+              "text": "在 $x=0$ 处，导数为 $\\frac{1}{2}$"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "性质",
+          "formulas": [
+            {
+              "text": "重要性质："
+            },
+            {
+              "text": "- 非单调：在负值区域先下降后上升"
+            },
+            {
+              "text": "- 平滑：处处可导，无间断点"
+            },
+            {
+              "text": "- 下界：$\\lim_{x \\to -\\infty} \\text{Swish}(x) = 0$"
+            },
+            {
+              "text": "- 上界：无上界，$x \\to +\\infty$ 时线性增长"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "平滑性：处处可导，梯度连续",
+            "非单调：负值区域有独特形状，有助于梯度传播",
+            "自门控：使用输入本身作为门控信号",
+            "性能优异：在多个任务上优于ReLU",
+            "计算开销：需要计算Sigmoid，但现代硬件优化良好"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 函数图像",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "MathFunctionDiagram",
+              "caption": "Swish函数图像",
+              "width": 1000,
+              "height": 600,
+              "interactive": true,
+              "props": {
+                "type": "activation",
+                "title": "Swish函数图像",
+                "function": "swish"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "EfficientNet、BERT变体、需要平滑激活的深度网络"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "Swish实现与使用",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nimport numpy as np\n\n# 1. 基础实现\ndef swish(x):\n    return x / (1 + np.exp(-x))\n\n# 2. PyTorch实现（SiLU）\nx = torch.tensor([-2.0, -1.0, 0.0, 1.0, 2.0])\nswish_output = F.silu(x)  # SiLU就是Swish\nprint(f\"Swish输出: {swish_output}\")\n\n# 3. 在神经网络中使用\nclass SwishNet(nn.Module):\n    def __init__(self, input_size, hidden_size, output_size):\n        super(SwishNet, self).__init__()\n        self.fc1 = nn.Linear(input_size, hidden_size)\n        self.swish = nn.SiLU()  # Swish激活\n        self.fc2 = nn.Linear(hidden_size, output_size)\n    \n    def forward(self, x):\n        x = self.fc1(x)\n        x = self.swish(x)\n        x = self.fc2(x)\n        return x"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoE (Mixture of Experts) 混合专家模型 - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>MoE (Mixture of Experts) 混合专家模型</h1>
+            <p>稀疏激活的超大规模模型架构</p>
+        </div>
+        <div class="content">
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>将大模型拆分为多个'专家'子网络（通常是FFN层），通过门控网络（Router/Gating Network）动态选择激活哪些专家。实现了参数总量大但计算量小的稀疏激活。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>稀疏激活：每次推理只激活部分专家（如Top-2），计算量大幅降低</li>
+                    <li>参数效率：总参数量可达数千亿，但激活参数仅数十亿</li>
+                    <li>门控路由：可学习的Router决定输入应该交给哪些专家处理</li>
+                    <li>负载均衡：通过辅助损失函数确保专家负载均衡</li>
+                    <li>极致性价比：Mixtral 8x7B性能媲美LLaMA-70B，但推理成本仅为13B</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box"><p><strong>门控网络（Gating Network）、Top-K路由、负载均衡损失（Auxiliary Loss）、专家并行</strong></p></div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box"><p>超大规模语言模型（DeepSeek-V2/V3、Mixtral、GPT-4推测）、多任务学习</p></div>
+            </div>
+            <div class="section">
+                <h2>📊 架构图解</h2>
+                <div class="diagram-gallery">
+                    <div class="diagram-item"><img src="MoE_Routing_Visualization.png" alt="MoE路由可视化" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">MoE路由可视化</div></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>门控网络（Gating Network）</h3>
+                    <div class="math-formula">
+                        <p>门控网络计算每个专家的权重：</p>
+                        <p>$$G(x) = \text{softmax}(W_g x + b_g)$$</p>
+                        <p>其中 $G(x) \in \mathbb{R}^E$，$E$ 是专家数量</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>Top-K 路由</h3>
+                    <div class="math-formula">
+                        <p>选择Top-K个专家：</p>
+                        <p>$$\text{TopK}(G(x), k) = \{i_1, i_2, ..., i_k\}$$</p>
+                        <p>输出为选中专家的加权和：</p>
+                        <p>$$y = \sum_{i \in \text{TopK}} G_i(x) \cdot E_i(x)$$</p>
+                        <p>其中 $E_i(x)$ 是第 $i$ 个专家的输出</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>负载均衡损失</h3>
+                    <div class="math-formula">
+                        <p>确保专家负载均衡：</p>
+                        <p>$$L_{aux} = \alpha \cdot \sum_{i=1}^{E} f_i \cdot P_i$$</p>
+                        <p>其中 $f_i$ 是专家 $i$ 被选中的频率，$P_i$ 是平均路由概率</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 PyTorch 实现 MoE 层</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class MoELayer(nn.Module):
+    """混合专家层"""
+    def __init__(self, d_model, num_experts=8, top_k=2):
+        super(MoELayer, self).__init__()
+        self.num_experts = num_experts
+        self.top_k = top_k
+        
+        # 门控网络
+        self.gate = nn.Linear(d_model, num_experts)
+        
+        # 多个专家（FFN）
+        self.experts = nn.ModuleList([
+            nn.Sequential(
+                nn.Linear(d_model, d_model * 4),
+                nn.ReLU(),
+                nn.Linear(d_model * 4, d_model)
+            ) for _ in range(num_experts)
+        ])
+    
+    def forward(self, x):
+        """
+        参数:
+            x: [batch_size, seq_length, d_model]
+        返回:
+            output: [batch_size, seq_length, d_model]
+        """
+        batch_size, seq_length, d_model = x.shape
+        
+        # 计算门控权重
+        gate_logits = self.gate(x)  # [batch_size, seq_length, num_experts]
+        gate_probs = F.softmax(gate_logits, dim=-1)
+        
+        # Top-K 选择
+        top_k_probs, top_k_indices = torch.topk(gate_probs, self.top_k, dim=-1)
+        top_k_probs = top_k_probs / top_k_probs.sum(dim=-1, keepdim=True)
+        
+        # 初始化输出
+        output = torch.zeros_like(x)
+        
+        # 对每个专家计算输出
+        for i in range(self.num_experts):
+            # 找到使用当前专家的位置
+            expert_mask = (top_k_indices == i)
+            
+            if expert_mask.any():
+                # 计算专家输出
+                expert_output = self.experts[i](x)
+                
+                # 加权累加
+                weights = top_k_probs * expert_mask.float()
+                output += weights.unsqueeze(-1) * expert_output
+        
+        return output
+
+# 使用示例
+if __name__ == "__main__":
+    moe = MoELayer(d_model=512, num_experts=8, top_k=2)
+    x = torch.randn(2, 100, 512)
+    output = moe(x)
+    print(f"输出形状: {output.shape}")  # [2, 100, 512]</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 图片放大弹窗 -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal()">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+            modalImg.onclick = function(e) { e.stopPropagation(); };
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

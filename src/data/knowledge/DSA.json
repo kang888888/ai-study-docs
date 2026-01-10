@@ -1,0 +1,54 @@
+{
+  "title": "DSA (DeepSeek Sparse Attention)",
+  "subtitle": "DeepSeek 稀疏注意力",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "DSA (DeepSeek Sparse Attention) 是 DeepSeek-V3.2 及后续实验版本中提出的注意力机制优化技术。相比传统的全量注意力，DSA 显著降低了长文本场景下的计算复杂度，在 API 成本上实现了 50% 以上的降幅。该技术通过稀疏化注意力模式，在保持模型性能的同时大幅提升长文本训练与推理效率。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "计算复杂度降低：显著降低长文本场景下的计算复杂度",
+            "成本优化：在 API 成本上实现 50% 以上的降幅",
+            "长文本优化：专门针对长文本训练与推理效率优化",
+            "性能保持：在降低计算成本的同时保持模型性能",
+            "稀疏化设计：通过稀疏化注意力模式实现效率提升"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "稀疏注意力机制、长文本优化、计算复杂度降低、注意力模式稀疏化、API 成本优化、训练与推理效率提升"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "长文本处理、大规模语言模型训练、API 服务成本优化、需要处理超长上下文的场景、对计算效率要求高的推理场景"
+        }
+      ]
+    }
+  ]
+}

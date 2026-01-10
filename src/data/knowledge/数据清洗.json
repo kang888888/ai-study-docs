@@ -1,0 +1,61 @@
+{
+  "title": "数据清洗",
+  "subtitle": "通过去重、过滤、标准化、验证等技术，确保数据质量。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据清洗流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "数据清洗流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据清洗方法",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "数据清洗方法",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "数据去重",
+          "language": "python",
+          "code": "from datasets import load_dataset\n\n# 加载数据集\ndataset = load_dataset(\"your_dataset\")\n\n# 去重\nseen = set()\ndef is_unique(example):\n    text_hash = hash(example[\"text\"])\n    if text_hash in seen:\n        return False\n    seen.add(text_hash)\n    return True\n\ndataset = dataset.filter(is_unique)"
+        },
+        {
+          "type": "code-box",
+          "title": "质量过滤",
+          "language": "python",
+          "code": "def filter_by_length(example, min_length=10, max_length=2048):\n    text = example[\"text\"]\n    length = len(text.split())\n    return min_length <= length <= max_length\n\ndataset = dataset.filter(filter_by_length)"
+        }
+      ]
+    }
+  ]
+}

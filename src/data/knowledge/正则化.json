@@ -1,0 +1,169 @@
+{
+  "title": "正则化 (Regularization)",
+  "subtitle": "防止过拟合的核心技术",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "正则化是一类用于防止模型过拟合的技术，通过在损失函数中添加惩罚项或修改模型结构，限制模型复杂度，提高泛化能力。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 主要类型",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "L1正则化（Lasso）：使用权重的绝对值之和作为惩罚项，倾向于产生稀疏权重",
+            "L2正则化（Ridge/权重衰减）：使用权重的平方和作为惩罚项，使权重趋向于小值",
+            "Dropout：训练时随机丢弃部分神经元，减少神经元间的共适应",
+            "DropConnect：随机断开部分连接而非神经元",
+            "Early Stopping：监控验证集性能，提前停止训练",
+            "数据增强：通过变换增加训练数据多样性",
+            "标签平滑：软化硬标签，减少模型过度自信"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "L1/L2正则化、Dropout、权重衰减、Early Stopping、标签平滑、数据增强"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "防止过拟合、提高泛化能力、模型压缩（L1稀疏化）、训练稳定性提升"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "正则化方法对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "正则化方法对比",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "正则化效果",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "正则化效果",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "L2正则化（权重衰减）",
+          "formulas": [
+            {
+              "text": "L2正则化在损失函数中添加权重的平方和："
+            },
+            {
+              "display": "L_{total} = L_{data} + \\lambda \\sum_{i} w_i^2"
+            },
+            {
+              "text": "其中 $\\lambda$ 是正则化系数，控制正则化强度",
+              "inline": "\\lambda"
+            },
+            {
+              "text": "梯度更新时，权重会额外衰减："
+            },
+            {
+              "display": "w_i \\leftarrow w_i - \\eta \\left(\\frac{\\partial L}{\\partial w_i} + 2\\lambda w_i\\right)"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "L1正则化（Lasso）",
+          "formulas": [
+            {
+              "text": "L1正则化使用权重的绝对值之和："
+            },
+            {
+              "display": "L_{total} = L_{data} + \\lambda \\sum_{i} |w_i|"
+            },
+            {
+              "text": "L1正则化倾向于产生稀疏解，即许多权重变为0，实现特征选择"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Dropout",
+          "formulas": [
+            {
+              "text": "训练时，每个神经元以概率 $p$ 被保留："
+            },
+            {
+              "display": "h_i^{train} = \\begin{cases} \\frac{h_i}{1-p} & \\text{with prob } 1-p \\\\ 0 & \\text{with prob } p \\end{cases}"
+            },
+            {
+              "text": "推理时，所有神经元都激活，但输出需要缩放："
+            },
+            {
+              "display": "h_i^{test} = h_i"
+            },
+            {
+              "text": "训练时除以 $(1-p)$ 是为了保持期望值不变"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "PyTorch 中的正则化实现",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.optim as optim\n\n# 1. L2正则化（权重衰减）\n# 在优化器中设置 weight_decay 参数\nmodel = nn.Linear(10, 1)\noptimizer = optim.SGD(model.parameters(), lr=0.01, weight_decay=0.0001)\n\n# 2. L1正则化（手动实现）\ndef l1_regularization(model, lambda_l1):\n    l1_loss = 0\n    for param in model.parameters():\n        l1_loss += torch.sum(torch.abs(param))\n    return lambda_l1 * l1_loss\n\n# 训练循环中使用\nfor epoch in range(100):\n    # 前向传播\n    output = model(input)\n    loss = criterion(output, target)\n    \n    # 添加L1正则化\n    l1_loss = l1_regularization(model, lambda_l1=0.001)\n    total_loss = loss + l1_loss\n    \n    # 反向传播\n    optimizer.zero_grad()\n    total_loss.backward()\n    optimizer.step()\n\n# 3. Dropout层\nclass MLPWithDropout(nn.Module):\n    def __init__(self, input_size, hidden_size, output_size, dropout_rate=0.5):\n        super(MLPWithDropout, self).__init__()\n        self.fc1 = nn.Linear(input_size, hidden_size)\n        self.dropout1 = nn.Dropout(dropout_rate)\n        self.fc2 = nn.Linear(hidden_size, hidden_size)\n        self.dropout2 = nn.Dropout(dropout_rate)\n        self.fc3 = nn.Linear(hidden_size, output_size)\n    \n    def forward(self, x):\n        x = torch.relu(self.fc1(x))\n        x = self.dropout1(x)  # 训练时随机丢弃，推理时自动关闭\n        x = torch.relu(self.fc2(x))\n        x = self.dropout2(x)\n        x = self.fc3(x)\n        return x\n\n# 4. 标签平滑\nclass LabelSmoothingLoss(nn.Module):\n    def __init__(self, num_classes, smoothing=0.1):\n        super(LabelSmoothingLoss, self).__init__()\n        self.num_classes = num_classes\n        self.smoothing = smoothing\n        self.confidence = 1.0 - smoothing\n    \n    def forward(self, pred, target):\n        log_probs = torch.nn.functional.log_softmax(pred, dim=1)\n        true_dist = torch.zeros_like(log_probs)\n        true_dist.fill_(self.smoothing / (self.num_classes - 1))\n        true_dist.scatter_(1, target.unsqueeze(1), self.confidence)\n        return torch.mean(torch.sum(-true_dist * log_probs, dim=1))\n\n# 使用示例\nmodel = MLPWithDropout(784, 256, 10, dropout_rate=0.5)\ncriterion = LabelSmoothingLoss(num_classes=10, smoothing=0.1)\noptimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-4)"
+        }
+      ]
+    }
+  ]
+}

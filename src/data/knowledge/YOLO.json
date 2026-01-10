@@ -1,0 +1,201 @@
+{
+  "title": "YOLO (You Only Look Once) 单阶段目标检测",
+  "subtitle": "实时目标检测算法",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "将目标检测视为回归问题，只需一次前向传播即可同时预测所有边界框的位置和类别。相比两阶段检测器（如Faster R-CNN），速度极快，适合实时应用。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "单阶段检测：一次前向传播完成检测，无需Region Proposal",
+            "速度极快：YOLOv5可达140+ FPS，适合实时场景",
+            "端到端训练：直接优化检测损失，无需多阶段训练",
+            "全局信息：看到整张图像，背景误检率低",
+            "版本迭代：从v1到v8/v9，持续优化精度和速度"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "Anchor Box、非极大值抑制（NMS）、多尺度预测、损失函数（IoU Loss）"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "实时目标检测、自动驾驶、智能监控、无人机视觉、工业质检"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "YOLODiagram",
+              "caption": "YOLO架构图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "YOLO架构图",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "YOLODiagram",
+              "caption": "YOLO检测流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "YOLO检测流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "YOLODiagram",
+              "caption": "YOLO版本演进",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "YOLO版本演进",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "YOLODiagram",
+              "caption": "IoU计算",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "IoU计算",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "IoU (Intersection over Union)",
+          "formulas": [
+            {
+              "text": "IoU用于衡量预测框和真实框的重叠程度："
+            },
+            {
+              "display": "\\text{IoU} = \\frac{\\text{Area of Intersection}}{\\text{Area of Union}} = \\frac{A \\cap B}{A \\cup B}"
+            },
+            {
+              "text": "IoU值范围在 $[0, 1]$，值越大表示重叠度越高",
+              "inline": "[0, 1]"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "YOLO 损失函数",
+          "formulas": [
+            {
+              "text": "YOLO的损失函数包含多个部分："
+            },
+            {
+              "display": "L = \\lambda_{coord} \\sum_{i=0}^{S^2} \\sum_{j=0}^{B} \\mathbb{1}_{ij}^{obj} [(x_i - \\hat{x}_i)^2 + (y_i - \\hat{y}_i)^2]"
+            },
+            {
+              "display": "+ \\lambda_{coord} \\sum_{i=0}^{S^2} \\sum_{j=0}^{B} \\mathbb{1}_{ij}^{obj} [(\\sqrt{w_i} - \\sqrt{\\hat{w}_i})^2 + (\\sqrt{h_i} - \\sqrt{\\hat{h}_i})^2]"
+            },
+            {
+              "display": "+ \\sum_{i=0}^{S^2} \\sum_{j=0}^{B} \\mathbb{1}_{ij}^{obj} (C_i - \\hat{C}_i)^2 + \\lambda_{noobj} \\sum_{i=0}^{S^2} \\sum_{j=0}^{B} \\mathbb{1}_{ij}^{noobj} (C_i - \\hat{C}_i)^2"
+            },
+            {
+              "display": "+ \\sum_{i=0}^{S^2} \\mathbb{1}_{i}^{obj} \\sum_{c \\in classes} (p_i(c) - \\hat{p}_i(c))^2"
+            },
+            {
+              "text": "其中 $S$ 是网格大小，$B$ 是每个网格的边界框数量",
+              "inline": "S"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "边界框坐标转换",
+          "formulas": [
+            {
+              "text": "从相对坐标转换为绝对坐标："
+            },
+            {
+              "display": "b_x = \\sigma(t_x) + c_x"
+            },
+            {
+              "display": "b_y = \\sigma(t_y) + c_y"
+            },
+            {
+              "display": "b_w = p_w e^{t_w}"
+            },
+            {
+              "display": "b_h = p_h e^{t_h}"
+            },
+            {
+              "text": "其中 $(c_x, c_y)$ 是网格左上角坐标，$(p_w, p_h)$ 是anchor尺寸",
+              "inline": "(c_x, c_y)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 PyTorch 实现 YOLO 核心组件",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nimport numpy as np\n\ndef calculate_iou(box1, box2):\n    \"\"\"计算两个边界框的IoU\"\"\"\n    # box格式: [x1, y1, x2, y2]\n    x1 = max(box1[0], box2[0])\n    y1 = max(box1[1], box2[1])\n    x2 = min(box1[2], box2[2])\n    y2 = min(box1[3], box2[3])\n    \n    if x2 < x1 or y2 < y1:\n        return 0.0\n    \n    intersection = (x2 - x1) * (y2 - y1)\n    area1 = (box1[2] - box1[0]) * (box1[3] - box1[1])\n    area2 = (box2[2] - box2[0]) * (box2[3] - box2[1])\n    union = area1 + area2 - intersection\n    \n    return intersection / union if union > 0 else 0.0\n\ndef non_max_suppression(boxes, scores, iou_threshold=0.5):\n    \"\"\"非极大值抑制（NMS）\"\"\"\n    if len(boxes) == 0:\n        return []\n    \n    # 按分数排序\n    indices = np.argsort(scores)[::-1]\n    keep = []\n    \n    while len(indices) > 0:\n        current = indices[0]\n        keep.append(current)\n        \n        if len(indices) == 1:\n            break\n        \n        # 计算当前框与其他框的IoU\n        current_box = boxes[current]\n        other_boxes = boxes[indices[1:]]\n        \n        ious = [calculate_iou(current_box, box) for box in other_boxes]\n        \n        # 移除IoU大于阈值的框\n        indices = indices[1:][np.array(ious) < iou_threshold]\n    \n    return keep\n\nclass YOLOLoss(nn.Module):\n    \"\"\"YOLO损失函数\"\"\"\n    def __init__(self, S=7, B=2, C=20, lambda_coord=5.0, lambda_noobj=0.5):\n        super(YOLOLoss, self).__init__()\n        self.S = S  # 网格大小\n        self.B = B  # 每个网格的边界框数量\n        self.C = C  # 类别数\n        self.lambda_coord = lambda_coord\n        self.lambda_noobj = lambda_noobj\n    \n    def forward(self, predictions, targets):\n        \"\"\"\n        predictions: [batch_size, S*S*(B*5+C)]\n        targets: [batch_size, S, S, B*5+C]\n        \"\"\"\n        batch_size = predictions.size(0)\n        predictions = predictions.view(batch_size, self.S, self.S, self.B * 5 + self.C)\n        \n        # 分离预测值\n        pred_boxes = predictions[..., :self.B * 5].view(batch_size, self.S, self.S, self.B, 5)\n        pred_classes = predictions[..., self.B * 5:]\n        \n        # 分离目标值\n        target_boxes = targets[..., :self.B * 5].view(batch_size, self.S, self.S, self.B, 5)\n        target_classes = targets[..., self.B * 5:]\n        \n        # 计算坐标损失\n        coord_mask = target_boxes[..., 4:5] > 0  # 有目标的框\n        coord_loss = self.lambda_coord * torch.sum(\n            coord_mask * ((pred_boxes[..., :2] - target_boxes[..., :2]) ** 2 +\n                         (torch.sqrt(pred_boxes[..., 2:4]) - torch.sqrt(target_boxes[..., 2:4])) ** 2)\n        )\n        \n        # 计算置信度损失\n        obj_mask = target_boxes[..., 4:5] > 0\n        noobj_mask = target_boxes[..., 4:5] == 0\n        \n        obj_loss = torch.sum(obj_mask * (pred_boxes[..., 4:5] - target_boxes[..., 4:5]) ** 2)\n        noobj_loss = self.lambda_noobj * torch.sum(\n            noobj_mask * (pred_boxes[..., 4:5] - target_boxes[..., 4:5]) ** 2\n        )\n        \n        # 计算类别损失\n        class_loss = torch.sum(\n            obj_mask.squeeze(-1) * (pred_classes - target_classes) ** 2\n        )\n        \n        total_loss = coord_loss + obj_loss + noobj_loss + class_loss\n        return total_loss / batch_size\n\n# 使用示例\nif __name__ == \"__main__\":\n    # 测试IoU计算\n    box1 = [10, 10, 50, 50]\n    box2 = [30, 30, 70, 70]\n    iou = calculate_iou(box1, box2)\n    print(f\"IoU: {iou:.4f}\")\n    \n    # 测试YOLO损失\n    S, B, C = 7, 2, 20\n    predictions = torch.randn(4, S * S * (B * 5 + C))\n    targets = torch.randn(4, S, S, B * 5 + C)\n    \n    criterion = YOLOLoss(S, B, C)\n    loss = criterion(predictions, targets)\n    print(f\"YOLO Loss: {loss.item():.4f}\")"
+        }
+      ]
+    }
+  ]
+}

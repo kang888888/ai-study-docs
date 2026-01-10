@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI大模型学习 · 知识图谱总览</title>
+    
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+    
+    <!-- 页面特定样式 -->
+    <style>
+        body {
+            background: radial-gradient(circle at top, var(--bg-primary) 0%, #030712 60%, #010409 100%);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- 知识图谱容器 -->
+        <div id="chart"></div>
+        
+        <!-- 标题栏 -->
+        <div class="title-bar">
+            <h1>AI大模型学习 · 知识图谱总览</h1>
+            <p>一站式查看各模块知识图谱。点击节点即可跳转到对应模块的交互式图谱，快速定位微调、量化、RAG、评估、安全、部署到算力基础等内容。</p>
+            <div class="legend">
+                <span><i style="background:#38bdf8"></i>基础与数据</span>
+            <span><i style="background:#f472b6"></i>核心技术</span>
+            <span><i style="background:#facc15"></i>应用与交付</span>
+            </div>
+        </div>
+        
+        <!-- 控制栏 -->
+        <div class="control-bar">
+            <button class="control-btn" onclick="resetView()">重新布局</button>
+            <button class="control-btn" onclick="toggleAnimation()">暂停/继续动画</button>
+        </div>
+        
+        <!-- 侧边栏 -->
+        <div class="sidebar" id="sidebar">
+            <button class="close-btn" onclick="closeSidebar()">×</button>
+            <div class="sidebar-header">
+                <h2 class="sidebar-title" id="sidebar-title">AI大模型学习 · 知识图谱总览</h2>
+                <div class="sidebar-tag" id="sidebar-tag">指南</div>
+            </div>
+            <div class="sidebar-body" id="sidebar-content">
+                <div class="sidebar-placeholder">
+                    <p>👇 在左侧图谱中选择一个节点即可查看详情。</p>
+                    <p>• 点击分类节点查看概览说明<br>• 点击具体技术节点，会在此侧边栏加载对应的 HTML 讲解页</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 公共脚本 -->
+    <script src="../common/knowledge-graph.js"></script>
+    
+    <!-- 页面特定数据 -->
+    <script>
+        // 页面配置
+        const pageConfig = {
+          "containerId": "chart",
+          "data": {
+                    "name": "AI大模型学习",
+                    "value": "从理论、数据到算法、应用、安全、运维与算力的全栈知识地图",
+                    "symbolSize": 70,
+                    "itemStyle": {
+                              "color": "#06b6d4",
+                              "borderColor": "#f8fafc",
+                              "borderWidth": 4
+                    },
+                    "children": [
+                              {
+                                        "name": "AI基础理论",
+                                        "value": "神经网络与深度学习的基础概念与架构。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Theory",
+                                        "children": [
+                                                  {
+                                                            "name": "神经网络架构",
+                                                            "value": "基础、进阶、生成式架构及典型大模型实例。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Architecture",
+                                                            "children": [
+                                                                      {
+                                                                                "name": "基础架构",
+                                                                                "value": "MLP、CNN、ResNet、YOLO、RNN 等经典结构。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Basic",
+                                                                                "children": [
+                                                                                          {
+                                                                                                    "name": "MLP",
+                                                                                                    "value": "多层感知机，前馈神经网络基础。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "MLP"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "CNN",
+                                                                                                    "value": "卷积神经网络，擅长图像处理。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "CNN"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "ResNet",
+                                                                                                    "value": "残差网络，缓解深层退化。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "ResNet"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "YOLO",
+                                                                                                    "value": "实时目标检测网络。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "YOLO"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "RNN",
+                                                                                                    "value": "循环神经网络，处理序列数据。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "RNN"
+                                                                                          }
+                                                                                ]
+                                                                      },
+                                                                      {
+                                                                                "name": "进阶架构(LLM核心)",
+                                                                                "value": "Transformer、LSTM/GRU、BERT、MoE 等架构。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "LLM-Core",
+                                                                                "children": [
+                                                                                          {
+                                                                                                    "name": "Transformer",
+                                                                                                    "value": "自注意力架构，LLM 核心基础。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "Transformer"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "LSTM",
+                                                                                                    "value": "长短期记忆网络，缓解长序列梯度问题。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "LSTM"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "GRU",
+                                                                                                    "value": "门控循环单元，LSTM 轻量变体。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "GRU"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "BERT",
+                                                                                                    "value": "双向 Transformer 编码器，预训练基础。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "BERT"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "MoE",
+                                                                                                    "value": "专家混合模型，通过稀疏路由提升容量。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "MoE"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "Mamba",
+                                                                                                    "value": "线性时序模块，兼具效率与长依赖。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "Mamba"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "Miras",
+                                                                                                    "value": "通用架构设计框架，基于关联记忆与注意力偏差。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "Miras"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "Titans",
+                                                                                                    "value": "仿生记忆架构，融合短期/长期记忆，突破200万Token上下文。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "Titans"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "RWKV",
+                                                                                                    "value": "RNN-Transformer 混合架构。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "RWKV"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "ViT",
+                                                                                                    "value": "视觉 Transformer，处理图像补丁序列。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "ViT"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "CLIP",
+                                                                                                    "value": "图文对齐模型，联合嵌入空间。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "CLIP"
+                                                                                          }
+                                                                                ]
+                                                                      },
+                                                                      {
+                                                                                "name": "高级/生成式架构",
+                                                                                "value": "Diffusion、VAE、GAN、U-Net、GNN、DQN、DBN 等。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Generative",
+                                                                                "children": [
+                                                                                          {
+                                                                                                    "name": "Diffusion",
+                                                                                                    "value": "扩散模型，逐步去噪生成图像。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "Diffusion"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "VAE",
+                                                                                                    "value": "变分自编码器，概率生成模型。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "VAE"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "GAN",
+                                                                                                    "value": "生成对抗网络，生成逼真样本。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "GAN"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "U-Net",
+                                                                                                    "value": "编码器-解码器结构，用于分割/生成。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "U-Net"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "GNN",
+                                                                                                    "value": "图神经网络，处理图结构数据。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "GNN"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "DQN",
+                                                                                                    "value": "深度 Q 网络，强化学习价值网络。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "DQN"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "DBN",
+                                                                                                    "value": "深度置信网络，由多层 RBM 组成。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "DBN"
+                                                                                          }
+                                                                                ]
+                                                                      },
+                                                                      {
+                                                                                "name": "模型实例",
+                                                                                "value": "具代表性的开源/商用大模型。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Models",
+                                                                                "children": [
+                                                                                          {
+                                                                                                    "name": "LLaMA",
+                                                                                                    "value": "Meta 开源大模型系列。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "LLaMA"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "ChatGLM",
+                                                                                                    "value": "智谱 AI 中文对话大模型。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "ChatGLM"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "QWen",
+                                                                                                    "value": "阿里通义千问系列大模型。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "QWen"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "Moneta",
+                                                                                                    "value": "基于Miras框架的高效关联记忆架构。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "Moneta"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "Yaad",
+                                                                                                    "value": "基于Miras框架的优化注意力偏差模型。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "Yaad"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "Memora",
+                                                                                                    "value": "基于Miras框架的长期记忆管理模型。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "Memora"
+                                                                                          }
+                                                                                ]
+                                                                      }
+                                                            ]
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "数据工程",
+                                        "value": "数据采集、清洗、增强、质量评估与管理能力。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Data",
+                                        "children": [
+                                                  {
+                                                            "name": "数据工程知识图谱",
+                                                            "value": "数据生命周期、格式转换与质量治理。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Pipeline",
+                                                            "children": [
+                                                                      {
+                                                                                "name": "数据收集",
+                                                                                "value": "公开数据、抓取、人工标注与合成策略。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Collect"
+                                                                      },
+                                                                      {
+                                                                                "name": "数据处理",
+                                                                                "value": "数据清洗、格式转换、增强三段式流水线。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Process",
+                                                                                "children": [
+                                                                                          {
+                                                                                                    "name": "数据清洗",
+                                                                                                    "value": "去重、过滤、标准化与数据验证流程。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "Clean"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "数据格式转换",
+                                                                                                    "value": "JSONL/Parquet/ShareGPT 等格式互转。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "Format"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "数据增强",
+                                                                                                    "value": "回译、同义替换、模板填充、排序等技巧。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "Augment"
+                                                                                          }
+                                                                                ]
+                                                                      },
+                                                                      {
+                                                                                "name": "质量保证",
+                                                                                "value": "数据质量评估与数据集资产治理。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "QA",
+                                                                                "children": [
+                                                                                          {
+                                                                                                    "name": "数据质量评估",
+                                                                                                    "value": "准确性、相关性、多样性与一致性度量。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "Quality"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "数据集管理",
+                                                                                                    "value": "版本化、元数据、权限与生命周期管理。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "Dataset"
+                                                                                          }
+                                                                                ]
+                                                                      }
+                                                            ]
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "大模型核心技术",
+                                        "value": "微调、量化、训练、推理与强化学习核心能力。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "CoreTech",
+                                        "children": [
+                                                  {
+                                                            "name": "模型微调知识图谱",
+                                                            "value": "LoRA/QLoRA、SFT、偏好优化。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Finetune",
+                                                            "children": [
+                                                                      {
+                                                                                "name": "SFT",
+                                                                                "value": "监督微调流程与数据要点。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "SFT"
+                                                                      },
+                                                                      {
+                                                                                "name": "RLHF",
+                                                                                "value": "人类反馈强化学习闭环。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "RLHF"
+                                                                      },
+                                                                      {
+                                                                                "name": "LoRA",
+                                                                                "value": "低秩适配微调，冻结主干。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "LoRA"
+                                                                      },
+                                                                      {
+                                                                                "name": "QLoRA",
+                                                                                "value": "4bit 量化 + LoRA，节省显存。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "QLoRA"
+                                                                      },
+                                                                      {
+                                                                                "name": "DPO",
+                                                                                "value": "无需奖励模型的偏好优化。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "DPO"
+                                                                      },
+                                                                      {
+                                                                                "name": "ORPO",
+                                                                                "value": "Odds Ratio 偏好优化。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "ORPO"
+                                                                      },
+                                                                      {
+                                                                                "name": "Axolotl",
+                                                                                "value": "多模型多框架微调工具。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Tool"
+                                                                      },
+                                                                      {
+                                                                                "name": "Unsloth",
+                                                                                "value": "轻量高效微调套件。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Tool"
+                                                                      },
+                                                                      {
+                                                                                "name": "PEFT",
+                                                                                "value": "参数高效微调方法总览。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "PEFT"
+                                                                      }
+                                                            ]
+                                                  },
+                                                  {
+                                                            "name": "模型量化知识图谱",
+                                                            "value": "GPTQ、AWQ、GGUF、INT8/INT4。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Quant",
+                                                            "children": [
+                                                                      {
+                                                                                "name": "量化基础",
+                                                                                "value": "PTQ/QAT、位宽选择、误差指标。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Basics"
+                                                                      },
+                                                                      {
+                                                                                "name": "GPTQ",
+                                                                                "value": "梯度/Hessian 感知的 4bit 权重量化。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "GPTQ"
+                                                                      },
+                                                                      {
+                                                                                "name": "AWQ",
+                                                                                "value": "Activation-aware 权重量化方案。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "AWQ"
+                                                                      },
+                                                                      {
+                                                                                "name": "SmoothQuant",
+                                                                                "value": "激活/权重同步缩放，便于推理部署。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Smooth"
+                                                                      },
+                                                                      {
+                                                                                "name": "PTQ",
+                                                                                "value": "后训练量化流程与校准策略。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "PTQ"
+                                                                      },
+                                                                      {
+                                                                                "name": "GGUF",
+                                                                                "value": "llama.cpp 通用格式，整合多种位宽。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "GGUF"
+                                                                      },
+                                                                      {
+                                                                                "name": "HQQ",
+                                                                                "value": "半二次优化，零校准极速量化。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "HQQ"
+                                                                      },
+                                                                      {
+                                                                                "name": "ExLlamaV2",
+                                                                                "value": "INT4 推理引擎，结合分页 KV Cache。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Runtime"
+                                                                      }
+                                                            ]
+                                                  },
+                                                  {
+                                                            "name": "高级技术专题",
+                                                            "value": "模型融合、MoE、提示工程、流式生成等专题。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Advanced",
+                                                            "children": [
+                                                                      {
+                                                                                "name": "高级技术总览",
+                                                                                "value": "进阶能力总览。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Overview"
+                                                                      },
+                                                                      {
+                                                                                "name": "文本生成技术",
+                                                                                "value": "文本解码、提示工程、流式生成。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "TextGen",
+                                                                                "children": [
+                                                                                          {
+                                                                                                    "name": "提示工程",
+                                                                                                    "value": "指令模板、少样本/思维链提示设计。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "Prompt"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "流式生成",
+                                                                                                    "value": "逐 token 推流、交互体验优化。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "Streaming"
+                                                                                          },
+                                                                                          {
+                                                                                                    "name": "解码策略",
+                                                                                                    "value": "Greedy、Beam、Sampling、Top-k/p、温度控制。",
+                                                                                                    "symbolSize": 34,
+                                                                                                    "itemStyle": {
+                                                                                                              "color": "#06b6d4",
+                                                                                                              "borderColor": "#f8fafc",
+                                                                                                              "borderWidth": 2
+                                                                                                    },
+                                                                                                    "tag": "Decoding"
+                                                                                          }
+                                                                                ]
+                                                                      },
+                                                                      {
+                                                                                "name": "知识图谱增强",
+                                                                                "value": "知识增强、RAG、检索优化。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "KG"
+                                                                      }
+                                                            ]
+                                                  },
+                                                  {
+                                                            "name": "模型训练知识图谱",
+                                                            "value": "分布式并行、混合精度、ZeRO、Recompute。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Training",
+                                                            "children": [
+                                                                      {
+                                                                                "name": "分布式训练基础",
+                                                                                "value": "数据/模型/流水线并行基础。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Dist"
+                                                                      },
+                                                                      {
+                                                                                "name": "数据并行训练",
+                                                                                "value": "AllReduce、梯度同步、分片。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "DP"
+                                                                      },
+                                                                      {
+                                                                                "name": "模型并行训练",
+                                                                                "value": "张量并行、专家并行拆分。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "MP"
+                                                                      },
+                                                                      {
+                                                                                "name": "Pipeline并行训练",
+                                                                                "value": "流水线分段与气泡抑制。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "PP"
+                                                                      },
+                                                                      {
+                                                                                "name": "ZeRO优化器",
+                                                                                "value": "参数/梯度/优化器三路分片。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "ZeRO"
+                                                                      },
+                                                                      {
+                                                                                "name": "梯度累积与检查点",
+                                                                                "value": "小显存累积与激活重计算。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Grad"
+                                                                      },
+                                                                      {
+                                                                                "name": "混合精度训练",
+                                                                                "value": "FP16/BF16 + Grad Scaling。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "AMP"
+                                                                      },
+                                                                      {
+                                                                                "name": "Minimind实践",
+                                                                                "value": "从零复现 GPT 的工程项目。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Project"
+                                                                      }
+                                                            ]
+                                                  },
+                                                  {
+                                                            "name": "模型推理知识图谱",
+                                                            "value": "KV Cache、FlashAttention、Speculative Decoding。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Inference",
+                                                            "children": [
+                                                                      {
+                                                                                "name": "推理基础",
+                                                                                "value": "推理流程、性能指标与系统要点。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Base"
+                                                                      },
+                                                                      {
+                                                                                "name": "推理优化技术详解",
+                                                                                "value": "图/算子优化、量化、剪枝。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Optimize"
+                                                                      },
+                                                                      {
+                                                                                "name": "TensorRT-LLM",
+                                                                                "value": "NVIDIA TensorRT-LLM 部署。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Engine"
+                                                                      },
+                                                                      {
+                                                                                "name": "vLLM",
+                                                                                "value": "连续批处理 + PagedAttention 框架。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Engine"
+                                                                      },
+                                                                      {
+                                                                                "name": "KV Cache",
+                                                                                "value": "注意力键值缓存复用。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Cache"
+                                                                      },
+                                                                      {
+                                                                                "name": "PagedAttention",
+                                                                                "value": "分页注意力，长序 KV 管理。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Cache"
+                                                                      },
+                                                                      {
+                                                                                "name": "Speculative Decoding",
+                                                                                "value": "草稿模型 + 验证模型加速。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Speed"
+                                                                      },
+                                                                      {
+                                                                                "name": "FlashAttention",
+                                                                                "value": "IO 感知注意力算子。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Kernel"
+                                                                      }
+                                                            ]
+                                                  },
+                                                  {
+                                                            "name": "强化学习与对齐知识图谱",
+                                                            "value": "RLHF、DPO、RLAIF、PPO 等对齐技术。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "RL",
+                                                            "children": [
+                                                                      {
+                                                                                "name": "强化学习基础",
+                                                                                "value": "MDP、策略、价值函数与 Bellman 方程。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "RL-Base"
+                                                                      },
+                                                                      {
+                                                                                "name": "PPO",
+                                                                                "value": "Clip-Objective 策略梯度，稳定高效。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "PPO"
+                                                                      },
+                                                                      {
+                                                                                "name": "TRPO",
+                                                                                "value": "信赖域约束，确保策略更新安全。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "TRPO"
+                                                                      },
+                                                                      {
+                                                                                "name": "RLHF（对齐）",
+                                                                                "value": "人类偏好反馈 + 奖励模型 + PPO。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Align"
+                                                                      },
+                                                                      {
+                                                                                "name": "DPO（对齐）",
+                                                                                "value": "无需奖励模型的直接偏好优化。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Align"
+                                                                      },
+                                                                      {
+                                                                                "name": "ORPO（对齐）",
+                                                                                "value": "Odds Ratio 约束的偏好优化。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Align"
+                                                                      },
+                                                                      {
+                                                                                "name": "RLAIF（对齐）",
+                                                                                "value": "AI 反馈替代人工偏好。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Align"
+                                                                      },
+                                                                      {
+                                                                                "name": "CoT强化推理",
+                                                                                "value": "链式思维 + 搜索/PRM 的推理强化。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Reason"
+                                                                      },
+                                                                      {
+                                                                                "name": "逻辑推理优化",
+                                                                                "value": "逻辑奖励模型、自博弈、过程评估。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Reason"
+                                                                      }
+                                                            ]
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "应用开发与框架",
+                                        "value": "RAG、Agent、向量数据库、HF 工具链等落地能力。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Application",
+                                        "children": [
+                                                  {
+                                                            "name": "应用开发与框架知识图谱",
+                                                            "value": "向量数据库、LangChain、Agent、RAG。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "App"
+                                                  },
+                                                  {
+                                                            "name": "向量数据库",
+                                                            "value": "Milvus、Pinecone、Weaviate、Qdrant 等产品与优化。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "VectorDB"
+                                                  },
+                                                  {
+                                                            "name": "LangChain框架",
+                                                            "value": "模型、Prompt、Chain、Agent、Callback。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "LangChain"
+                                                  },
+                                                  {
+                                                            "name": "AI智能体",
+                                                            "value": "ReAct、LangGraph、smolagents、CrewAI 等框架。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Agent"
+                                                  },
+                                                  {
+                                                            "name": "RAG系统",
+                                                            "value": "检索、索引、重排、DSPy、RAG-Fusion。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "RAG"
+                                                  },
+                                                  {
+                                                            "name": "Transformers库",
+                                                            "value": "Pipeline、模型加载、Encoder-Decoder 架构。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "HF-Transformers"
+                                                  },
+                                                  {
+                                                            "name": "Datasets库",
+                                                            "value": "数据加载、处理、创建与切分。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "HF-Datasets"
+                                                  },
+                                                  {
+                                                            "name": "Tokenizers库",
+                                                            "value": "分词器训练、编码/解码、批处理。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "HF-Tokenizers"
+                                                  },
+                                                  {
+                                                            "name": "Accelerate库",
+                                                            "value": "分布式训练、混合精度、设备管理。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "HF-Accelerate"
+                                                  },
+                                                  {
+                                                            "name": "HuggingFace Hub",
+                                                            "value": "模型/数据集管理、Spaces 部署。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "HF-Hub"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "评估与安全",
+                                        "value": "模型评测、红队、安全防御与监控。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Evaluation",
+                                        "children": [
+                                                  {
+                                                            "name": "评估与安全知识图谱",
+                                                            "value": "模型评估指标与安全防御体系。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Security",
+                                                            "children": [
+                                                                      {
+                                                                                "name": "模型评估",
+                                                                                "value": "指标体系、评估方法、基准测试与工具链。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Eval"
+                                                                      },
+                                                                      {
+                                                                                "name": "安全防御",
+                                                                                "value": "提示注入、防御策略、监控与红队实践。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Defense"
+                                                                      }
+                                                            ]
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "部署与运维",
+                                        "value": "LLMOps、性能分析、版本与监控体系。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Ops",
+                                        "children": [
+                                                  {
+                                                            "name": "部署与运维知识图谱",
+                                                            "value": "LLMOps、性能分析、版本管理与监控。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "OpsMap",
+                                                            "children": [
+                                                                      {
+                                                                                "name": "LLMOps",
+                                                                                "value": "部署策略、K8s、版本治理、监控与实践案例。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "LLMOps"
+                                                                      },
+                                                                      {
+                                                                                "name": "LLM性能分析",
+                                                                                "value": "PyTorch Profiler、Nsight、优化路线与案例。",
+                                                                                "symbolSize": 34,
+                                                                                "itemStyle": {
+                                                                                          "color": "#06b6d4",
+                                                                                          "borderColor": "#f8fafc",
+                                                                                          "borderWidth": 2
+                                                                                },
+                                                                                "tag": "Perf"
+                                                                      }
+                                                            ]
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "AI基础设施",
+                                        "value": "算力、编译器、国产化适配与性能基准。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Infrastructure",
+                                        "children": [
+                                                  {
+                                                            "name": "AI基础设施知识图谱",
+                                                            "value": "硬件集群、AI编译器、国产化适配。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "InfraMap"
+                                                  },
+                                                  {
+                                                            "name": "硬件与集群",
+                                                            "value": "加速卡、集群拓扑、网络通信与算力规划。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Hardware"
+                                                  },
+                                                  {
+                                                            "name": "AI编译器",
+                                                            "value": "编译原理、前后端技术、主流框架与案例。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Compiler"
+                                                  },
+                                                  {
+                                                            "name": "国产化适配",
+                                                            "value": "昇腾、飞桨及其他国产芯片的迁移与性能基准。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Localization"
+                                                  }
+                                        ]
+                              }
+                    ]
+          },
+          "techPages": {
+                    "神经网络架构": "../tech-docs/架构知识图谱.html",
+                    "MLP": "../tech-docs/MLP.html",
+                    "CNN": "../tech-docs/CNN.html",
+                    "ResNet": "../tech-docs/ResNet.html",
+                    "YOLO": "../tech-docs/YOLO.html",
+                    "RNN": "../tech-docs/RNN.html",
+                    "Transformer": "../tech-docs/Transformer.html",
+                    "LSTM": "../tech-docs/LSTM.html",
+                    "GRU": "../tech-docs/GRU.html",
+                    "BERT": "../tech-docs/BERT.html",
+                    "MoE": "../tech-docs/MoE.html",
+                    "Mamba": "../tech-docs/Mamba.html",
+                    "Miras": "../tech-docs/Miras.html",
+                    "Titans": "../tech-docs/Titans.html",
+                    "RWKV": "../tech-docs/RWKV.html",
+                    "ViT": "../tech-docs/ViT.html",
+                    "CLIP": "../tech-docs/CLIP.html",
+                    "Diffusion": "../tech-docs/Diffusion.html",
+                    "VAE": "../tech-docs/VAE.html",
+                    "GAN": "../tech-docs/GAN.html",
+                    "U-Net": "../tech-docs/U-Net.html",
+                    "GNN": "../tech-docs/GNN.html",
+                    "DQN": "../tech-docs/DQN.html",
+                    "DBN": "../tech-docs/DBN.html",
+                    "LLaMA": "../tech-docs/LLaMA.html",
+                    "ChatGLM": "../tech-docs/ChatGLM.html",
+                    "QWen": "../tech-docs/QWen.html",
+                    "Moneta": "../tech-docs/Moneta.html",
+                    "Yaad": "../tech-docs/Yaad.html",
+                    "Memora": "../tech-docs/Memora.html",
+                    "数据工程知识图谱": "../tech-docs/数据工程知识图谱.html",
+                    "数据收集": "../tech-docs/数据收集.html",
+                    "数据清洗": "../tech-docs/数据清洗.html",
+                    "数据格式转换": "../tech-docs/数据格式转换.html",
+                    "数据增强": "../tech-docs/数据增强.html",
+                    "数据质量评估": "../tech-docs/数据质量评估.html",
+                    "数据集管理": "../tech-docs/数据集管理.html",
+                    "模型微调知识图谱": "../tech-docs/微调知识图谱.html",
+                    "LoRA": "../tech-docs/LoRA.html",
+                    "QLoRA": "../tech-docs/QLoRA.html",
+                    "SFT": "../tech-docs/SFT.html",
+                    "RLHF": "../tech-docs/RLHF.html",
+                    "DPO": "../tech-docs/DPO.html",
+                    "ORPO": "../tech-docs/ORPO.html",
+                    "Axolotl": "../tech-docs/Axolotl.html",
+                    "Unsloth": "../tech-docs/Unsloth.html",
+                    "PEFT": "../tech-docs/PEFT.html",
+                    "模型量化知识图谱": "../tech-docs/量化知识图谱.html",
+                    "量化基础": "../tech-docs/量化基础.html",
+                    "GPTQ": "../tech-docs/GPTQ.html",
+                    "AWQ": "../tech-docs/AWQ.html",
+                    "SmoothQuant": "../tech-docs/SmoothQuant.html",
+                    "PTQ": "../tech-docs/PTQ.html",
+                    "GGUF": "../tech-docs/GGUF.html",
+                    "HQQ": "../tech-docs/HQQ.html",
+                    "ExLlamaV2": "../tech-docs/ExLlamaV2.html",
+                    "高级技术总览": "../tech-docs/高级技术知识图谱.html",
+                    "文本生成技术": "../tech-docs/文本生成知识图谱.html",
+                    "提示工程": "../tech-docs/提示工程.html",
+                    "流式生成": "../tech-docs/流式生成.html",
+                    "解码策略": "../tech-docs/解码策略.html",
+                    "知识图谱增强": "../tech-docs/知识图谱增强.html",
+                    "模型训练知识图谱": "../tech-docs/训练知识图谱.html",
+                    "分布式训练基础": "../tech-docs/分布式训练基础.html",
+                    "数据并行训练": "../tech-docs/数据并行训练.html",
+                    "模型并行训练": "../tech-docs/模型并行训练.html",
+                    "Pipeline并行训练": "../tech-docs/Pipeline并行训练.html",
+                    "ZeRO优化器": "../tech-docs/ZeRO优化器.html",
+                    "梯度累积与检查点": "../tech-docs/梯度累积与检查点.html",
+                    "混合精度训练": "../tech-docs/混合精度训练.html",
+                    "Minimind实践": "../tech-docs/Minimind实践.html",
+                    "模型推理知识图谱": "../tech-docs/推理知识图谱.html",
+                    "推理基础": "../tech-docs/推理基础.html",
+                    "推理优化技术详解": "../tech-docs/推理优化技术详解.html",
+                    "TensorRT-LLM": "../tech-docs/TensorRT-LLM.html",
+                    "vLLM": "../tech-docs/vLLM.html",
+                    "KV Cache": "../tech-docs/KV Cache.html",
+                    "PagedAttention": "../tech-docs/PagedAttention.html",
+                    "Speculative Decoding": "../tech-docs/Speculative Decoding.html",
+                    "FlashAttention": "../tech-docs/FlashAttention.html",
+                    "强化学习与对齐知识图谱": "../tech-docs/强化学习知识图谱.html",
+                    "强化学习基础": "../tech-docs/强化学习基础.html",
+                    "PPO": "../tech-docs/PPO.html",
+                    "TRPO": "../tech-docs/TRPO.html",
+                    "RLHF（对齐）": "../tech-docs/RLHF.html",
+                    "DPO（对齐）": "../tech-docs/DPO.html",
+                    "ORPO（对齐）": "../tech-docs/ORPO.html",
+                    "RLAIF（对齐）": "../tech-docs/RLAIF.html",
+                    "CoT强化推理": "../tech-docs/CoT.html",
+                    "逻辑推理优化": "../tech-docs/逻辑推理优化.html",
+                    "向量数据库": "../tech-docs/向量数据库.html",
+                    "LangChain框架": "../tech-docs/LangChain框架.html",
+                    "AI智能体": "../tech-docs/AI智能体.html",
+                    "RAG系统": "../tech-docs/RAG系统.html",
+                    "Transformers库": "../tech-docs/Pipeline使用.html",
+                    "Datasets库": "../tech-docs/README.html",
+                    "Tokenizers库": "../tech-docs/README.html",
+                    "Accelerate库": "../tech-docs/README.html",
+                    "HuggingFace Hub": "../tech-docs/README.html",
+                    "应用开发与框架知识图谱": "../tech-docs/应用开发知识图谱.html",
+                    "模型评估": "../tech-docs/模型评估.html",
+                    "安全防御": "../tech-docs/安全防御.html",
+                    "评估与安全知识图谱": "../tech-docs/评估与安全知识图谱.html",
+                    "LLMOps": "../tech-docs/LLMOps.html",
+                    "LLM性能分析": "../tech-docs/LLM性能分析.html",
+                    "部署与运维知识图谱": "../tech-docs/部署与运维知识图谱.html",
+                    "硬件与集群": "../tech-docs/硬件与集群.html",
+                    "AI编译器": "../tech-docs/AI编译器.html",
+                    "国产化适配": "../tech-docs/国产化适配.html",
+                    "AI基础设施知识图谱": "../tech-docs/AI基础设施知识图谱.html"
+          },
+          "categoryDescriptions": {
+                    "AI大模型学习": "覆盖从基础理论、数据工程到训练推理、应用开发、安全运营、算力底座的完整学习体系。",
+                    "AI基础理论": "夯实神经网络与深度学习原理，为后续大模型技术打下基础。",
+                    "基础架构": "MLP、CNN、ResNet、YOLO、RNN 等经典网络结构。",
+                    "进阶架构(LLM核心)": "Transformer、LSTM/GRU、BERT、MoE、Mamba、RWKV、ViT、CLIP 等支撑 LLM 的关键架构。",
+                    "高级/生成式架构": "Diffusion、VAE、GAN、U-Net、GNN、DQN、DBN 等高级/生成式结构。",
+                    "模型实例": "LLaMA、ChatGLM、Qwen 等具体大模型实例。",
+                    "MLP": "多层感知机，基础前馈神经网络结构。",
+                    "CNN": "卷积神经网络，擅长处理图像与空间特征。",
+                    "ResNet": "残差网络，通过残差连接解决深层退化问题。",
+                    "YOLO": "单阶段目标检测网络，实现实时检测。",
+                    "RNN": "循环神经网络，处理序列数据的基础结构。",
+                    "Transformer": "自注意力架构，LLM 核心基础。",
+                    "LSTM": "长短期记忆网络，缓解长序列梯度消失。",
+                    "GRU": "门控循环单元，LSTM 的轻量变体。",
+                    "BERT": "双向 Transformer 编码器，预训练基础。",
+                    "MoE": "专家混合模型，通过稀疏路由提升容量。",
+                    "Mamba": "线性时序模块，兼具效率与长依赖建模。",
+                    "Miras": "通用架构设计框架，基于关联记忆与注意力偏差。",
+                    "Titans": "仿生记忆架构，融合短期/长期记忆，突破200万Token上下文。",
+                    "RWKV": "RNN-Transformer 混合架构，兼顾并行与长序列。",
+                    "ViT": "视觉 Transformer，处理图像补丁序列。",
+                    "CLIP": "图文对齐模型，联合嵌入空间。",
+                    "Diffusion": "扩散模型，逐步去噪生成图像。",
+                    "VAE": "变分自编码器，概率生成模型。",
+                    "GAN": "生成对抗网络，生成逼真样本。",
+                    "U-Net": "编码器-解码器结构，常用于分割与生成。",
+                    "GNN": "图神经网络，处理图结构数据。",
+                    "DQN": "深度 Q 网络，强化学习中的价值网络。",
+                    "DBN": "深度置信网络，由多层 RBM 组成。",
+                    "LLaMA": "Meta 开源大模型系列。",
+                    "ChatGLM": "清华智谱中文对话大模型。",
+                    "QWen": "阿里通义千问系列大模型。",
+                    "Moneta": "基于Miras框架的高效关联记忆架构，快速检索和更新。",
+                    "Yaad": "基于Miras框架的优化注意力偏差模型，精确检索。",
+                    "Memora": "基于Miras框架的长期记忆管理模型，长序列建模。",
+                    "数据工程": "数据采集、清洗、增强、质量评估与管理，是大模型效果的关键前置。",
+                    "大模型核心技术": "微调、量化、训练、推理与强化学习等核心算法与工程实现。",
+                    "高级技术专题": "模型融合、MoE、提示工程、流式生成等进阶主题，延展大模型能力边界。",
+                    "高级技术总览": "进阶能力汇总，串联 MoE、模型融合、提示工程等主题。",
+                    "应用开发与框架": "RAG、Agent、向量数据库、HuggingFace 工具链，支撑业务落地。",
+                    "评估与安全": "覆盖模型评测、红队、提示注入、防御策略，确保可靠性。",
+                    "部署与运维": "LLMOps、性能分析、版本与监控体系，保障上线与稳定运维。",
+                    "AI基础设施": "算力、编译器、国产化适配与性能基准，构建底层硬件与系统能力。",
+                    "神经网络架构": "交互式图谱梳理 CNN、LSTM、Transformer 等主流架构及演化。",
+                    "数据工程知识图谱": "数据收集、处理、增强与质量评估的可视化知识图谱。",
+                    "数据收集": "公开数据、抓取、人工标注与合成数据策略。",
+                    "数据清洗": "去重、过滤、标准化与数据验证流程。",
+                    "数据格式转换": "JSONL/Parquet/ShareGPT 等格式互转与模板化处理。",
+                    "数据增强": "回译、同义替换、模板填充、排序等增强技巧。",
+                    "数据质量评估": "准确性、相关性、多样性与一致性度量。",
+                    "数据集管理": "版本化、元数据、权限与生命周期管理。",
+                    "数据处理": "数据清洗、格式转换、增强等流水线能力。",
+                    "质量保证": "数据质量评估、资产管理与可追溯治理。",
+                    "模型微调知识图谱": "LoRA、QLoRA、DPO/ORPO、SFT 等微调技术的关系网络。",
+                    "SFT": "监督微调流程、常见数据形式与实现要点。",
+                    "RLHF": "人类反馈强化学习流程，奖励模型与策略优化。",
+                    "LoRA": "低秩适配微调，冻结主干仅训练插入层。",
+                    "QLoRA": "4bit 量化与低秩适配结合，节省显存。",
+                    "DPO": "直接偏好优化，无需奖励模型的对齐方案。",
+                    "ORPO": "Odds Ratio 偏好优化，重建对数似然与偏好约束。",
+                    "Axolotl": "多模态/多框架适配的微调工具链。",
+                    "Unsloth": "专注高效/轻量微调的优化框架。",
+                    "PEFT": "参数高效微调家族，包含 LoRA、Prefix 等方法。",
+                    "模型量化知识图谱": "GPTQ、AWQ、GGUF、INT4/INT8 等量化方案及部署路线。",
+                    "量化基础": "PTQ/QAT、位宽选择、误差度量与常见工具链。",
+                    "GPTQ": "梯度/Hessian 感知的后训练 4bit 权重量化方法。",
+                    "AWQ": "Activation-aware 方案，重权重重要性与激活裁剪。",
+                    "SmoothQuant": "缩放激活/权重，便于在 TensorRT-LLM 中部署 INT8/INT4。",
+                    "PTQ": "不重新训练的离线量化流程，专注校准与 scale 选择。",
+                    "GGUF": "llama.cpp 使用的统一二进制格式，兼容多种量化位宽。",
+                    "HQQ": "半二次优化驱动的极速零数据量化。",
+                    "ExLlamaV2": "针对 INT4/NF4 优化的高吞吐推理引擎。",
+                    "模型训练知识图谱": "分布式并行、ZeRO、混合精度、梯度检查点等训练技巧。",
+                    "分布式训练基础": "数据/模型/管道并行的基本概念与通信模式。",
+                    "数据并行训练": "AllReduce、梯度同步、Gradient Sharding 等实践。",
+                    "模型并行训练": "张量并行、专家并行、序列并行等拆分方式。",
+                    "Pipeline并行训练": "流水线分段、调度、气泡抑制与 GPipe/DeepSpeed。",
+                    "ZeRO优化器": "ZeRO-1/2/3 分阶段状态分片，显存优化。",
+                    "梯度累积与检查点": "小显存场景下的累积策略与 recompute。",
+                    "混合精度训练": "FP16/BF16、Grad Scaling、Master Weights。",
+                    "Minimind实践": "从零复现 GPT 训练项目的工程经验。",
+                    "模型推理知识图谱": "KV Cache、FlashAttention、Speculative Decoding、批处理策略。",
+                    "推理基础": "推理流程、吞吐/时延指标与部署要点。",
+                    "推理优化技术详解": "算子/图优化、量化、剪枝、内存管理。",
+                    "TensorRT-LLM": "NVIDIA TensorRT-LLM 引擎、插件与优化案例。",
+                    "vLLM": "高吞吐推理框架，PagedAttention + Continuous Batching。",
+                    "KV Cache": "键值缓存结构、共享策略与显存回收。",
+                    "PagedAttention": "分页注意力，解决长序列 KV 管理。",
+                    "Speculative Decoding": "草稿模型 + 验证模型的加速推理。",
+                    "FlashAttention": "IO 感知注意力算子，降低显存带宽压力。",
+                    "强化学习与对齐知识图谱": "RLHF、DPO、RLAIF、PPO/TRPO 等强化学习与对齐技术。",
+                    "强化学习基础": "MDP、策略、价值函数与 Bellman 方程等基础概念。",
+                    "PPO": "Clip-Objective 的策略梯度，兼顾稳定性与样本效率。",
+                    "TRPO": "通过约束 KL 距离实现的信赖域策略优化。",
+                    "RLHF（对齐）": "人类偏好反馈 + PPO 的对齐流程。",
+                    "DPO（对齐）": "直接最小化偏好对数比，无需奖励模型。",
+                    "ORPO（对齐）": "Odds Ratio 约束，统一最大似然与偏好优化。",
+                    "RLAIF（对齐）": "使用 AI 反馈替代人工标注的对齐方法。",
+                    "CoT强化推理": "组合思维链与搜索/价值函数的推理优化。",
+                    "逻辑推理优化": "结构化推理、PRM、Self-Play 等推理强化策略。",
+                    "文本生成技术": "解码策略、提示工程、流式生成等专门知识图谱。",
+                    "提示工程": "提示设计框架、指令模板、思维链等策略。",
+                    "流式生成": "逐 token 输出、推流架构与体验优化。",
+                    "解码策略": "Greedy、Beam、Sampling、Top-k/p、温度等策略比较。",
+                    "知识图谱增强": "RAG、知识注入、检索增强等知识增强技术。",
+                    "向量数据库": "Milvus、Pinecone、Weaviate、Qdrant 等向量检索与优化。",
+                    "LangChain框架": "模型、Prompt、Chain、Agent、Callback 等组件详解。",
+                    "AI智能体": "ReAct、工具调用、LangGraph、smolagents、CrewAI 等框架。",
+                    "RAG系统": "检索、索引、重排、DSPy 等 RAG 优化链路。",
+                    "Transformers库": "Pipeline、模型加载、Encoder-Decoder 架构与推理示例。",
+                    "Datasets库": "数据加载、处理、创建与切分。",
+                    "Tokenizers库": "分词器训练、编码/解码、批处理与优化。",
+                    "Accelerate库": "分布式训练、混合精度、设备管理。",
+                    "HuggingFace Hub": "模型/数据集管理与 Spaces 部署。",
+                    "应用开发与框架知识图谱": "向量数据库、LangChain、Agent、RAG 的可视化导航。",
+                    "模型评估": "指标体系、评估方法、基准测试与工具链。",
+                    "安全防御": "提示注入、防御策略、监控与红队实践。",
+                    "评估与安全知识图谱": "模型评测与安全防御体系的交互式图谱。",
+                    "LLMOps": "部署策略、K8s、版本治理、监控与实践案例。",
+                    "LLM性能分析": "PyTorch Profiler、Nsight、优化路线与案例。",
+                    "部署与运维知识图谱": "LLMOps、LLM性能分析、知识图谱总览。",
+                    "硬件与集群": "加速卡、集群拓扑、网络通信与算力规划。",
+                    "AI编译器": "编译原理、前后端技术、主流框架与案例。",
+                    "国产化适配": "昇腾、飞桨及其他国产芯片的迁移方案与性能基准。",
+                    "AI基础设施知识图谱": "硬件集群、AI编译器、国产化适配的整合视图。"
+          },
+          "force": {
+                    "repulsion": 1800,
+                    "gravity": 0.15,
+                    "edgeLength": [
+                              80,
+                              240
+                    ],
+                    "friction": 0.2
+          }
+};
+        
+        // 初始化页面
+        initKnowledgeGraph(pageConfig);
+        
+        // 窗口大小改变时重新调整
+        window.addEventListener('resize', function() {
+            if (typeof chart !== 'undefined' && chart) {
+                chart.resize();
+            }
+        });
+    </script>
+</body>
+</html>

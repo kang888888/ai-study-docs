@@ -1,0 +1,129 @@
+{
+  "title": "HuggingFace Datasets",
+  "subtitle": "高效的数据加载、处理、创建与切分库",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "HuggingFace Datasets 是一个用于高效加载、处理和共享数据集的Python库。它提供了统一的数据接口，支持多种数据格式，内置缓存机制，可以大幅提升数据加载和处理效率。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "统一接口：支持多种数据格式（CSV、JSON、Parquet、Arrow等）",
+            "高效加载：基于Apache Arrow，内存占用小，加载速度快",
+            "缓存机制：自动缓存处理结果，避免重复计算",
+            "流式处理：支持大数据集的流式加载，无需全部加载到内存",
+            "数据切分：内置train/val/test切分功能",
+            "版本管理：支持数据集版本化和版本回退",
+            "社区共享：可以轻松上传和分享数据集到HuggingFace Hub"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "Apache Arrow、内存映射、流式处理、数据缓存、多进程加载、数据转换管道"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "大规模数据集加载：处理GB到TB级别的数据集\n                    数据预处理：清洗、转换、增强等操作\n                    模型训练：为训练流程提供高效的数据加载\n                    数据探索：快速查看和分析数据集\n                    数据共享：在HuggingFace Hub上分享数据集"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Datasets架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Datasets架构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Datasets流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Datasets流程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "加载数据集",
+          "language": "python",
+          "code": "from datasets import load_dataset\n\n# 加载HuggingFace Hub上的数据集\ndataset = load_dataset(\"imdb\")\nprint(dataset)\n# DatasetDict({\n#     train: Dataset({\n#         features: ['text', 'label'],\n#         num_rows: 25000\n#     })\n#     test: Dataset({\n#         features: ['text', 'label'],\n#         num_rows: 25000\n#     })\n# })\n\n# 加载本地数据集\nlocal_dataset = load_dataset(\"json\", data_files=\"data.json\")\n\n# 加载CSV文件\ncsv_dataset = load_dataset(\"csv\", data_files=\"data.csv\")"
+        },
+        {
+          "type": "code-box",
+          "title": "数据处理",
+          "language": "python",
+          "code": "from datasets import load_dataset\n\n# 加载数据集\ndataset = load_dataset(\"squad\")\n\n# 数据过滤\ndefiltered = dataset.filter(lambda x: len(x[\"question\"]) > 10)\n\n# 数据映射（转换）\ndef add_length(example):\n    example[\"question_length\"] = len(example[\"question\"])\n    return example\n\nmapped = dataset.map(add_length)\n\n# 数据重命名\nrenamed = dataset.rename_column(\"question\", \"query\")\n\n# 数据选择列\nselected = dataset.select_columns([\"question\", \"context\"])"
+        },
+        {
+          "type": "code-box",
+          "title": "数据切分",
+          "language": "python",
+          "code": "from datasets import load_dataset\n\n# 加载数据集\ndataset = load_dataset(\"imdb\", split=\"train\")\n\n# 切分为训练集和验证集\nsplit_dataset = dataset.train_test_split(test_size=0.2, seed=42)\nprint(split_dataset)\n# DatasetDict({\n#     train: Dataset(...),\n#     test: Dataset(...)\n# })\n\n# 多折交叉验证\nfrom datasets import Dataset\n\nk_folds = dataset.train_test_split(test_size=0.2, seed=42)\n# 可以进一步切分为多折"
+        },
+        {
+          "type": "code-box",
+          "title": "流式处理大数据集",
+          "language": "python",
+          "code": "from datasets import load_dataset\n\n# 流式加载大数据集（不全部加载到内存）\ndataset = load_dataset(\"c4\", \"en\", streaming=True, split=\"train\")\n\n# 迭代处理\nfor example in dataset:\n    # 处理每个样本\n    print(example[\"text\"][:100])\n    break  # 只处理第一个样本\n\n# 流式过滤和映射\nfiltered = dataset.filter(lambda x: len(x[\"text\"]) > 1000)\nmapped = filtered.map(lambda x: {\"length\": len(x[\"text\"])})"
+        },
+        {
+          "type": "code-box",
+          "title": "创建自定义数据集",
+          "language": "python",
+          "code": "from datasets import Dataset\nimport pandas as pd\n\n# 从字典创建\ndata = {\n    \"text\": [\"Hello\", \"World\", \"AI\"],\n    \"label\": [0, 1, 0]\n}\ndataset = Dataset.from_dict(data)\n\n# 从Pandas DataFrame创建\ndf = pd.DataFrame({\"text\": [\"Hello\"], \"label\": [0]})\ndataset = Dataset.from_pandas(df)\n\n# 从生成器创建\ndef data_generator():\n    for i in range(100):\n        yield {\"id\": i, \"text\": f\"Sample {i}\"}\n\ndataset = Dataset.from_generator(data_generator)\n\n# 保存数据集\ndataset.save_to_disk(\"./my_dataset\")\n\n# 加载保存的数据集\nloaded = Dataset.load_from_disk(\"./my_dataset\")"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DQN (Deep Q-Network) 深度Q网络 - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DQN (Deep Q-Network) 深度Q网络</h1>
+            <p>结合深度学习与强化学习的革命性算法</p>
+        </div>
+        <div class="content">
+            
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>DeepMind提出的将深度学习与强化学习结合的算法。使用深度神经网络近似Q函数（状态-动作价值函数），通过经验回放和目标网络稳定训练。</p>
+                </div>
+            </div>
+
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>Q函数近似：用神经网络拟合Q(s, a)，解决状态空间过大问题</li>
+                    <li>经验回放：存储历史经验，打破数据相关性</li>
+                    <li>目标网络：固定目标Q值，稳定训练过程</li>
+                    <li>ε-贪婪策略：平衡探索与利用</li>
+                    <li>端到端学习：直接从像素输入学习策略</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box">
+                    <p><strong>Q-Learning、经验回放缓冲区（Replay Buffer）、目标网络（Target Network）、TD误差</strong></p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box">
+                    <p>游戏AI（Atari游戏）、机器人控制、资源调度、自动驾驶决策</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 架构图解</h2>
+                <div class="diagram-gallery">
+                    <div class="diagram-item">
+                        <img src="DQN架构图.png" alt="DQN架构图" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">DQN架构图</div>
+                    </div>
+                    <div class="diagram-item">
+                        <img src="DQN训练过程.png" alt="DQN训练过程" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">DQN训练过程</div>
+                    </div>
+                    <div class="diagram-item">
+                        <img src="Q值学习过程.png" alt="Q值学习过程" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">Q值学习过程</div>
+                    </div>
+                    <div class="diagram-item">
+                        <img src="DQN变体对比.png" alt="DQN变体对比" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">DQN变体对比</div>
+                    </div>
+=0                    <div class="diagram-item">
+                        <img src="DQN模型结构.svg" alt="DQN模型结构" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">两种输入输出结构的DQN模型</div>
+                    </div>
+                    <div class="diagram-item">
+                        <img src="DQN应用示例.svg" alt="DQN应用示例" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">DQN的实际应用示例</div>
+                    </div>
+                    <div class="diagram-item">
+                        <img src="DQN高估问题.svg" alt="DQN高估问题" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">DQN的"高估"问题</div>
+                    </div>
+                    <div class="diagram-item">
+                        <img src="价值函数关系.svg" alt="价值函数关系" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">价值函数Qπ与Vπ的关系</div>
+                    </div>
+                    <div class="diagram-item">
+                        <img src="Ɛ-贪婪策略.svg" alt="Ɛ-贪婪策略" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">Ɛ-贪婪策略下使用动态的Ɛ值</div>
+                    </div>
+                    <div class="diagram-item">
+                        <img src="TD目标与误差.svg" alt="TD目标与误差" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">TD目标与TD误差的关系</div>
+                    </div>
+                    <div class="diagram-item">
+                        <img src="TD方法对比.svg" alt="TD方法对比" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">TD(0)、多步TD与蒙特卡洛（MC）的关系</div>
+                    </div>
+                    <div class="diagram-item">
+                        <img src="蒙特卡洛与TD对比.svg" alt="蒙特卡洛与TD对比" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">蒙特卡洛方法与TD方法的特性</div>
+                    </div>
+                    <div class="diagram-item">
+                        <img src="回报累计奖励.svg" alt="回报累计奖励" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">回报（累计奖励）</div>
+                    </div>
+                    <div class="diagram-item">
+                        <img src="反向迭代计算回报.svg" alt="反向迭代计算回报" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">反向迭代并计算回报G</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>Q-Learning 更新规则</h3>
+                    <div class="math-formula">
+                        <p>Q值的更新公式：</p>
+                        <p>$$Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha[r_{t+1} + \gamma \max_{a} Q(s_{t+1}, a) - Q(s_t, a_t)]$$</p>
+                        <p>其中：</p>
+                        <ul style="list-style: none; padding-left: 20px;">
+                            <li>$\alpha$ 是学习率</li>
+                            <li>$\gamma$ 是折扣因子</li>
+                            <li>$r_{t+1}$ 是即时奖励</li>
+                            <li>$s_t, a_t$ 是当前状态和动作</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>DQN 损失函数</h3>
+                    <div class="math-formula">
+                        <p>使用神经网络近似Q函数，损失函数为：</p>
+                        <p>$$L(\theta) = \mathbb{E}[(r + \gamma \max_{a'} Q(s', a'; \theta^-) - Q(s, a; \theta))^2]$$</p>
+                        <p>其中 $\theta$ 是主网络参数，$\theta^-$ 是目标网络参数</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>ε-贪婪策略</h3>
+                    <div class="math-formula">
+                        <p>平衡探索与利用：</p>
+                        <p>$$a_t = \begin{cases}
+                        \text{随机动作} & \text{以概率 } \epsilon \\
+                        \arg\max_a Q(s_t, a) & \text{以概率 } 1-\epsilon
+                        \end{cases}$$</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 PyTorch 实现 DQN</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.nn.functional as F
+import numpy as np
+from collections import deque
+import random
+
+class DQN(nn.Module):
+    """Deep Q-Network 模型"""
+    def __init__(self, state_size, action_size, hidden_size=128):
+        super(DQN, self).__init__()
+        
+        self.fc1 = nn.Linear(state_size, hidden_size)
+        self.fc2 = nn.Linear(hidden_size, hidden_size)
+        self.fc3 = nn.Linear(hidden_size, action_size)
+    
+    def forward(self, x):
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        return self.fc3(x)
+
+class ReplayBuffer:
+    """经验回放缓冲区"""
+    def __init__(self, capacity=10000):
+        self.buffer = deque(maxlen=capacity)
+    
+    def push(self, state, action, reward, next_state, done):
+        self.buffer.append((state, action, reward, next_state, done))
+    
+    def sample(self, batch_size):
+        batch = random.sample(self.buffer, batch_size)
+        states, actions, rewards, next_states, dones = zip(*batch)
+        
+        return (np.array(states), np.array(actions), np.array(rewards),
+                np.array(next_states), np.array(dones))
+    
+    def __len__(self):
+        return len(self.buffer)
+
+class DQNAgent:
+    """DQN 智能体"""
+    def __init__(self, state_size, action_size, lr=0.001, gamma=0.99,
+                 epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995,
+                 memory_size=10000, batch_size=64, target_update=100):
+        self.state_size = state_size
+        self.action_size = action_size
+        self.gamma = gamma
+        self.epsilon = epsilon
+        self.epsilon_min = epsilon_min
+        self.epsilon_decay = epsilon_decay
+        self.batch_size = batch_size
+        self.target_update = target_update
+        self.update_counter = 0
+        
+        # 主网络和目标网络
+        self.q_network = DQN(state_size, action_size)
+        self.target_network = DQN(state_size, action_size)
+        self.target_network.load_state_dict(self.q_network.state_dict())
+        
+        self.optimizer = optim.Adam(self.q_network.parameters(), lr=lr)
+        self.memory = ReplayBuffer(memory_size)
+    
+    def remember(self, state, action, reward, next_state, done):
+        """存储经验"""
+        self.memory.push(state, action, reward, next_state, done)
+    
+    def act(self, state, training=True):
+        """选择动作（ε-贪婪策略）"""
+        if training and np.random.random() <= self.epsilon:
+            return random.randrange(self.action_size)
+        
+        state = torch.FloatTensor(state).unsqueeze(0)
+        q_values = self.q_network(state)
+        return q_values.argmax().item()
+    
+    def replay(self):
+        """经验回放训练"""
+        if len(self.memory) < self.batch_size:
+            return
+        
+        # 从缓冲区采样
+        states, actions, rewards, next_states, dones = self.memory.sample(self.batch_size)
+        
+        states = torch.FloatTensor(states)
+        actions = torch.LongTensor(actions)
+        rewards = torch.FloatTensor(rewards)
+        next_states = torch.FloatTensor(next_states)
+        dones = torch.BoolTensor(dones)
+        
+        # 当前Q值
+        current_q_values = self.q_network(states).gather(1, actions.unsqueeze(1))
+        
+        # 目标Q值
+        with torch.no_grad():
+            next_q_values = self.target_network(next_states).max(1)[0]
+            target_q_values = rewards + (self.gamma * next_q_values * ~dones)
+        
+        # 计算损失
+        loss = F.mse_loss(current_q_values.squeeze(), target_q_values)
+        
+        # 优化
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+        
+        # 更新epsilon
+        if self.epsilon > self.epsilon_min:
+            self.epsilon *= self.epsilon_decay
+        
+        # 更新目标网络
+        self.update_counter += 1
+        if self.update_counter % self.target_update == 0:
+            self.target_network.load_state_dict(self.q_network.state_dict())
+        
+        return loss.item()
+
+# 使用示例
+if __name__ == "__main__":
+    # 创建智能体
+    agent = DQNAgent(state_size=4, action_size=2)
+    
+    # 模拟训练过程
+    for episode in range(100):
+        state = np.random.randn(4)  # 初始状态
+        
+        for step in range(200):
+            # 选择动作
+            action = agent.act(state)
+            
+            # 执行动作，获得奖励和下一状态（这里用随机值模拟）
+            next_state = np.random.randn(4)
+            reward = np.random.randn()
+            done = step == 199
+            
+            # 存储经验
+            agent.remember(state, action, reward, next_state, done)
+            
+            # 训练
+            if len(agent.memory) > agent.batch_size:
+                loss = agent.replay()
+                if step % 10 == 0:
+                    print(f"Episode {episode}, Step {step}, Loss: {loss:.4f}")
+            
+            state = next_state
+            
+            if done:
+                break</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 图片放大弹窗 -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal()">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+            
+            // 阻止事件冒泡，避免点击图片时关闭弹窗
+            modalImg.onclick = function(e) {
+                e.stopPropagation();
+            };
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+        }
+
+        // 按ESC键关闭弹窗
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeImageModal();
+            }
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

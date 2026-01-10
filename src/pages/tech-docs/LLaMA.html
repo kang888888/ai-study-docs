@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLaMA (Large Language Model Meta AI) - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>LLaMA (Large Language Model Meta AI)</h1>
+            <p>Meta开源的大语言模型系列</p>
+        </div>
+        <div class="content">
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>Meta开源的大语言模型系列，包含7B到70B多个规模。采用RMSNorm、SwiGLU、RoPE等现代优化技术，性能优异且完全开源可商用，成为开源社区的基座模型。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>完全开源：可商用，衍生出大量微调版本（Alpaca、Vicuna等）</li>
+                    <li>RMSNorm：替代LayerNorm，计算更高效</li>
+                    <li>SwiGLU激活：替代ReLU，性能更好</li>
+                    <li>RoPE位置编码：旋转位置编码，支持长上下文扩展</li>
+                    <li>GQA优化：LLaMA-2/3使用分组查询注意力，降低KV Cache</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box"><p><strong>RMSNorm、SwiGLU、RoPE、Grouped-Query Attention（GQA）</strong></p></div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box"><p>通用对话、代码生成、指令遵循、作为基座模型微调</p></div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>RMSNorm（Root Mean Square Layer Normalization）</h3>
+                    <div class="math-formula">
+                        <p>RMSNorm 公式：</p>
+                        <p>$$\text{RMSNorm}(x) = \frac{x}{\text{RMS}(x)} \odot g$$</p>
+                        <p>$$\text{RMS}(x) = \sqrt{\frac{1}{n}\sum_{i=1}^{n} x_i^2}$$</p>
+                        <p>相比 LayerNorm，RMSNorm 不需要计算均值，计算更高效</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>SwiGLU 激活函数</h3>
+                    <div class="math-formula">
+                        <p>SwiGLU 公式：</p>
+                        <p>$$\text{SwiGLU}(x) = \text{Swish}(xW + b) \odot (xV + c)$$</p>
+                        <p>$$\text{Swish}(x) = x \cdot \sigma(x)$$</p>
+                        <p>其中 $\sigma$ 是 sigmoid 函数，$\odot$ 是逐元素相乘</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>RoPE（旋转位置编码）</h3>
+                    <div class="math-formula">
+                        <p>旋转位置编码：</p>
+                        <p>$$R_{\Theta, m}^d = \begin{pmatrix}
+                        \cos m\theta_1 & -\sin m\theta_1 & 0 & 0 & \cdots \\
+                        \sin m\theta_1 & \cos m\theta_1 & 0 & 0 & \cdots \\
+                        0 & 0 & \cos m\theta_2 & -\sin m\theta_2 & \cdots \\
+                        0 & 0 & \sin m\theta_2 & \cos m\theta_2 & \cdots \\
+                        \vdots & \vdots & \vdots & \vdots & \ddots
+                        \end{pmatrix}$$</p>
+                        <p>其中 $\theta_i = 10000^{-2(i-1)/d}$，$m$ 是位置索引</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 Transformers 库加载 LLaMA</h3>
+                    <pre><code class="language-python">from transformers import LlamaForCausalLM, LlamaTokenizer
+import torch
+
+# 加载模型和分词器
+model_name = "meta-llama/Llama-2-7b-hf"  # 需要HuggingFace访问权限
+tokenizer = LlamaTokenizer.from_pretrained(model_name)
+model = LlamaForCausalLM.from_pretrained(model_name)
+
+# 输入文本
+text = "The future of AI is"
+
+# 分词
+inputs = tokenizer(text, return_tensors="pt")
+
+# 生成
+with torch.no_grad():
+    outputs = model.generate(
+        **inputs,
+        max_length=100,
+        temperature=0.7,
+        do_sample=True
+    )
+
+# 解码
+generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+print(generated_text)</code></pre>
+                </div>
+                <div class="code-box">
+                    <h3>手动实现 RMSNorm 和 SwiGLU</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class RMSNorm(nn.Module):
+    """RMSNorm 实现"""
+    def __init__(self, dim, eps=1e-8):
+        super(RMSNorm, self).__init__()
+        self.eps = eps
+        self.weight = nn.Parameter(torch.ones(dim))
+    
+    def forward(self, x):
+        # 计算 RMS
+        rms = torch.sqrt(torch.mean(x ** 2, dim=-1, keepdim=True) + self.eps)
+        # 归一化并缩放
+        return x / rms * self.weight
+
+class SwiGLU(nn.Module):
+    """SwiGLU 激活函数"""
+    def __init__(self, dim):
+        super(SwiGLU, self).__init__()
+        self.gate_proj = nn.Linear(dim, dim)
+        self.up_proj = nn.Linear(dim, dim)
+    
+    def forward(self, x):
+        gate = F.silu(self.gate_proj(x))  # Swish = SiLU
+        up = self.up_proj(x)
+        return gate * up
+
+class RoPE(nn.Module):
+    """旋转位置编码（简化版）"""
+    def __init__(self, dim, max_seq_len=2048, base=10000):
+        super(RoPE, self).__init__()
+        inv_freq = 1.0 / (base ** (torch.arange(0, dim, 2).float() / dim))
+        self.register_buffer('inv_freq', inv_freq)
+        self.max_seq_len = max_seq_len
+    
+    def forward(self, x, seq_len=None):
+        if seq_len is None:
+            seq_len = x.shape[-2]
+        
+        t = torch.arange(seq_len, device=x.device).type_as(self.inv_freq)
+        freqs = torch.einsum('i,j->ij', t, self.inv_freq)
+        emb = torch.cat((freqs, freqs), dim=-1)
+        
+        return emb
+
+# 使用示例
+if __name__ == "__main__":
+    # RMSNorm
+    rms_norm = RMSNorm(dim=768)
+    x = torch.randn(2, 10, 768)
+    out = rms_norm(x)
+    print(f"RMSNorm 输出形状: {out.shape}")
+    
+    # SwiGLU
+    swiglu = SwiGLU(dim=768)
+    x = torch.randn(2, 10, 768)
+    out = swiglu(x)
+    print(f"SwiGLU 输出形状: {out.shape}")
+    
+    # RoPE
+    rope = RoPE(dim=768)
+    pos_emb = rope(x)
+    print(f"RoPE 位置编码形状: {pos_emb.shape}")</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

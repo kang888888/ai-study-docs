@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大模型训练技术知识图谱</title>
+    
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+    
+    <!-- 页面特定样式 -->
+    <style>
+        body {
+            background: radial-gradient(circle at top, var(--bg-primary) 0%, #030712 60%, #010409 100%);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- 知识图谱容器 -->
+        <div id="chart"></div>
+        
+        <!-- 标题栏 -->
+        <div class="title-bar">
+            <h1>大模型训练技术知识图谱</h1>
+            <p>从分布式并行到内存优化，再到实践项目，全面掌握大模型训练技术。</p>
+            <div class="legend">
+                <span><i style="background:#fbbf24"></i>训练基础</span>
+            <span><i style="background:#38bdf8"></i>并行技术</span>
+            <span><i style="background:#22c55e"></i>优化技术</span>
+            <span><i style="background:#a855f7"></i>实践项目</span>
+            </div>
+        </div>
+        
+        <!-- 控制栏 -->
+        <div class="control-bar">
+            <button class="control-btn" onclick="resetView()">重新布局</button>
+            <button class="control-btn" onclick="toggleAnimation()">暂停/继续动画</button>
+        </div>
+        
+        <!-- 侧边栏 -->
+        <div class="sidebar" id="sidebar">
+            <button class="close-btn" onclick="closeSidebar()">×</button>
+            <div class="sidebar-header">
+                <h2 class="sidebar-title" id="sidebar-title">大模型训练技术知识图谱</h2>
+                <div class="sidebar-tag" id="sidebar-tag">指南</div>
+            </div>
+            <div class="sidebar-body" id="sidebar-content">
+                <div class="sidebar-placeholder">
+                    <p>👇 在左侧图谱中选择一个节点即可查看详情。</p>
+                    <p>• 点击分类节点查看概览说明<br>• 点击具体技术节点，会在此侧边栏加载对应的 HTML 讲解页</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 公共脚本 -->
+    <script src="../common/knowledge-graph.js"></script>
+    
+    <!-- 页面特定数据 -->
+    <script>
+        // 页面配置
+        const pageConfig = {
+          "containerId": "chart",
+          "data": {
+                    "name": "大模型训练技术地图",
+                    "value": "根节点",
+                    "symbolSize": 70,
+                    "itemStyle": {
+                              "color": "#06b6d4",
+                              "borderColor": "#f8fafc",
+                              "borderWidth": 4
+                    },
+                    "children": [
+                              {
+                                        "name": "训练基础",
+                                        "value": "理解分布式训练的核心概念和方法。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Foundation",
+                                        "children": [
+                                                  {
+                                                            "name": "分布式训练基础",
+                                                            "value": "分布式训练的核心概念、基本方法和关键技术。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Distributed"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "并行训练技术",
+                                        "value": "数据并行、模型并行、Pipeline并行等并行训练技术。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Parallelism",
+                                        "children": [
+                                                  {
+                                                            "name": "数据并行训练",
+                                                            "value": "每个设备保存完整模型副本，处理不同数据批次。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Data Parallel"
+                                                  },
+                                                  {
+                                                            "name": "模型并行训练",
+                                                            "value": "将模型拆分到不同设备，突破单卡内存限制。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Model Parallel"
+                                                  },
+                                                  {
+                                                            "name": "Pipeline并行训练",
+                                                            "value": "按层拆分模型，形成流水线提高设备利用率。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Pipeline"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "优化技术",
+                                        "value": "ZeRO、混合精度、梯度累积等训练优化技术。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Optimization",
+                                        "children": [
+                                                  {
+                                                            "name": "ZeRO优化器",
+                                                            "value": "优化器状态、梯度、参数分片，最大程度节省内存。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "ZeRO"
+                                                  },
+                                                  {
+                                                            "name": "混合精度训练",
+                                                            "value": "使用FP16/BF16加速训练，减少内存占用。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Mixed Precision"
+                                                  },
+                                                  {
+                                                            "name": "梯度累积与检查点",
+                                                            "value": "梯度累积和检查点技术，优化训练过程。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Gradient"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "实践项目",
+                                        "value": "从零开始训练GPT模型的实践项目。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Practice",
+                                        "children": [
+                                                  {
+                                                            "name": "Minimind实践",
+                                                            "value": "从零开始训练2600万参数GPT模型的完整实践。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Minimind"
+                                                  }
+                                        ]
+                              }
+                    ]
+          },
+          "techPages": {
+                    "分布式训练基础": "../tech-docs/分布式训练基础.html",
+                    "数据并行训练": "../tech-docs/数据并行训练.html",
+                    "模型并行训练": "../tech-docs/模型并行训练.html",
+                    "Pipeline并行训练": "../tech-docs/Pipeline并行训练.html",
+                    "ZeRO优化器": "../tech-docs/ZeRO优化器.html",
+                    "混合精度训练": "../tech-docs/混合精度训练.html",
+                    "梯度累积与检查点": "../tech-docs/梯度累积与检查点.html",
+                    "Minimind实践": "../tech-docs/Minimind实践.html"
+          },
+          "categoryDescriptions": {
+                    "训练基础": "理解分布式训练的核心概念，包括数据并行、模型并行、混合并行等基本方法，为深入学习打下基础。",
+                    "并行训练技术": "数据并行、模型并行、Pipeline并行等并行训练技术，突破单卡内存限制，实现大模型训练。",
+                    "优化技术": "ZeRO优化器、混合精度训练、梯度累积等优化技术，提升训练效率，降低内存占用。",
+                    "实践项目": "从零开始训练GPT模型的实践项目，将理论知识转化为实际能力。"
+          },
+          "force": {
+                    "repulsion": 1800,
+                    "gravity": 0.15,
+                    "edgeLength": [
+                              80,
+                              240
+                    ],
+                    "friction": 0.2
+          }
+};
+        
+        // 初始化页面
+        initKnowledgeGraph(pageConfig);
+        
+        // 窗口大小改变时重新调整
+        window.addEventListener('resize', function() {
+            if (typeof chart !== 'undefined' && chart) {
+                chart.resize();
+            }
+        });
+    </script>
+</body>
+</html>

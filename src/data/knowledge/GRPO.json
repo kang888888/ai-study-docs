@@ -1,0 +1,54 @@
+{
+  "title": "GRPO (Group Relative Policy Optimization)",
+  "subtitle": "组相对策略优化",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "GRPO (Group Relative Policy Optimization) 是 DeepSeek 在 2026 年对 R1 论文进行重大更新后展示的强化学习新范式。该技术去除了传统的 Critic 模型，通过组内相对评分来实现偏好对齐，极大节省显存。GRPO 支持模型在推理过程中进行\"自我反思\"和\"步骤纠错\"，这种自我演进能力通过纯 RL 激发。该技术还引入了中间阶段模型 (Dev1-Dev3) 体系，用于研究不同训练阶段对性能的影响。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "无评论家架构：去除了传统的 Critic 模型，通过组内相对评分实现偏好对齐",
+            "显存节省：极大节省显存占用，提升训练效率",
+            "自我演进：模型学习在推理过程中进行\"自我反思\"和\"步骤纠错\"",
+            "纯 RL 激发：自我演进能力通过纯强化学习激发",
+            "中间阶段模型：引入 Dev1-Dev3 过渡模型体系，研究不同训练阶段的影响"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "组内相对评分、无评论家架构、偏好对齐、自我反思机制、步骤纠错、中间阶段模型体系、纯强化学习训练"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "模型对齐训练、推理增强、需要自我纠错能力的场景、显存受限的训练环境、强化学习优化、模型自我演进研究"
+        }
+      ]
+    }
+  ]
+}

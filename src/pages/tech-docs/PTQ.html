@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大模型量化基石：PTQ/INT8/INT4 原理</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>大模型量化基础：PTQ / INT8 / INT4</h1>
+        <p class="tagline">理解权重量化、激活量化与缩放校准，是掌握 GPTQ、AWQ、GGUF 等高级方案的前提。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card">
+                <h3>动机</h3>
+                <p>将 FP16/FP32 权重映射到 INT8/INT4 以减少显存、提升推理吞吐。</p>
+            </div>
+            <div class="meta-card">
+                <h3>关键概念</h3>
+                <p>量化位宽、对称/非对称、逐张量 vs 逐通道、缩放因子、零点。</p>
+            </div>
+            <div class="meta-card">
+                <h3>适用对象</h3>
+                <p>推理部署、边缘设备、GPTQ/AWQ 等后训练量化算法。</p>
+            </div>
+            <div class="meta-card">
+                <h3>挑战</h3>
+                <p>保留精度、控制噪声累积、处理 outlier 通道、保持注意力稳定。</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🧱 核心步骤</h2>
+            <ul>
+                <li><strong>统计区间：</strong>通过校准数据估计每个权重/激活张量的 min-max 或标准差。</li>
+                <li><strong>量化映射：</strong>根据位宽 b 计算缩放 $s$ 与零点 $z$，将浮点值映射到整数。</li>
+                <li><strong>反量化：</strong>推理时执行整数矩阵乘法，再乘以 $s$ 还原到浮点空间。</li>
+                <li><strong>误差控制：</strong>可结合 clipping、偏移补偿、逐通道量化减少误差。</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>📊 图解</h2>
+            <div class="diagram-gallery">
+                <div class="diagram-item">
+                    <img src="./assets/量化流程.png" alt="PTQ 流程" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">PTQ 流程</div>
+                </div>
+                <div class="diagram-item">
+                    <img src="./assets/逐通道缩放.png" alt="逐通道缩放" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">逐通道缩放</div>
+                </div>
+                <div class="diagram-item">
+                    <img src="./assets/激活分布.png" alt="激活分布与裁剪" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">激活分布与裁剪</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📐 数学原理</h2>
+            <div class="math-box">
+                <h3>线性量化</h3>
+                <div class="math-formula">
+                    <p>对称量化公式：</p>
+                    <p>$$q = \text{round}\Big( \frac{x}{s} \Big), \quad s = \frac{\max(|x|)}{2^{b-1}-1}$$</p>
+                    <p>非对称量化：</p>
+                    <p>$$q = \text{round}\Big( \frac{x}{s} + z \Big), \quad x \approx s(q - z)$$</p>
+                </div>
+            </div>
+            <div class="math-box">
+                <h3>误差界</h3>
+                <div class="math-formula">
+                    <p>量化误差满足：</p>
+                    <p>$$|x - \hat{x}| \le \frac{s}{2}$$</p>
+                    <p>逐通道量化可显著减小 $s$，从而降低误差。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💻 Python 代码示例</h2>
+            <div class="code-box">
+                <h3>使用 torch.int8 动态量化线性层</h3>
+                <pre><code class="language-python">import torch
+from torch.ao.quantization import quantize_dynamic
+from transformers import AutoModelForSeq2SeqLM
+
+model = AutoModelForSeq2SeqLM.from_pretrained("google/flan-t5-base")
+modules_to_quantize = {torch.nn.Linear}
+
+quantized_model = quantize_dynamic(
+    model,
+    modules_to_quantize,
+    dtype=torch.qint8
+)
+
+sample = torch.randint(0, model.config.vocab_size, (1, 32))
+with torch.inference_mode():
+    logits = quantized_model(input_ids=sample).logits
+</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal();">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeImageModal(); });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

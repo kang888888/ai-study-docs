@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大模型量化技术知识图谱</title>
+    
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+    
+    <!-- 页面特定样式 -->
+    <style>
+        body {
+            background: radial-gradient(circle at top, var(--bg-primary) 0%, #030712 60%, #010409 100%);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- 知识图谱容器 -->
+        <div id="chart"></div>
+        
+        <!-- 标题栏 -->
+        <div class="title-bar">
+            <h1>大模型量化技术知识图谱</h1>
+            <p>覆盖量化理论、后训练算法、部署格式与高性能推理引擎，一图掌握压缩与加速要点。</p>
+            <div class="legend">
+                <span><i style="background:#5eead4"></i>量化原理</span>
+            <span><i style="background:#f472b6"></i>算法与工具</span>
+            <span><i style="background:#818cf8"></i>部署格式</span>
+            <span><i style="background:#fbbf24"></i>推理引擎</span>
+            </div>
+        </div>
+        
+        <!-- 控制栏 -->
+        <div class="control-bar">
+            <button class="control-btn" onclick="resetView()">重新布局</button>
+            <button class="control-btn" onclick="toggleAnimation()">暂停/继续动画</button>
+        </div>
+        
+        <!-- 侧边栏 -->
+        <div class="sidebar" id="sidebar">
+            <button class="close-btn" onclick="closeSidebar()">×</button>
+            <div class="sidebar-header">
+                <h2 class="sidebar-title" id="sidebar-title">大模型量化技术知识图谱</h2>
+                <div class="sidebar-tag" id="sidebar-tag">指南</div>
+            </div>
+            <div class="sidebar-body" id="sidebar-content">
+                <div class="sidebar-placeholder">
+                    <p>👇 在左侧图谱中选择一个节点即可查看详情。</p>
+                    <p>• 点击分类节点查看概览说明<br>• 点击具体技术节点，会在此侧边栏加载对应的 HTML 讲解页</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 公共脚本 -->
+    <script src="../common/knowledge-graph.js"></script>
+    
+    <!-- 页面特定数据 -->
+    <script>
+        // 页面配置
+        const pageConfig = {
+          "containerId": "chart",
+          "data": {
+                    "name": "模型量化",
+                    "value": "GPTQ、AWQ、GGUF、INT8/INT4。",
+                    "symbolSize": 70,
+                    "itemStyle": {
+                              "color": "#a855f7",
+                              "borderColor": "#f8fafc",
+                              "borderWidth": 4
+                    },
+                    "children": [
+                              {
+                                        "name": "量化基础",
+                                        "tag": "Basics",
+                                        "value": "PTQ/QAT、位宽选择、误差指标。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#a855f7",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        }
+                              },
+                              {
+                                        "name": "GPTQ",
+                                        "tag": "GPTQ",
+                                        "value": "梯度/Hessian 感知的 4bit 权重量化。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#a855f7",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        }
+                              },
+                              {
+                                        "name": "AWQ",
+                                        "tag": "AWQ",
+                                        "value": "Activation-aware 权重量化方案。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#a855f7",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        }
+                              },
+                              {
+                                        "name": "SmoothQuant",
+                                        "tag": "Smooth",
+                                        "value": "激活/权重同步缩放,便于推理部署。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#a855f7",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        }
+                              },
+                              {
+                                        "name": "PTQ",
+                                        "tag": "PTQ",
+                                        "value": "后训练量化流程与校准策略。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#a855f7",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        }
+                              },
+                              {
+                                        "name": "GGUF",
+                                        "tag": "GGUF",
+                                        "value": "llama.cpp 通用格式,整合多种位宽。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#a855f7",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        }
+                              },
+                              {
+                                        "name": "HQQ",
+                                        "tag": "HQQ",
+                                        "value": "半二次优化,零校准极速量化。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#a855f7",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        }
+                              },
+                              {
+                                        "name": "ExLlamaV2",
+                                        "tag": "Runtime",
+                                        "value": "INT4 推理引擎,结合分页 KV Cache。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#a855f7",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        }
+                              }
+                    ]
+          },
+          "techPages": {
+                    "量化基础": "../tech-docs/量化基础.html",
+                    "GPTQ": "../tech-docs/GPTQ.html",
+                    "AWQ": "../tech-docs/AWQ.html",
+                    "SmoothQuant": "../tech-docs/SmoothQuant.html",
+                    "PTQ": "../tech-docs/PTQ.html",
+                    "GGUF": "../tech-docs/GGUF.html",
+                    "HQQ": "../tech-docs/HQQ.html",
+                    "ExLlamaV2": "../tech-docs/ExLlamaV2.html"
+          },
+          "categoryDescriptions": {
+                    "量化原理": "理解位宽、缩放、零点、误差界等基础概念，决定精度与性能的理论依据。",
+                    "后训练算法": "GPTQ/AWQ/SmoothQuant 等算法通过校准数据自动完成 4bit/8bit 量化。",
+                    "部署格式": "GGUF 等格式让量化模型可在多平台快速加载并运行。",
+                    "推理引擎": "ExLlamaV2、TensorRT-LLM 等高性能后端负责把量化结果落地。"
+          },
+          "force": {
+                    "repulsion": 1800,
+                    "gravity": 0.15,
+                    "edgeLength": [
+                              80,
+                              240
+                    ],
+                    "friction": 0.2
+          }
+};
+        
+        // 初始化页面
+        initKnowledgeGraph(pageConfig);
+        
+        // 窗口大小改变时重新调整
+        window.addEventListener('resize', function() {
+            if (typeof chart !== 'undefined' && chart) {
+                chart.resize();
+            }
+        });
+    </script>
+</body>
+</html>

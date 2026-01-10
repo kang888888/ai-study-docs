@@ -1,0 +1,80 @@
+{
+  "title": "RAG系统",
+  "subtitle": "检索增强生成（Retrieval-Augmented Generation）的架构、优化技术、高级玩法与实践案例。",
+  "content": [
+    {
+      "type": "section",
+      "title": "🏗️ 基础架构",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "from langchain.document_loaders import TextLoader\nfrom langchain.text_splitter import RecursiveCharacterTextSplitter\nfrom langchain.vectorstores import Chroma\nfrom langchain.chains import RetrievalQA\n\nloader = TextLoader(\"docs.txt\")\nchunks = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=200).split_documents(loader.load())\nvectorstore = Chroma.from_documents(chunks, embeddings)\nqa_chain = RetrievalQA.from_chain_type(\n    llm=llm,\n    chain_type=\"stuff\",\n    retriever=vectorstore.as_retriever()\n)\nanswer = qa_chain.run(\"文档里提到的关键结论是什么？\")"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ RAG 优化技术",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "text",
+          "code": "基于以下上下文回答问题，若无法回答请说\"未知\"。\n{context}\n\n问题：{question}\n回答："
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "RAG系统架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "RAG系统架构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "RAG系统流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "RAG系统流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "RAG系统对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "RAG系统对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

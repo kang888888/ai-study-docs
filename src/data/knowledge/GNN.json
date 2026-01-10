@@ -1,0 +1,213 @@
+{
+  "title": "GNN (Graph Neural Network) 图神经网络",
+  "subtitle": "专门处理图结构数据的神经网络",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "专门处理图结构数据（节点+边）的神经网络。通过消息传递机制（Message Passing），让节点聚合邻居节点的信息，学习图的表示。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "消息传递：节点从邻居节点聚合信息，更新自身表示",
+            "排列不变性：对节点顺序不敏感",
+            "归纳学习：可以泛化到训练时未见过的图",
+            "多种变体：GCN、GraphSAGE、GAT（图注意力）",
+            "非欧几里得数据：处理不规则结构数据"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "消息传递（Message Passing）、聚合函数（Aggregation）、图注意力（GAT）"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "社交网络分析、分子性质预测、推荐系统、知识图谱、交通预测"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GNNDiagram",
+              "caption": "GNN图结构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "GNN图结构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GNNDiagram",
+              "caption": "GNN消息传递",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "GNN消息传递",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GNNDiagram",
+              "caption": "GNN多层结构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "GNN多层结构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GNNDiagram",
+              "caption": "GAT注意力权重",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "GAT注意力权重",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GNNDiagram",
+              "caption": "节点嵌入学习",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "节点嵌入学习",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GNNDiagram",
+              "caption": "GNN变体对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "GNN变体对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "消息传递机制",
+          "formulas": [
+            {
+              "text": "GNN的核心是消息传递："
+            },
+            {
+              "display": "h_v^{(l+1)} = \\text{UPDATE}^{(l)}\\left(h_v^{(l)}, \\text{AGGREGATE}^{(l)}\\left(\\{h_u^{(l)} : u \\in \\mathcal{N}(v)\\}\\right)\\right)"
+            },
+            {
+              "text": "其中："
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "图卷积网络（GCN）",
+          "formulas": [
+            {
+              "text": "GCN的更新公式："
+            },
+            {
+              "display": "H^{(l+1)} = \\sigma\\left(\\tilde{D}^{-\\frac{1}{2}}\\tilde{A}\\tilde{D}^{-\\frac{1}{2}} H^{(l)} W^{(l)}\\right)"
+            },
+            {
+              "text": "其中 $\\tilde{A} = A + I$ 是带自环的邻接矩阵，$\\tilde{D}$ 是度矩阵",
+              "inline": "\\tilde{A} = A + I"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "图注意力网络（GAT）",
+          "formulas": [
+            {
+              "text": "GAT使用注意力机制："
+            },
+            {
+              "display": "\\alpha_{ij} = \\frac{\\exp(\\text{LeakyReLU}(a^T [Wh_i || Wh_j]))}{\\sum_{k \\in \\mathcal{N}(i)} \\exp(\\text{LeakyReLU}(a^T [Wh_i || Wh_k]))}"
+            },
+            {
+              "display": "h_i^{(l+1)} = \\sigma\\left(\\sum_{j \\in \\mathcal{N}(i)} \\alpha_{ij} W^{(l)} h_j^{(l)}\\right)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 PyTorch Geometric 实现 GCN",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nfrom torch_geometric.nn import GCNConv\n\nclass GCN(nn.Module):\n    \"\"\"图卷积网络\"\"\"\n    def __init__(self, num_features, hidden_dim, num_classes):\n        super(GCN, self).__init__()\n        self.conv1 = GCNConv(num_features, hidden_dim)\n        self.conv2 = GCNConv(hidden_dim, num_classes)\n        self.dropout = nn.Dropout(0.5)\n    \n    def forward(self, x, edge_index):\n        \"\"\"\n        参数:\n            x: 节点特征 [num_nodes, num_features]\n            edge_index: 边索引 [2, num_edges]\n        \"\"\"\n        x = self.conv1(x, edge_index)\n        x = F.relu(x)\n        x = self.dropout(x)\n        x = self.conv2(x, edge_index)\n        return F.log_softmax(x, dim=1)\n\n# 使用示例\nif __name__ == \"__main__\":\n    # 创建模型\n    model = GCN(num_features=1433, hidden_dim=64, num_classes=7)\n    \n    # 模拟图数据\n    num_nodes = 2708\n    num_features = 1433\n    x = torch.randn(num_nodes, num_features)\n    edge_index = torch.randint(0, num_nodes, (2, 10556))\n    \n    # 前向传播\n    output = model(x, edge_index)\n    print(f\"输出形状: {output.shape}\")  # [2708, 7]"
+        },
+        {
+          "type": "code-box",
+          "title": "手动实现简单的 GNN 层",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\n\nclass SimpleGNNLayer(nn.Module):\n    \"\"\"简单的GNN层\"\"\"\n    def __init__(self, in_dim, out_dim):\n        super(SimpleGNNLayer, self).__init__()\n        self.linear = nn.Linear(in_dim, out_dim)\n    \n    def forward(self, x, adj):\n        \"\"\"\n        参数:\n            x: 节点特征 [num_nodes, in_dim]\n            adj: 邻接矩阵 [num_nodes, num_nodes]\n        \"\"\"\n        # 消息传递：聚合邻居信息\n        support = self.linear(x)  # [num_nodes, out_dim]\n        output = torch.matmul(adj, support)  # [num_nodes, out_dim]\n        return output\n\n# 使用示例\nif __name__ == \"__main__\":\n    layer = SimpleGNNLayer(in_dim=64, out_dim=32)\n    x = torch.randn(100, 64)\n    adj = torch.randn(100, 100)\n    adj = (adj > 0).float()  # 二值化邻接矩阵\n    \n    output = layer(x, adj)\n    print(f\"输出形状: {output.shape}\")  # [100, 32]"
+        }
+      ]
+    }
+  ]
+}

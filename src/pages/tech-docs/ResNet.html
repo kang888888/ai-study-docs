@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResNet (Residual Network) 残差网络 - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ResNet (Residual Network) 残差网络</h1>
+            <p>解决梯度消失问题的深度网络架构</p>
+        </div>
+        <div class="content">
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>通过引入残差连接（Skip Connection / Shortcut），允许梯度直接流向浅层，解决了深层网络（100+层）难以训练的梯度消失/爆炸问题。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>残差学习：学习 F(x) = H(x) - x，而非直接学习 H(x)</li>
+                    <li>恒等映射：通过跳跃连接实现梯度的无损传播</li>
+                    <li>极深网络：可以训练152层甚至更深的网络</li>
+                    <li>瓶颈结构：使用1×1卷积降维，减少计算量</li>
+                    <li>广泛应用：成为现代视觉模型的标准Backbone</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box"><p><strong>残差块（Residual Block）、批量归一化、恒等映射、瓶颈设计</strong></p></div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box"><p>图像分类、目标检测的Backbone、特征提取、迁移学习</p></div>
+            </div>
+            <div class="section">
+                <h2>📊 架构图解</h2>
+                <div class="diagram-gallery">
+                    <div class="diagram-item"><img src="ResNet残差块.png" alt="ResNet残差块" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">ResNet残差块</div></div>
+                    <div class="diagram-item"><img src="ResNet架构图.png" alt="ResNet架构图" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">ResNet架构图</div></div>
+                    <div class="diagram-item"><img src="ResNet梯度流动.png" alt="ResNet梯度流动" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">ResNet梯度流动</div></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>残差学习</h3>
+                    <div class="math-formula">
+                        <p>ResNet的核心思想是学习残差而非直接映射：</p>
+                        <p>$$H(x) = F(x) + x$$</p>
+                        <p>其中：</p>
+                        <ul style="list-style: none; padding-left: 20px;">
+                            <li>$H(x)$ 是期望的映射</li>
+                            <li>$F(x) = H(x) - x$ 是残差函数</li>
+                            <li>$x$ 是恒等映射（跳跃连接）</li>
+                        </ul>
+                        <p>如果最优映射接近恒等映射，学习残差 $F(x) \approx 0$ 比学习 $H(x) \approx x$ 更容易</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>梯度流动</h3>
+                    <div class="math-formula">
+                        <p>残差连接使得梯度可以直接传播：</p>
+                        <p>$$\frac{\partial L}{\partial x} = \frac{\partial L}{\partial H(x)} \cdot \left(1 + \frac{\partial F(x)}{\partial x}\right)$$</p>
+                        <p>即使 $\frac{\partial F(x)}{\partial x} \approx 0$，梯度仍可以通过恒等项 $1$ 传播，避免了梯度消失</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 PyTorch 实现 ResNet 残差块</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class ResidualBlock(nn.Module):
+    """ResNet 残差块"""
+    def __init__(self, in_channels, out_channels, stride=1, downsample=None):
+        super(ResidualBlock, self).__init__()
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, 
+                              stride=stride, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(out_channels)
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3,
+                              stride=1, padding=1, bias=False)
+        self.bn2 = nn.BatchNorm2d(out_channels)
+        self.downsample = downsample
+    
+    def forward(self, x):
+        identity = x
+        
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = F.relu(out)
+        
+        out = self.conv2(out)
+        out = self.bn2(out)
+        
+        if self.downsample is not None:
+            identity = self.downsample(x)
+        
+        out += identity  # 残差连接
+        out = F.relu(out)
+        
+        return out
+
+class BottleneckBlock(nn.Module):
+    """ResNet 瓶颈块（用于更深的网络）"""
+    def __init__(self, in_channels, out_channels, stride=1, downsample=None):
+        super(BottleneckBlock, self).__init__()
+        expansion = 4
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(out_channels)
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3,
+                              stride=stride, padding=1, bias=False)
+        self.bn2 = nn.BatchNorm2d(out_channels)
+        self.conv3 = nn.Conv2d(out_channels, out_channels * expansion,
+                              kernel_size=1, bias=False)
+        self.bn3 = nn.BatchNorm2d(out_channels * expansion)
+        self.downsample = downsample
+    
+    def forward(self, x):
+        identity = x
+        
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = F.relu(out)
+        
+        out = self.conv2(out)
+        out = self.bn2(out)
+        out = F.relu(out)
+        
+        out = self.conv3(out)
+        out = self.bn3(out)
+        
+        if self.downsample is not None:
+            identity = self.downsample(x)
+        
+        out += identity
+        out = F.relu(out)
+        
+        return out
+
+class ResNet(nn.Module):
+    """简单的 ResNet 实现"""
+    def __init__(self, block, layers, num_classes=1000):
+        super(ResNet, self).__init__()
+        self.in_channels = 64
+        
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
+        self.bn1 = nn.BatchNorm2d(64)
+        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+        
+        self.layer1 = self._make_layer(block, 64, layers[0])
+        self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
+        self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
+        self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
+        
+        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+        self.fc = nn.Linear(512, num_classes)
+    
+    def _make_layer(self, block, out_channels, blocks, stride=1):
+        downsample = None
+        if stride != 1 or self.in_channels != out_channels:
+            downsample = nn.Sequential(
+                nn.Conv2d(self.in_channels, out_channels, kernel_size=1,
+                         stride=stride, bias=False),
+                nn.BatchNorm2d(out_channels)
+            )
+        
+        layers = []
+        layers.append(block(self.in_channels, out_channels, stride, downsample))
+        self.in_channels = out_channels
+        
+        for _ in range(1, blocks):
+            layers.append(block(self.in_channels, out_channels))
+        
+        return nn.Sequential(*layers)
+    
+    def forward(self, x):
+        x = self.conv1(x)
+        x = self.bn1(x)
+        x = F.relu(x)
+        x = self.maxpool(x)
+        
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = self.layer4(x)
+        
+        x = self.avgpool(x)
+        x = torch.flatten(x, 1)
+        x = self.fc(x)
+        
+        return x
+
+# 使用示例
+if __name__ == "__main__":
+    # ResNet-18: [2, 2, 2, 2] 表示每个layer有2个残差块
+    model = ResNet(ResidualBlock, [2, 2, 2, 2], num_classes=1000)
+    
+    # 模拟输入
+    x = torch.randn(4, 3, 224, 224)
+    output = model(x)
+    print(f"输出形状: {output.shape}")  # [4, 1000]</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 图片放大弹窗 -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal()">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+            modalImg.onclick = function(e) { e.stopPropagation(); };
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

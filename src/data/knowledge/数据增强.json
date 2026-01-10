@@ -1,0 +1,55 @@
+{
+  "title": "数据增强",
+  "subtitle": "通过回译、同义词替换、句子重组等方法增加数据多样性。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据增强方法",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "数据增强方法",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据增强效果",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "数据增强效果",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "回译增强",
+          "language": "python",
+          "code": "from googletrans import Translator\n\ntranslator = Translator()\n\ndef back_translate(text, intermediate_lang='en'):\n    # 翻译到中间语言\n    translated = translator.translate(text, dest=intermediate_lang)\n    # 翻译回原语言\n    back_translated = translator.translate(translated.text, dest='zh')\n    return back_translated.text"
+        }
+      ]
+    }
+  ]
+}

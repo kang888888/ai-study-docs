@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI 编译器</title>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+<header>
+    <h1>AI 编译器</h1>
+    <p class="lead">衔接深度学习框架与异构硬件的工程核心，涵盖编译原理、前后端、主流框架与落地案例。</p>
+</header>
+<main>
+    <section>
+        <h2>总览与流程</h2>
+        <p>AI 编译器负责把模型图变成 CPU/GPU/TPU/NPU/ASIC 可执行的高效代码，核心能力包括图优化、张量调度、代码生成和自动调优。</p>
+        <table>
+            <thead><tr><th>特性</th><th>传统编译器</th><th>AI 编译器</th></tr></thead>
+            <tbody>
+                <tr><td>输入</td><td>C/C++ 源码</td><td>模型图（ONNX、TorchScript、HLO）</td></tr>
+                <tr><td>优化对象</td><td>指令/循环</td><td>张量计算、内存访问、并行策略</td></tr>
+                <tr><td>目标硬件</td><td>CPU/GPU</td><td>CPU/GPU/TPU/NPU/ASIC</td></tr>
+                <tr><td>重点</td><td>寄存器/指令选择</td><td>算子融合、分块、自动并行</td></tr>
+            </tbody>
+        </table>
+        <pre><code>模型导入 → IR → 图优化 → 张量调度 → 代码生成 → Runtime 执行</code></pre>
+    </section>
+
+    <section>
+        <h2>编译原理基石</h2>
+        <ul>
+            <li>三段式：前端（语法/语义）→ 中端（IR 优化）→ 后端（指令生成）。</li>
+            <li>常用优化：循环展开/融合、常量折叠、死代码消除、内联。</li>
+            <li>IR：SSA、CFG、DAG、MLIR 方言、Relay、XLA HLO。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>前端：图解析与优化</h2>
+        <ul>
+            <li>导入 ONNX、TorchScript、SavedModel 等格式。</li>
+            <li>转化为统一 IR，执行 Shape/Type 推断与规范化。</li>
+            <li>图级优化：算子融合、常量折叠、公共子表达式消除。</li>
+            <li>技术：Shape Inference、Pattern Rewrite、Operator Canonicalization。</li>
+            <li>示例：TVM Relay Frontend、Torch-MLIR/TF-MLIR、XLA HLO Frontend。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>后端：张量调度与代码生成</h2>
+        <ul>
+            <li>张量调度：确定分块、并行、内存布局。</li>
+            <li>代码生成：输出 CUDA/ROCm/Ascend/CPU Kernel。</li>
+            <li>内存管理：生命周期分析、内存复用、Tensorization。</li>
+            <li>运行时：Kernel 加载、流调度、与执行引擎对接。</li>
+            <li>技术：Auto-Tuning、Memory Planning、Kernel Fusion。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>主流框架</h2>
+        <table>
+            <thead><tr><th>框架</th><th>特色</th><th>场景</th></tr></thead>
+            <tbody>
+                <tr><td>TVM</td><td>端到端栈 + AutoTVM/MetaSchedule</td><td>跨硬件部署、模型压缩</td></tr>
+                <tr><td>MLIR / OpenXLA</td><td>多级 IR、方言可扩展</td><td>自研编译器、统一 HLO</td></tr>
+                <tr><td>XLA</td><td>TensorFlow/JAX 原生、算子融合</td><td>TPU 训练、JAX</td></tr>
+                <tr><td>TensorRT</td><td>GPU 推理、INT8 量化</td><td>低延迟推理</td></tr>
+                <tr><td>BladeDISC / MNN</td><td>面向国产硬件</td><td>国产化适配</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>模型编译优化</h2>
+        <h3>图级</h3>
+        <ul><li>算子融合、常量折叠、子图内联、布局转换。</li></ul>
+        <h3>张量调度</h3>
+        <ul><li>Tiling、Vectorization、Double Buffering、并行化。</li></ul>
+        <h3>内存与特殊优化</h3>
+        <ul><li>内存复用、内存池、Offload、KV Cache 管理、混合精度、量化、稀疏。</li></ul>
+        <h3>Auto Tuning</h3>
+        <ul>
+            <li>搜索空间：块大小、线程数、向量长度。</li>
+            <li>代价模型：统计/机器学习。</li>
+            <li>策略：网格、遗传、贝叶斯。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>实践案例</h2>
+        <ul>
+            <li><strong>TVM 优化 LLaMA 推理：</strong> Relay → Fuse/Simplify → AutoTVM → CUDA Kernel，吞吐 +1.7×。</li>
+            <li><strong>MLIR 定制昇腾算子：</strong> Torch-MLIR → Ascend Dialect → CANN Backend → MindSpore 可执行。</li>
+            <li><strong>TensorRT INT8 部署 Qwen：</strong> 校准 + FP16/INT8 混合 + 自定义 FlashAttention Plugin，延迟 45ms → 18ms。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>最佳实践</h2>
+        <ul>
+            <li>先启用官方 Pass，再针对热点算子自定义 Pass 或 AutoTVM/MetaSchedule。</li>
+            <li>使用 Profiling 工具定位瓶颈，迭代 Pass Pipeline 与调度策略。</li>
+            <li>与硬件厂商协作，获取最新算子库与后端优化。</li>
+            <li>构建“通用前端 + 厂商后端”链路，兼顾跨框架与国产化适配。</li>
+        </ul>
+    </section>
+</main>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

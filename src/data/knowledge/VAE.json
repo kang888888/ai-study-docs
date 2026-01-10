@@ -1,0 +1,169 @@
+{
+  "title": "VAE (Variational Autoencoder) 变分自编码器",
+  "subtitle": "基于变分推理的生成模型",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "基于变分推理的生成模型，学习数据的潜在表示（Latent Representation）。通过编码器将数据映射到潜在空间的概率分布，解码器从分布中采样生成数据。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "概率生成：学习潜在空间的概率分布，而非确定性映射",
+            "编码-解码：Encoder压缩数据，Decoder重构数据",
+            "KL散度约束：正则化潜在空间，使其接近标准正态分布",
+            "连续潜在空间：支持平滑插值和语义操作",
+            "理论完备：有严格的数学推导（变分下界ELBO）"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "重参数化技巧（Reparameterization Trick）、ELBO损失、KL散度"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "图像生成、数据压缩、异常检测、表示学习、Stable Diffusion的VAE编码器"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "VAEDiagram",
+              "caption": "VAE架构图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "VAE架构图",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "VAEDiagram",
+              "caption": "VAE潜在空间",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "VAE潜在空间",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "VAEDiagram",
+              "caption": "VAE训练过程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "VAE训练过程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "变分下界（ELBO）",
+          "formulas": [
+            {
+              "text": "VAE 的优化目标是最大化证据下界（ELBO）："
+            },
+            {
+              "display": "\\log p(x) \\geq \\mathbb{E}_{z \\sim q_\\phi(z|x)}[\\log p_\\theta(x|z)] - D_{KL}(q_\\phi(z|x) || p(z))"
+            },
+            {
+              "text": "其中："
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "重参数化技巧",
+          "formulas": [
+            {
+              "text": "为了可微，使用重参数化："
+            },
+            {
+              "display": "z = \\mu + \\sigma \\odot \\epsilon, \\quad \\epsilon \\sim \\mathcal{N}(0, I)"
+            },
+            {
+              "text": "其中 $\\mu$ 和 $\\sigma$ 是编码器输出的均值和标准差",
+              "inline": "\\mu"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "KL散度",
+          "formulas": [
+            {
+              "text": "KL散度项（假设先验为标准正态分布）："
+            },
+            {
+              "display": "D_{KL}(q_\\phi(z|x) || \\mathcal{N}(0, I)) = -\\frac{1}{2}\\sum_{i=1}^{d}(1 + \\log(\\sigma_i^2) - \\mu_i^2 - \\sigma_i^2)"
+            },
+            {
+              "text": "其中 $d$ 是潜在空间的维度",
+              "inline": "d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 PyTorch 实现 VAE",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\nclass VAE(nn.Module):\n    \"\"\"变分自编码器\"\"\"\n    def __init__(self, input_dim, hidden_dim, latent_dim):\n        super(VAE, self).__init__()\n        \n        # 编码器\n        self.encoder = nn.Sequential(\n            nn.Linear(input_dim, hidden_dim),\n            nn.ReLU(),\n            nn.Linear(hidden_dim, hidden_dim),\n            nn.ReLU()\n        )\n        \n        # 均值和方差\n        self.fc_mu = nn.Linear(hidden_dim, latent_dim)\n        self.fc_logvar = nn.Linear(hidden_dim, latent_dim)\n        \n        # 解码器\n        self.decoder = nn.Sequential(\n            nn.Linear(latent_dim, hidden_dim),\n            nn.ReLU(),\n            nn.Linear(hidden_dim, hidden_dim),\n            nn.ReLU(),\n            nn.Linear(hidden_dim, input_dim),\n            nn.Sigmoid()\n        )\n    \n    def encode(self, x):\n        \"\"\"编码\"\"\"\n        h = self.encoder(x)\n        mu = self.fc_mu(h)\n        logvar = self.fc_logvar(h)\n        return mu, logvar\n    \n    def reparameterize(self, mu, logvar):\n        \"\"\"重参数化\"\"\"\n        std = torch.exp(0.5 * logvar)\n        eps = torch.randn_like(std)\n        return mu + eps * std\n    \n    def decode(self, z):\n        \"\"\"解码\"\"\"\n        return self.decoder(z)\n    \n    def forward(self, x):\n        mu, logvar = self.encode(x)\n        z = self.reparameterize(mu, logvar)\n        recon_x = self.decode(z)\n        return recon_x, mu, logvar\n\ndef vae_loss(recon_x, x, mu, logvar, beta=1.0):\n    \"\"\"VAE损失函数\"\"\"\n    # 重构损失\n    recon_loss = F.binary_cross_entropy(recon_x, x, reduction='sum')\n    \n    # KL散度损失\n    kl_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())\n    \n    return recon_loss + beta * kl_loss, recon_loss, kl_loss\n\n# 使用示例\nif __name__ == \"__main__\":\n    input_dim = 784  # MNIST图像展平\n    hidden_dim = 400\n    latent_dim = 20\n    \n    model = VAE(input_dim, hidden_dim, latent_dim)\n    \n    # 模拟输入\n    x = torch.randn(32, input_dim)\n    \n    # 前向传播\n    recon_x, mu, logvar = model(x)\n    \n    # 计算损失\n    loss, recon_loss, kl_loss = vae_loss(recon_x, x, mu, logvar)\n    \n    print(f\"总损失: {loss.item():.4f}\")\n    print(f\"重构损失: {recon_loss.item():.4f}\")\n    print(f\"KL损失: {kl_loss.item():.4f}\")"
+        }
+      ]
+    }
+  ]
+}

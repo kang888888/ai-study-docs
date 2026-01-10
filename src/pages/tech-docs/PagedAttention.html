@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PagedAttention 算法详解</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>PagedAttention：分页式注意力缓存调度</h1>
+        <p class="tagline">通过虚拟内存思想管理 KV Cache，用页表映射替代复制，解决多会话、长上下文带来的内存碎片问题。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card"><h3>灵感</h3><p>借鉴操作系统分页：KV 缓存被划分为固定大小 page，按需加载。</p></div>
+            <div class="meta-card"><h3>优势</h3><p>零复制扩容、并发稳定、显存利用率高。</p></div>
+            <div class="meta-card"><h3>实现</h3><p>vLLM、TensorRT-LLM、LightLLM 均实现了该算法。</p></div>
+            <div class="meta-card"><h3>关键组件</h3><p>Page Table、Block Manager、Allocator、Garbage Collector。</p></div>
+        </div>
+
+        <div class="section">
+            <h2>🧠 核心流程</h2>
+            <ul>
+                <li><strong>分块：</strong>将 KV Cache 切为 1~2MB page（包含多层多头数据）。</li>
+                <li><strong>页表：</strong>每个请求维护逻辑序列 → 物理 page 的映射。</li>
+                <li><strong>复用：</strong>完成输出的请求立即释放 page，供新请求使用。</li>
+                <li><strong>并行：</strong>Prefill/Decode 阶段共享 allocator，减少同步。</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>📊 图解</h2>
+            <div class="diagram-gallery">
+                <div class="diagram-item"><img src="./assets/PagedAttention概览.png" alt="概览" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">概览</div></div>
+                <div class="diagram-item"><img src="./assets/PageTable.png" alt="页表结构" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">页表结构</div></div>
+                <div class="diagram-item"><img src="./assets/PagedAllocator.png" alt="分配器" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">分配器</div></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📐 数学/复杂度</h2>
+            <div class="math-box">
+                <h3>内存利用率</h3>
+                <div class="math-formula">
+                    <p>$$U = 1 - \frac{P_{free}}{P_{total}}$$</p>
+                    <p>PagedAttention 通过快速回收使 $P_{free}$ 持续保持在低水平。</p>
+                </div>
+            </div>
+            <div class="math-box">
+                <h3>page fault 开销</h3>
+                <div class="math-formula">
+                    <p>$$T = T_{hit} + p_{fault} (T_{alloc} + T_{init})$$</p>
+                    <p>算法目标是降低 $p_{fault}$ 并优化 $T_{alloc}$。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💻 伪代码</h2>
+            <div class="code-box">
+<pre><code class="language-python">def allocate_pages(request_id, needed_pages):
+    pages = []
+    for _ in range(needed_pages):
+        page = free_list.pop() if free_list else cuda_malloc(page_size)
+        pages.append(page)
+    page_table[request_id].extend(pages)
+    return pages
+
+# 解码阶段访问
+for token in batch:
+    pages = page_table[token.req]
+    kv_ptrs = gather_kv(pages, token.position)
+    attention_step(kv_ptrs, token)
+</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal();">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+
+    <script>
+        function openImageModal(img){const modal=document.getElementById('imageModal');modal.classList.add('active');document.getElementById('modalImage').src=img.src;document.getElementById('modalCaption').textContent=img.alt||'';}
+        function closeImageModal(){document.getElementById('imageModal').classList.remove('active');}
+        document.addEventListener('keydown',e=>{if(e.key==='Escape')closeImageModal();});
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+{
+  "title": "通信优化",
+  "subtitle": "通过梯度压缩、异步更新、通信与计算重叠等技术优化分布式训练通信效率。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "通信优化策略",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "通信优化策略",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "通信与计算重叠",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "通信与计算重叠",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "梯度压缩",
+          "language": "python",
+          "code": "import torch\nimport torch.distributed as dist\n\ndef compress_gradient(grad, compression_ratio=0.1):\n    \"\"\"梯度压缩：只传输重要的梯度值\"\"\"\n    # 选择top-k梯度\n    k = int(grad.numel() * compression_ratio)\n    topk_values, topk_indices = torch.topk(grad.abs().flatten(), k)\n    \n    # 只传输索引和值\n    compressed = {\n        'indices': topk_indices,\n        'values': grad.flatten()[topk_indices],\n        'shape': grad.shape\n    }\n    \n    return compressed\n\ndef decompress_gradient(compressed, device):\n    \"\"\"解压缩梯度\"\"\"\n    grad = torch.zeros(compressed['shape'], device=device)\n    grad.flatten()[compressed['indices']] = compressed['values']\n    return grad"
+        },
+        {
+          "type": "code-box",
+          "title": "通信与计算重叠",
+          "language": "python",
+          "code": "import torch\nimport torch.distributed as dist\nfrom torch.cuda.stream import Stream\n\ndef overlapped_allreduce(model, optimizer, stream):\n    \"\"\"使用CUDA流实现通信与计算重叠\"\"\"\n    with torch.cuda.stream(stream):\n        # 异步执行AllReduce\n        for param in model.parameters():\n            if param.grad is not None:\n                dist.all_reduce(param.grad.data, op=dist.ReduceOp.SUM, async_op=True)\n    \n    # 主流继续执行其他计算\n    # ...\n    \n    # 等待通信完成\n    stream.synchronize()\n    \n    # 更新参数\n    optimizer.step()"
+        }
+      ]
+    }
+  ]
+}

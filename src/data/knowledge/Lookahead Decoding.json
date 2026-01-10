@@ -1,0 +1,54 @@
+{
+  "title": "Lookahead Decoding 前瞻解码",
+  "subtitle": "通过n-gram匹配实现2-3倍加速的解码方法",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Lookahead Decoding是一种前瞻解码方法，通过n-gram匹配机制，在生成当前token的同时，前瞻性地生成后续token。通过匹配历史n-gram，可以一次性接受多个token，从而实现2-3倍的推理加速。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "n-gram匹配：通过匹配历史n-gram，一次性接受多个token",
+            "加速显著：实现2-3倍的推理加速",
+            "质量保持：在加速的同时保持生成质量",
+            "无需训练：不需要修改模型或重新训练",
+            "易于实现：实现简单，易于集成"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "n-gram匹配、前瞻生成、token接受、解码加速"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "文本生成、批量推理、高吞吐场景、需要快速解码的应用"
+        }
+      ]
+    }
+  ]
+}

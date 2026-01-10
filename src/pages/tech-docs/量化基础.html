@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>量化基础 · LLM 推理降精度总览</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>量化基础</h1>
+    <p class="tagline">统一梳理 PTQ/QAT、位宽选择、误差度量与典型工具链，为 GPTQ、AWQ、SmoothQuant 等专项方案奠定背景。</p>
+
+    <div class="meta-grid">
+        <div class="meta-card">
+            <h3>目标</h3>
+            <p>在保持精度可控的前提下降低显存/算力需求，支持单机多模型推理。</p>
+        </div>
+        <div class="meta-card">
+            <h3>常见位宽</h3>
+            <p>INT8（通用）、INT4（主流）、INT3/FP4（二进制/混合格式尝试）。</p>
+        </div>
+        <div class="meta-card">
+            <h3>关键要素</h3>
+            <p>量化对象（权重/激活/KV Cache）、比例因子计算、误差补偿、校准数据。</p>
+        </div>
+        <div class="meta-card">
+            <h3>典型框架</h3>
+            <p>bitsandbytes、AutoGPTQ、AWQ、SmoothQuant、TensorRT-LLM、ExLlamaV2。</p>
+        </div>
+    </div>
+
+    <section>
+        <h2>🧠 核心概念</h2>
+        <ul>
+            <li><strong>量化类型</strong>：Post-Training Quantization（PTQ）与 Quantization-Aware Training（QAT）。PTQ 快速、QAT 精度高。</li>
+            <li><strong>对称 vs 非对称</strong>：是否允许正负区间不对称，非对称对零点支持更友好。</li>
+            <li><strong>逐张量/逐通道</strong>：scale 是否为全局或 per-channel，后者误差更低但存储更大。</li>
+            <li><strong>权重量化/激活量化</strong>：权重易离线处理，激活依赖运行时校准。</li>
+            <li><strong>KV Cache 量化</strong>：推理加速关键，常搭配 FP8/INT4 与误差补偿。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>⚙️ PTQ 基本流程</h2>
+        <div class="flow-grid">
+            <div class="flow-item"><strong>1. 收集校准数据</strong><br>约 128~1024 条下游样本或合成对话。</div>
+            <div class="flow-item"><strong>2. 统计分布</strong><br>计算 min/max、方差或 Hessian/Fisher 信息。</div>
+            <div class="flow-item"><strong>3. 选择位宽与比例</strong><br>INT8/INT4 + 线性或对数量化，必要时 per-channel。</div>
+            <div class="flow-item"><strong>4. 误差补偿</strong><br>CLIP 值域、重构残差、借助梯度/重要性指标。</div>
+            <div class="flow-item"><strong>5. 验证与调整</strong><br>基准任务或 perplexity 回归，失败则调参或回退。</div>
+        </div>
+        <div class="tips">
+            <span>Group Size（64/128/256）</span>
+            <span>Symmetric / Asymmetric</span>
+            <span>Zero-Point</span>
+            <span>Activation Clipping</span>
+            <span>Error Compensation</span>
+        </div>
+    </section>
+
+    <section>
+        <h2>📏 关键指标</h2>
+        <ul>
+            <li><strong>精度损失</strong>：基准任务分数、ppl、BLEU/ROUGE 变化。</li>
+            <li><strong>量化误差</strong>：MSE、Cosine、Max Error，常用于自动搜索最佳 scale。</li>
+            <li><strong>显存节省</strong>：理论值 = 原位宽 / 目标位宽；需考虑额外 scale 存储。</li>
+            <li><strong>吞吐提升</strong>：算子是否支持 INT4/INT8、是否配合自定义 kernel（如 Flash-Decoding）。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>🧰 工具链选型</h2>
+        <ul>
+            <li><strong>GPTQ / AutoGPTQ</strong>：梯度或 Hessian 感知，适合 4bit 权重量化。</li>
+            <li><strong>AWQ</strong>：感知权重重要性，搭配 per-channel scale。</li>
+            <li><strong>SmoothQuant</strong>：缩放激活/权重，便于部署在 TensorRT-LLM。</li>
+            <li><strong>ExLlamaV2 / TensorRT-LLM</strong>：高性能运行时，整合 INT4/FP8 kernel 与 KV Cache 量化。</li>
+            <li><strong>bitsandbytes</strong>：通用库，提供 INT8/INT4 以及 NF4 等混合格式。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>💻 代码示例：bitsandbytes 4bit 量化</h2>
+        <div class="code-box">
+<pre><code class="language-python">from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import BitsAndBytesConfig
+
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype="bfloat16",
+    bnb_4bit_use_double_quant=True
+)
+
+model_name = "meta-llama/Llama-2-7b-hf"
+tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=False)
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    quantization_config=bnb_config,
+    device_map="auto"
+)
+
+prompt = "Explain quantization aware training in one paragraph."
+inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+outputs = model.generate(**inputs, max_new_tokens=128)
+print(tokenizer.decode(outputs[0], skip_special_tokens=True))</code></pre>
+        </div>
+        <p class="note">若需要更激进的 INT3/INT2，可结合 GPTQ/AWQ 的离线导出，再在推理引擎（ExLlamaV2、TensorRT-LLM）中加载。</p>
+    </section>
+</div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

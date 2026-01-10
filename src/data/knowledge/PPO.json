@@ -1,0 +1,111 @@
+{
+  "title": "PPO：近端策略优化",
+  "subtitle": "通过裁剪机制限制策略更新幅度，稳定训练过程，是RLHF训练的核心算法。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "PPO-Clip目标函数",
+          "formulas": [
+            {
+              "display": "L^{CLIP}(\\theta) = \\mathbb{E}[\\min(r_t(\\theta) A_t, \\text{clip}(r_t(\\theta), 1-\\epsilon, 1+\\epsilon) A_t)]"
+            },
+            {
+              "text": "其中："
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "优势函数估计（GAE）",
+          "formulas": [
+            {
+              "display": "A_t = \\delta_t + (\\gamma\\lambda)\\delta_{t+1} + (\\gamma\\lambda)^2\\delta_{t+2} + \\cdots"
+            },
+            {
+              "text": "其中 $\\delta_t = r_t + \\gamma V(s_{t+1}) - V(s_t)$",
+              "inline": "\\delta_t = r_t + \\gamma V(s_{t+1}) - V(s_t)"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "总损失函数（RLHF中）",
+          "formulas": [
+            {
+              "display": "L_{total} = L_{CLIP} - c_1 L_{VF} + c_2 L_{KL}"
+            },
+            {
+              "text": "包含策略损失、价值函数损失和KL散度惩罚项。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "PPO流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "PPO流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "PPO对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "PPO对比",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "PPO效果",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "PPO效果",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 TRL 进行 PPO 训练",
+          "language": "python",
+          "code": "from trl import PPOTrainer, PPOConfig, AutoModelForCausalLMWithValueHead\nfrom transformers import AutoTokenizer\n\nconfig = PPOConfig(\n    model_name=\"meta-llama/Llama-2-7b-hf\",\n    learning_rate=1e-5,\n    batch_size=64,\n    ppo_epochs=4,\n    kl_penalty=0.1\n)\n\ntokenizer = AutoTokenizer.from_pretrained(config.model_name)\nmodel = AutoModelForCausalLMWithValueHead.from_pretrained(\n    config.model_name,\n    load_in_4bit=True,\n    device_map=\"auto\"\n)\n\nppo_trainer = PPOTrainer(\n    config,\n    model,\n    tokenizer,\n    dataset=rlhf_dataset\n)\n\n# 训练循环\nfor epoch in range(config.ppo_epochs):\n    for batch in dataloader:\n        # 生成响应\n        responses = model.generate(batch['prompt'])\n        \n        # 计算奖励\n        rewards = reward_model(responses)\n        \n        # PPO更新\n        ppo_trainer.step(responses, rewards)"
+        }
+      ]
+    }
+  ]
+}

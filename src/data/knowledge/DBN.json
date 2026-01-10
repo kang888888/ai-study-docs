@@ -1,0 +1,171 @@
+{
+  "title": "DBN (Deep Belief Network) 深度信念网络",
+  "subtitle": "深度学习早期的重要架构",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "由多个受限玻尔兹曼机（RBM）堆叠而成的深度生成模型。通过逐层预训练+微调的方式训练，是深度学习早期（2006年）的重要架构。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "逐层预训练：先无监督预训练每层RBM，再有监督微调",
+            "生成模型：可以生成数据，也可以用于分类",
+            "无监督学习：从无标注数据中学习特征",
+            "历史意义：2006年深度学习复兴的关键技术",
+            "现已较少使用：被Transformer等架构取代"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "受限玻尔兹曼机（RBM）、对比散度算法（Contrastive Divergence）、逐层预训练"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "图像识别、特征提取、降维、协同过滤（早期）"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "DBNDiagram",
+              "caption": "DBN架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "DBN架构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "DBNDiagram",
+              "caption": "RBM结构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "RBM结构",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "受限玻尔兹曼机（RBM）能量函数",
+          "formulas": [
+            {
+              "text": "RBM的能量函数："
+            },
+            {
+              "display": "E(v, h) = -\\sum_{i} a_i v_i - \\sum_{j} b_j h_j - \\sum_{i,j} v_i W_{ij} h_j"
+            },
+            {
+              "text": "其中："
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "概率分布",
+          "formulas": [
+            {
+              "text": "基于能量函数的概率分布："
+            },
+            {
+              "display": "P(v, h) = \\frac{1}{Z} e^{-E(v, h)}"
+            },
+            {
+              "text": "其中 $Z = \\sum_{v,h} e^{-E(v, h)}$ 是配分函数",
+              "inline": "Z = \\sum_{v,h} e^{-E(v, h)}"
+            },
+            {
+              "text": "条件概率："
+            },
+            {
+              "display": "P(h_j=1 | v) = \\sigma(b_j + \\sum_{i} W_{ij} v_i)"
+            },
+            {
+              "display": "P(v_i=1 | h) = \\sigma(a_i + \\sum_{j} W_{ij} h_j)"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "对比散度（CD）算法",
+          "formulas": [
+            {
+              "text": "权重更新规则："
+            },
+            {
+              "display": "\\Delta W_{ij} = \\epsilon (\\langle v_i h_j \\rangle_{data} - \\langle v_i h_j \\rangle_{recon})"
+            },
+            {
+              "text": "其中 $\\langle \\cdot \\rangle_{data}$ 是数据分布的期望，$\\langle \\cdot \\rangle_{recon}$ 是重构分布的期望",
+              "inline": "\\langle \\cdot \\rangle_{data}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 PyTorch 实现简单的 RBM",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\nclass RBM(nn.Module):\n    \"\"\"受限玻尔兹曼机\"\"\"\n    def __init__(self, n_visible, n_hidden):\n        super(RBM, self).__init__()\n        self.n_visible = n_visible\n        self.n_hidden = n_hidden\n        \n        # 权重和偏置\n        self.W = nn.Parameter(torch.randn(n_visible, n_hidden) * 0.1)\n        self.v_bias = nn.Parameter(torch.zeros(n_visible))\n        self.h_bias = nn.Parameter(torch.zeros(n_hidden))\n    \n    def sample_h(self, v):\n        \"\"\"给定可见层，采样隐藏层\"\"\"\n        p_h = torch.sigmoid(torch.matmul(v, self.W) + self.h_bias)\n        return p_h, torch.bernoulli(p_h)\n    \n    def sample_v(self, h):\n        \"\"\"给定隐藏层，采样可见层\"\"\"\n        p_v = torch.sigmoid(torch.matmul(h, self.W.t()) + self.v_bias)\n        return p_v, torch.bernoulli(p_v)\n    \n    def contrastive_divergence(self, v0, k=1):\n        \"\"\"对比散度算法\"\"\"\n        # 正相\n        p_h0, h0 = self.sample_h(v0)\n        \n        # 负相（Gibbs采样）\n        v_k = v0\n        for _ in range(k):\n            p_h_k, h_k = self.sample_h(v_k)\n            p_v_k, v_k = self.sample_v(h_k)\n        \n        # 计算梯度\n        positive_grad = torch.matmul(v0.t(), p_h0)\n        negative_grad = torch.matmul(v_k.t(), p_h_k)\n        \n        return positive_grad - negative_grad\n    \n    def forward(self, v):\n        \"\"\"前向传播\"\"\"\n        p_h, h = self.sample_h(v)\n        return p_h\n\n# 使用示例\nif __name__ == \"__main__\":\n    # 创建RBM\n    rbm = RBM(n_visible=784, n_hidden=500)\n    \n    # 模拟输入（二值化图像）\n    v0 = torch.rand(32, 784)\n    v0 = (v0 > 0.5).float()\n    \n    # 前向传播\n    h = rbm(v0)\n    print(f\"隐藏层形状: {h.shape}\")  # [32, 500]\n    \n    # 对比散度（用于训练）\n    grad = rbm.contrastive_divergence(v0, k=1)\n    print(f\"梯度形状: {grad.shape}\")  # [784, 500]"
+        },
+        {
+          "type": "code-box",
+          "title": "DBN 逐层预训练",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nfrom torch.optim import Adam\n\nclass DBN(nn.Module):\n    \"\"\"深度信念网络\"\"\"\n    def __init__(self, layers):\n        super(DBN, self).__init__()\n        self.layers = nn.ModuleList([RBM(layers[i], layers[i+1]) \n                                     for i in range(len(layers)-1)])\n    \n    def pretrain_layer(self, layer_idx, data, epochs=10):\n        \"\"\"预训练单层RBM\"\"\"\n        rbm = self.layers[layer_idx]\n        optimizer = Adam(rbm.parameters(), lr=0.01)\n        \n        for epoch in range(epochs):\n            # 获取当前层的输入\n            if layer_idx == 0:\n                input_data = data\n            else:\n                with torch.no_grad():\n                    input_data = self.layers[layer_idx-1](data)\n            \n            # 对比散度\n            grad = rbm.contrastive_divergence(input_data)\n            \n            # 更新权重（简化版）\n            optimizer.zero_grad()\n            loss = -torch.sum(grad * rbm.W)\n            loss.backward()\n            optimizer.step()\n            \n            if (epoch + 1) % 5 == 0:\n                print(f\"Layer {layer_idx}, Epoch {epoch+1}, Loss: {loss.item():.4f}\")\n\n# 使用示例\nif __name__ == \"__main__\":\n    # 创建DBN: 784 -> 500 -> 250 -> 100\n    dbn = DBN([784, 500, 250, 100])\n    \n    # 模拟数据\n    data = torch.rand(100, 784)\n    data = (data > 0.5).float()\n    \n    # 逐层预训练\n    for i in range(len(dbn.layers)):\n        print(f\"预训练第 {i+1} 层...\")\n        dbn.pretrain_layer(i, data, epochs=10)"
+        }
+      ]
+    }
+  ]
+}

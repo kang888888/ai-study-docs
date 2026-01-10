@@ -1,0 +1,79 @@
+{
+  "title": "强化学习基础",
+  "subtitle": "强化学习在大语言模型中的应用基础，理解MDP、价值函数、策略等核心概念。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "强化学习基础",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "强化学习基础",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "强化学习流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "强化学习流程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "价值函数关系",
+          "formulas": [
+            {
+              "display": "V^\\pi(s) = \\sum_a \\pi(a|s) Q^\\pi(s,a)"
+            },
+            {
+              "display": "Q^\\pi(s,a) = R(s,a) + \\gamma \\sum_{s'} P(s'|s,a) V^\\pi(s')"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "状态价值贝尔曼方程",
+          "formulas": [
+            {
+              "display": "V^\\pi(s) = \\sum_a \\pi(a|s) \\left[R(s,a) + \\gamma \\sum_{s'} P(s'|s,a) V^\\pi(s')\\right]"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "动作价值贝尔曼方程",
+          "formulas": [
+            {
+              "display": "Q^\\pi(s,a) = R(s,a) + \\gamma \\sum_{s'} P(s'|s,a) \\sum_{a'} \\pi(a'|s') Q^\\pi(s',a')"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

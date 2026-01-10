@@ -1,0 +1,152 @@
+{
+  "title": "Miras 深度学习架构设计框架",
+  "subtitle": "通用框架，重新概念化神经架构为关联记忆模块",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Miras 是 Google Research 提出的深度学习架构设计通用框架，旨在超越现有的 Transformer 模型。该框架受人类认知现象中的注意力偏差（Attention Bias）启发，将神经架构（包括 Transformers、Titans 和现代线性递归神经网络）重新概念化为关联记忆模块（Associative Memory Modules）。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 四个关键选择",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "1. 关联记忆架构（Associative Memory Architecture）\n                    定义模型如何存储和检索信息，决定记忆的组织方式（扁平/层次/动态）"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "架构设计：指导新架构的设计，理解现有架构的原理\n                    模型优化：优化注意力机制，改进记忆管理\n                    任务适配：根据任务设计合适的架构，选择最优的注意力偏差\n                    理论研究：统一理解神经架构，探索记忆和注意力的本质"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "MirasDiagram",
+              "caption": "Miras架构图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Miras架构图",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "MirasDiagram",
+              "caption": "Miras组件详解",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Miras组件详解",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "关联记忆系统",
+          "formulas": [
+            {
+              "text": "关联记忆系统可以表示为："
+            },
+            {
+              "display": "M = \\{ (k_i, v_i) \\}_{i=1}^{N}"
+            },
+            {
+              "text": "其中："
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "检索过程",
+          "formulas": [
+            {
+              "text": "检索输出："
+            },
+            {
+              "display": "o = \\sum_{i=1}^{N} \\alpha_i \\cdot v_i"
+            },
+            {
+              "text": "其中注意力权重："
+            },
+            {
+              "display": "\\alpha_i = \\text{softmax}(\\text{score}(q, k_i) + \\text{bias}_i)"
+            },
+            {
+              "text": "其中 $\\text{bias}_i$ 是注意力偏差，可以：",
+              "inline": "\\text{bias}_i"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💡 基于 Miras 的模型",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "Moneta：高效的关联记忆架构，优势是快速检索和更新，应用于实时推理任务"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 性能表现",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "语言建模：超越 Transformers 和现代线性递归模型\n                    常识推理：利用关联记忆进行推理，更好的信息检索能力\n                    高召回率任务：需要精确检索的任务，利用注意力偏差优化检索"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "关联记忆模块的简化实现",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\nclass AssociativeMemory(nn.Module):\n    \"\"\"关联记忆模块\"\"\"\n    def __init__(self, d_model, memory_size):\n        super(AssociativeMemory, self).__init__()\n        self.d_model = d_model\n        self.memory_size = memory_size\n        \n        # 记忆存储：键值对\n        self.register_buffer('keys', torch.randn(memory_size, d_model))\n        self.register_buffer('values', torch.randn(memory_size, d_model))\n        \n        # 注意力偏差（可学习）\n        self.bias = nn.Parameter(torch.zeros(memory_size))\n    \n    def forward(self, query):\n        \"\"\"\n        参数:\n            query: [batch_size, d_model] 查询向量\n        返回:\n            output: [batch_size, d_model] 检索结果\n        \"\"\"\n        batch_size = query.shape[0]\n        \n        # 计算查询与键的相似度\n        scores = torch.matmul(query, self.keys.t())  # [batch_size, memory_size]\n        \n        # 添加注意力偏差\n        scores = scores + self.bias.unsqueeze(0)\n        \n        # 计算注意力权重\n        attention_weights = F.softmax(scores, dim=-1)  # [batch_size, memory_size]\n        \n        # 加权求和值\n        output = torch.matmul(attention_weights, self.values)  # [batch_size, d_model]\n        \n        return output\n\n# 使用示例\nif __name__ == \"__main__\":\n    memory = AssociativeMemory(d_model=512, memory_size=1000)\n    query = torch.randn(2, 512)\n    output = memory(query)\n    print(f\"输出形状: {output.shape}\")  # [2, 512]"
+        }
+      ]
+    }
+  ]
+}

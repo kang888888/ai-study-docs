@@ -1,0 +1,174 @@
+{
+  "title": "参数空间合并（Parameter Space Merge）",
+  "subtitle": "直接对模型参数进行加权平均或其他算术操作，是最基础的参数级合并方法。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "参数空间合并是直接在参数空间中对多个模型的参数进行算术操作的方法。这种方法不依赖于任务向量或功能锚点，而是直接对参数进行加权平均、最大值、最小值等操作。参数空间合并是最直观的合并方法，计算简单但可能受到参数对齐问题的影响。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "参数空间操作",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "参数空间操作",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "参数对齐",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "参数对齐",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "合并策略对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "合并策略对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "直接操作：直接在参数空间进行操作，无需额外计算",
+            "计算简单：只需对参数进行算术运算，计算复杂度低",
+            "策略多样：支持加权平均、最大值、最小值等多种策略",
+            "参数对齐：需要确保各模型的参数名称和形状一致",
+            "灵活性高：可以根据需要选择不同的合并策略",
+            "适用性广：适合大多数模型合并场景"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "加权平均",
+          "formulas": [
+            {
+              "display": "\\theta_{merged} = \\sum_{i=1}^{n} w_i \\theta_i"
+            },
+            {
+              "text": "对参数进行加权平均，其中 $w_i$ 是第 $i$ 个模型的权重。",
+              "inline": "w_i"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "最大值合并",
+          "formulas": [
+            {
+              "display": "\\theta_{merged} = \\max(\\theta_1, \\theta_2, \\ldots, \\theta_n)"
+            },
+            {
+              "text": "逐元素取最大值，适合保留各模型的最大能力。",
+              "inline": "\\max"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "最小值合并",
+          "formulas": [
+            {
+              "display": "\\theta_{merged} = \\min(\\theta_1, \\theta_2, \\ldots, \\theta_n)"
+            },
+            {
+              "text": "逐元素取最小值，适合保守的合并策略。",
+              "inline": "\\min"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "参数空间加权平均",
+          "language": "python",
+          "code": "import torch\nfrom transformers import AutoModelForCausalLM\n\n# 加载模型\nmodel1 = AutoModelForCausalLM.from_pretrained(\"model1-path\")\nmodel2 = AutoModelForCausalLM.from_pretrained(\"model2-path\")\nmodel3 = AutoModelForCausalLM.from_pretrained(\"model3-path\")\n\n# 定义权重\nweights = [0.4, 0.4, 0.2]\n\n# 执行参数空间合并\nmerged_state_dict = {}\nfor key in model1.state_dict():\n    # 确保参数形状一致\n    assert model1.state_dict()[key].shape == model2.state_dict()[key].shape\n    assert model1.state_dict()[key].shape == model3.state_dict()[key].shape\n    \n    # 加权平均\n    merged_state_dict[key] = (\n        weights[0] * model1.state_dict()[key] +\n        weights[1] * model2.state_dict()[key] +\n        weights[2] * model3.state_dict()[key]\n    )\n\n# 创建合并后的模型\nmerged_model = AutoModelForCausalLM.from_pretrained(\"model1-path\")\nmerged_model.load_state_dict(merged_state_dict)\nmerged_model.save_pretrained(\"./merged_model\")"
+        },
+        {
+          "type": "code-box",
+          "title": "最大值合并策略",
+          "language": "python",
+          "code": "import torch\nfrom transformers import AutoModelForCausalLM\n\n# 加载模型\nmodel1 = AutoModelForCausalLM.from_pretrained(\"model1-path\")\nmodel2 = AutoModelForCausalLM.from_pretrained(\"model2-path\")\n\n# 执行最大值合并\nmerged_state_dict = {}\nfor key in model1.state_dict():\n    # 逐元素取最大值\n    merged_state_dict[key] = torch.maximum(\n        model1.state_dict()[key],\n        model2.state_dict()[key]\n    )\n\n# 创建合并后的模型\nmerged_model = AutoModelForCausalLM.from_pretrained(\"model1-path\")\nmerged_model.load_state_dict(merged_state_dict)\nmerged_model.save_pretrained(\"./merged_model\")"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "模型平均：对多个检查点或不同随机初始化的模型进行平均。知识融合：合并在不同数据集上训练的模型。快速实验：快速尝试不同模型的组合。参数对齐：在参数空间直接操作的场景。"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚠️ 注意事项",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "参数对齐：必须确保各模型的参数名称和形状完全一致",
+            "策略选择：不同策略适用于不同场景，需要实验验证",
+            "性能权衡：合并后的性能可能不会超过最佳模型",
+            "数值稳定性：需要注意数值溢出和下溢问题",
+            "验证测试：合并后需要进行充分的验证测试"
+          ]
+        }
+      ]
+    }
+  ]
+}

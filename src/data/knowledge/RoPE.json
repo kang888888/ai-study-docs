@@ -1,0 +1,75 @@
+{
+  "title": "RoPE (Rotary Position Embedding) 旋转位置编码",
+  "subtitle": "通过复数旋转实现相对位置编码，支持外推的先进位置编码方法",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "RoPE是一种相对位置编码方法，通过将位置信息编码为旋转矩阵，将绝对位置编码转换为相对位置编码。它使用复数旋转操作，使得模型能够理解token之间的相对位置关系，同时支持训练长度外推到更长序列。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "相对位置编码：通过旋转矩阵编码相对位置关系，而非绝对位置",
+            "外推能力：训练时使用较短序列，推理时可处理更长序列",
+            "复数旋转：使用复数域的旋转操作，数学形式优雅",
+            "计算高效：相比绝对位置编码，计算开销增加有限",
+            "广泛应用：LLaMA、ChatGLM、QWen等主流模型均采用RoPE"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "复数旋转矩阵、相对位置编码、外推机制、频率基编码"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "长文本处理、代码生成、对话系统、文档理解等需要理解相对位置关系的场景"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "旋转位置编码公式",
+          "formulas": [
+            {
+              "text": "对于位置m的query向量q和位置n的key向量k，RoPE通过旋转矩阵R进行编码："
+            },
+            {
+              "text": "R_θ^d = \\begin{pmatrix} \\cos m\\theta & -\\sin m\\theta \\\\ \\sin m\\theta & \\cos m\\theta \\end{pmatrix}"
+            },
+            {
+              "text": "其中θ_i = 10000^{-2i/d}，d是维度，i是维度索引"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

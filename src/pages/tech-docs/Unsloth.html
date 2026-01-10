@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unsloth 超高效微调框架 - 技术详解</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Unsloth：面向开源大模型的极致高效微调框架</h1>
+        <p class="tagline">通过定制化 CUDA Kernel、Flash Attention、自动量化与 LoRA 预设，将训练速度提升 2-5 倍，显存占用下降 80%。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card">
+                <h3>核心能力</h3>
+                <p>开箱即用的 QLoRA+LoRA pipeline、自动分布式并行、内存分析仪表盘。</p>
+            </div>
+            <div class="meta-card">
+                <h3>支持模型</h3>
+                <p>Llama 3.x、Mistral、Mixtral、Qwen、Yi、Phi-3、DeepSeek 等主流开源 LLM。</p>
+            </div>
+            <div class="meta-card">
+                <h3>部署形态</h3>
+                <p>Colab Notebook、CLI、Python API、与 Axolotl/Lightning 集成。</p>
+            </div>
+            <div class="meta-card">
+                <h3>适用场景</h3>
+                <p>快速原型验证、低显存环境、教育训练营、自动化 A/B 微调。</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🚀 技术要点</h2>
+            <ul>
+                <li><strong>内核级优化：</strong>使用自研 Flash Attention 2 / xFormers kernel，减少内存读写。</li>
+                <li><strong>Auto-QLoRA：</strong>自动选择最适合的 rank、target modules、量化 dtype。</li>
+                <li><strong>快速启动：</strong>单条命令即可从 Hugging Face Hub 下载模型与数据、开始训练。</li>
+                <li><strong>可视化监控：</strong>内置 Weights & Biases、Live Loss Plot、OOM 预警。</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>📊 图解</h2>
+            <div class="diagram-gallery">
+                <div class="diagram-item">
+                    <img src="./assets/Unsloth架构.png" alt="Unsloth 模块化架构" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">模块化架构</div>
+                </div>
+                <div class="diagram-item">
+                    <img src="./assets/Unsloth性能.png" alt="性能加速效果" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">性能加速效果</div>
+                </div>
+                <div class="diagram-item">
+                    <img src="./assets/Unsloth工作流.png" alt="工作流" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">工作流</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📐 数学/算法要点</h2>
+            <div class="math-box">
+                <h3>显存加速比估算</h3>
+                <div class="math-formula">
+                    <p>Unsloth 通过 4bit 量化 + LoRA 将显存降至：</p>
+                    <p>$$\text{VRAM}_{\text{QLoRA}} \approx \frac{n_{\text{params}} \times 4}{8} + 2 \times n_{\text{LoRA}} \times bytes_{\text{fp16}}$$</p>
+                    <p>其中 $n_{\text{LoRA}} = 2 \cdot d \cdot r$，通常仅占原模型 0.5%~1%。</p>
+                </div>
+            </div>
+            <div class="math-box">
+                <h3>吞吐量估算</h3>
+                <div class="math-formula">
+                    <p>配合 Flash Attention，计算复杂度近似：</p>
+                    <p>$$\mathcal{O}(n d^2) \rightarrow \mathcal{O}\bigg(\frac{n d^2}{\sqrt{B}}\bigg)$$</p>
+                    <p>$B$ 为并行 block 数，体现多流执行带来的吞吐提升。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💻 代码示例</h2>
+            <div class="code-box">
+                <h3>Python API 一键微调</h3>
+                <pre><code class="language-python">from unsloth import FastLanguageModel
+
+model, tokenizer = FastLanguageModel.from_pretrained(
+    model_name="meta-llama/Llama-3-8b",
+    max_seq_length=4096,
+    load_in_4bit=True,
+)
+
+model = FastLanguageModel.get_peft_model(
+    model,
+    r=64,
+    target_modules=["q_proj", "v_proj", "k_proj", "o_proj"],
+    lora_alpha=64,
+    lora_dropout=0.05
+)
+
+trainer = FastLanguageModel.get_trainer(
+    model=model,
+    tokenizer=tokenizer,
+    dataset="unsloth/guanaco-bilingual",
+    logging_steps=10,
+    learning_rate=2e-4,
+    num_train_epochs=3
+)
+
+trainer.train()
+</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal();">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

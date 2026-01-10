@@ -1,0 +1,61 @@
+{
+  "title": "语言理解基准",
+  "subtitle": "GLUE、SuperGLUE等自然语言理解评估基准。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "语言理解基准分类",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "语言理解基准分类",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "GLUE基准结构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "GLUE基准结构",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用GLUE基准评估",
+          "language": "python",
+          "code": "from datasets import load_dataset\nfrom transformers import AutoTokenizer, AutoModelForSequenceClassification\nfrom transformers import Trainer, TrainingArguments\n\n# 加载GLUE数据集\nmnli_dataset = load_dataset(\"glue\", \"mnli\")\n\n# 加载模型和分词器\nmodel_name = \"bert-base-uncased\"\ntokenizer = AutoTokenizer.from_pretrained(model_name)\nmodel = AutoModelForSequenceClassification.from_pretrained(\n    model_name, \n    num_labels=3  # MNLI有3个标签\n)\n\ndef tokenize_function(examples):\n    return tokenizer(\n        examples[\"premise\"],\n        examples[\"hypothesis\"],\n        truncation=True,\n        padding=\"max_length\",\n        max_length=128\n    )\n\ntokenized_dataset = mnli_dataset.map(tokenize_function, batched=True)\n\n# 训练和评估\nfrom transformers import Trainer, TrainingArguments\n\ntraining_args = TrainingArguments(\n    output_dir=\"./results\",\n    evaluation_strategy=\"epoch\",\n    learning_rate=2e-5,\n    per_device_train_batch_size=16,\n    num_train_epochs=3\n)\n\ntrainer = Trainer(\n    model=model,\n    args=training_args,\n    train_dataset=tokenized_dataset[\"train\"],\n    eval_dataset=tokenized_dataset[\"validation_matched\"]\n)\n\ntrainer.train()\nresults = trainer.evaluate()\nprint(f\"GLUE MNLI Accuracy: {results['eval_accuracy']:.4f}\")"
+        },
+        {
+          "type": "code-box",
+          "title": "使用SuperGLUE基准",
+          "language": "python",
+          "code": "from datasets import load_dataset\n\n# SuperGLUE包含更难的NLU任务\nsuperglue_tasks = [\n    'boolq',      # 布尔问答\n    'cb',         # CommitmentBank\n    'copa',       # Choice of Plausible Alternatives\n    'multirc',    # Multi-Sentence Reading Comprehension\n    'record',     # Reading Comprehension with Commonsense Reasoning\n    'rte',        # Recognizing Textual Entailment\n    'wic',        # Word-in-Context\n    'wsc'         # Winograd Schema Challenge\n]\n\n# 加载SuperGLUE任务\ndef load_superglue_task(task_name):\n    dataset = load_dataset(\"super_glue\", task_name)\n    return dataset\n\n# 评估模型在SuperGLUE上的表现\nfor task in superglue_tasks:\n    dataset = load_superglue_task(task)\n    print(f\"{task}: {len(dataset['train'])} training examples\")"
+        }
+      ]
+    }
+  ]
+}

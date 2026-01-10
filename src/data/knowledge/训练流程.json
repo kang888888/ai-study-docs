@@ -1,0 +1,61 @@
+{
+  "title": "训练流程",
+  "subtitle": "从数据准备、模型训练、评估到部署的完整训练流程。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "训练流程图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "训练流程图",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "训练阶段划分",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "训练阶段划分",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "完整训练流程",
+          "language": "python",
+          "code": "def train_pipeline(config):\n    # 1. 数据准备\n    dataset = load_dataset(config.data_path)\n    tokenizer = load_tokenizer(config.tokenizer_path)\n    dataloader = create_dataloader(dataset, tokenizer, config.batch_size)\n    \n    # 2. 模型初始化\n    model = GPT(config.model_config)\n    model = model.to(config.device)\n    \n    # 3. 优化器设置\n    optimizer = torch.optim.AdamW(\n        model.parameters(),\n        lr=config.learning_rate,\n        weight_decay=config.weight_decay\n    )\n    \n    # 4. 训练循环\n    for epoch in range(config.num_epochs):\n        for batch in dataloader:\n            # 前向传播\n            logits, loss = model(batch['input_ids'], batch['labels'])\n            \n            # 反向传播\n            loss.backward()\n            optimizer.step()\n            optimizer.zero_grad()\n            \n            # 记录日志\n            log_metrics(loss.item())\n        \n        # 5. 评估\n        eval_loss = evaluate(model, eval_dataloader)\n        \n        # 6. 保存检查点\n        save_checkpoint(model, optimizer, epoch, eval_loss)\n    \n    # 7. 模型部署\n    export_model(model, config.output_path)"
+        },
+        {
+          "type": "code-box",
+          "title": "数据准备流程",
+          "language": "python",
+          "code": "def prepare_data(data_path, tokenizer, max_length=512):\n    \"\"\"数据准备流程\"\"\"\n    # 1. 加载原始数据\n    raw_data = load_raw_data(data_path)\n    \n    # 2. 数据清洗\n    cleaned_data = clean_data(raw_data)\n    \n    # 3. 分词\n    tokenized_data = []\n    for text in cleaned_data:\n        tokens = tokenizer.encode(text, max_length=max_length, truncation=True)\n        tokenized_data.append(tokens)\n    \n    # 4. 创建数据集\n    dataset = GPTDataset(tokenized_data, max_length)\n    \n    # 5. 数据划分\n    train_dataset, val_dataset = split_dataset(dataset, train_ratio=0.9)\n    \n    return train_dataset, val_dataset"
+        }
+      ]
+    }
+  ]
+}

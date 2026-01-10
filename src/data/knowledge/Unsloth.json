@@ -1,0 +1,103 @@
+{
+  "title": "Unsloth：面向开源大模型的极致高效微调框架",
+  "subtitle": "通过定制化 CUDA Kernel、Flash Attention、自动量化与 LoRA 预设，将训练速度提升 2-5 倍，显存占用下降 80%。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "模块化架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "模块化架构"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "性能加速效果",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "性能加速效果"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "工作流",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "工作流"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学/算法要点",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "显存加速比估算",
+          "formulas": [
+            {
+              "text": "Unsloth 通过 4bit 量化 + LoRA 将显存降至："
+            },
+            {
+              "display": "\\text{VRAM}_{\\text{QLoRA}} \\approx \\frac{n_{\\text{params}} \\times 4}{8} + 2 \\times n_{\\text{LoRA}} \\times bytes_{\\text{fp16}}"
+            },
+            {
+              "text": "其中 $n_{\\text{LoRA}} = 2 \\cdot d \\cdot r$，通常仅占原模型 0.5%~1%。",
+              "inline": "n_{\\text{LoRA}} = 2 \\cdot d \\cdot r"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "吞吐量估算",
+          "formulas": [
+            {
+              "text": "配合 Flash Attention，计算复杂度近似："
+            },
+            {
+              "display": "\\mathcal{O}(n d^2) \\rightarrow \\mathcal{O}\\bigg(\\frac{n d^2}{\\sqrt{B}}\\bigg)"
+            },
+            {
+              "text": "$B$ 为并行 block 数，体现多流执行带来的吞吐提升。",
+              "inline": "B"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "Python API 一键微调",
+          "language": "python",
+          "code": "from unsloth import FastLanguageModel\n\nmodel, tokenizer = FastLanguageModel.from_pretrained(\n    model_name=\"meta-llama/Llama-3-8b\",\n    max_seq_length=4096,\n    load_in_4bit=True,\n)\n\nmodel = FastLanguageModel.get_peft_model(\n    model,\n    r=64,\n    target_modules=[\"q_proj\", \"v_proj\", \"k_proj\", \"o_proj\"],\n    lora_alpha=64,\n    lora_dropout=0.05\n)\n\ntrainer = FastLanguageModel.get_trainer(\n    model=model,\n    tokenizer=tokenizer,\n    dataset=\"unsloth/guanaco-bilingual\",\n    logging_steps=10,\n    learning_rate=2e-4,\n    num_train_epochs=3\n)\n\ntrainer.train()"
+        }
+      ]
+    }
+  ]
+}

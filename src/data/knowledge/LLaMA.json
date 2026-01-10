@@ -1,0 +1,181 @@
+{
+  "title": "LLaMA (Large Language Model Meta AI)",
+  "subtitle": "Meta开源的大语言模型系列",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Meta开源的大语言模型系列，包含7B到70B多个规模。采用RMSNorm、SwiGLU、RoPE等现代优化技术，性能优异且完全开源可商用，成为开源社区的基座模型。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "完全开源：可商用，衍生出大量微调版本（Alpaca、Vicuna等）",
+            "RMSNorm：替代LayerNorm，计算更高效",
+            "SwiGLU激活：替代ReLU，性能更好",
+            "RoPE位置编码：旋转位置编码，支持长上下文扩展",
+            "GQA优化：LLaMA-2/3使用分组查询注意力，降低KV Cache"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "RMSNorm、SwiGLU、RoPE、Grouped-Query Attention（GQA）"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "通用对话、代码生成、指令遵循、作为基座模型微调"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "LLaMA整体架构图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "LLaMA整体架构图",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "RMSNorm、SwiGLU、RoPE等关键组件",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "RMSNorm、SwiGLU、RoPE等关键组件",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "LLaMA与其他开源模型对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "LLaMA与其他开源模型对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "RMSNorm（Root Mean Square Layer Normalization）",
+          "formulas": [
+            {
+              "text": "RMSNorm 公式："
+            },
+            {
+              "display": "\\text{RMSNorm}(x) = \\frac{x}{\\text{RMS}(x)} \\odot g"
+            },
+            {
+              "display": "\\text{RMS}(x) = \\sqrt{\\frac{1}{n}\\sum_{i=1}^{n} x_i^2}"
+            },
+            {
+              "text": "相比 LayerNorm，RMSNorm 不需要计算均值，计算更高效"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "SwiGLU 激活函数",
+          "formulas": [
+            {
+              "text": "SwiGLU 公式："
+            },
+            {
+              "display": "\\text{SwiGLU}(x) = \\text{Swish}(xW + b) \\odot (xV + c)"
+            },
+            {
+              "display": "\\text{Swish}(x) = x \\cdot \\sigma(x)"
+            },
+            {
+              "text": "其中 $\\sigma$ 是 sigmoid 函数，$\\odot$ 是逐元素相乘",
+              "inline": "\\sigma"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "RoPE（旋转位置编码）",
+          "formulas": [
+            {
+              "text": "旋转位置编码："
+            },
+            {
+              "display": "R_{\\Theta, m}^d = \\begin{pmatrix}\n                        \\cos m\\theta_1 &amp; -\\sin m\\theta_1 &amp; 0 &amp; 0 &amp; \\cdots \\\\\n                        \\sin m\\theta_1 &amp; \\cos m\\theta_1 &amp; 0 &amp; 0 &amp; \\cdots \\\\\n                        0 &amp; 0 &amp; \\cos m\\theta_2 &amp; -\\sin m\\theta_2 &amp; \\cdots \\\\\n                        0 &amp; 0 &amp; \\sin m\\theta_2 &amp; \\cos m\\theta_2 &amp; \\cdots \\\\\n                        \\vdots &amp; \\vdots &amp; \\vdots &amp; \\vdots &amp; \\ddots\n                        \\end{pmatrix}"
+            },
+            {
+              "text": "其中 $\\theta_i = 10000^{-2(i-1)/d}$，$m$ 是位置索引",
+              "inline": "\\theta_i = 10000^{-2(i-1)/d}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 Transformers 库加载 LLaMA",
+          "language": "python",
+          "code": "from transformers import LlamaForCausalLM, LlamaTokenizer\nimport torch\n\n# 加载模型和分词器\nmodel_name = \"meta-llama/Llama-2-7b-hf\"  # 需要HuggingFace访问权限\ntokenizer = LlamaTokenizer.from_pretrained(model_name)\nmodel = LlamaForCausalLM.from_pretrained(model_name)\n\n# 输入文本\ntext = \"The future of AI is\"\n\n# 分词\ninputs = tokenizer(text, return_tensors=\"pt\")\n\n# 生成\nwith torch.no_grad():\n    outputs = model.generate(\n        **inputs,\n        max_length=100,\n        temperature=0.7,\n        do_sample=True\n    )\n\n# 解码\ngenerated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)\nprint(generated_text)"
+        },
+        {
+          "type": "code-box",
+          "title": "手动实现 RMSNorm 和 SwiGLU",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\nclass RMSNorm(nn.Module):\n    \"\"\"RMSNorm 实现\"\"\"\n    def __init__(self, dim, eps=1e-8):\n        super(RMSNorm, self).__init__()\n        self.eps = eps\n        self.weight = nn.Parameter(torch.ones(dim))\n    \n    def forward(self, x):\n        # 计算 RMS\n        rms = torch.sqrt(torch.mean(x ** 2, dim=-1, keepdim=True) + self.eps)\n        # 归一化并缩放\n        return x / rms * self.weight\n\nclass SwiGLU(nn.Module):\n    \"\"\"SwiGLU 激活函数\"\"\"\n    def __init__(self, dim):\n        super(SwiGLU, self).__init__()\n        self.gate_proj = nn.Linear(dim, dim)\n        self.up_proj = nn.Linear(dim, dim)\n    \n    def forward(self, x):\n        gate = F.silu(self.gate_proj(x))  # Swish = SiLU\n        up = self.up_proj(x)\n        return gate * up\n\nclass RoPE(nn.Module):\n    \"\"\"旋转位置编码（简化版）\"\"\"\n    def __init__(self, dim, max_seq_len=2048, base=10000):\n        super(RoPE, self).__init__()\n        inv_freq = 1.0 / (base ** (torch.arange(0, dim, 2).float() / dim))\n        self.register_buffer('inv_freq', inv_freq)\n        self.max_seq_len = max_seq_len\n    \n    def forward(self, x, seq_len=None):\n        if seq_len is None:\n            seq_len = x.shape[-2]\n        \n        t = torch.arange(seq_len, device=x.device).type_as(self.inv_freq)\n        freqs = torch.einsum('i,j->ij', t, self.inv_freq)\n        emb = torch.cat((freqs, freqs), dim=-1)\n        \n        return emb\n\n# 使用示例\nif __name__ == \"__main__\":\n    # RMSNorm\n    rms_norm = RMSNorm(dim=768)\n    x = torch.randn(2, 10, 768)\n    out = rms_norm(x)\n    print(f\"RMSNorm 输出形状: {out.shape}\")\n    \n    # SwiGLU\n    swiglu = SwiGLU(dim=768)\n    x = torch.randn(2, 10, 768)\n    out = swiglu(x)\n    print(f\"SwiGLU 输出形状: {out.shape}\")\n    \n    # RoPE\n    rope = RoPE(dim=768)\n    pos_emb = rope(x)\n    print(f\"RoPE 位置编码形状: {pos_emb.shape}\")"
+        }
+      ]
+    }
+  ]
+}

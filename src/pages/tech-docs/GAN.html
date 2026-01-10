@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAN (Generative Adversarial Network) 生成对抗网络 - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>GAN (Generative Adversarial Network) 生成对抗网络</h1>
+            <p>生成器与判别器的对抗博弈</p>
+        </div>
+        <div class="content">
+            
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>由生成器（Generator）和判别器（Discriminator）组成的对抗系统。生成器试图生成逼真数据，判别器试图区分真假，两者博弈最终达到纳什均衡。</p>
+                </div>
+            </div>
+
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>对抗训练：生成器和判别器相互博弈，交替训练</li>
+                    <li>生成速度快：一次前向传播即可生成，无需多步采样</li>
+                    <li>训练不稳定：容易出现模式崩溃（Mode Collapse）</li>
+                    <li>无显式密度：不学习数据分布的显式形式</li>
+                    <li>多种变体：DCGAN、StyleGAN、CycleGAN等</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box">
+                    <p><strong>对抗损失、WGAN、谱归一化（Spectral Normalization）、渐进式训练</strong></p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box">
+                    <p>图像生成、风格迁移、图像超分辨率、数据增强、人脸生成（StyleGAN）</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 架构图解</h2>
+                <div class="diagram-gallery">
+                    <div class="diagram-item">
+                        <img src="GAN架构图.png" alt="GAN架构图" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">GAN架构图</div>
+                    </div>
+                    <div class="diagram-item">
+                        <img src="GAN训练过程.png" alt="GAN训练过程" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">GAN训练过程</div>
+                    </div>
+                    <div class="diagram-item">
+                        <img src="GAN分布演化.png" alt="GAN分布演化" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">GAN分布演化</div>
+                    </div>
+                    <div class="diagram-item">
+                        <img src="GAN变体对比.png" alt="GAN变体对比" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                        <div class="caption">GAN变体对比</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>GAN 的对抗损失函数</h3>
+                    <div class="math-formula">
+                        <p>GAN 的优化目标是一个极小极大博弈：</p>
+                        <p>$$\min_G \max_D V(D, G) = \mathbb{E}_{x \sim p_{data}(x)}[\log D(x)] + \mathbb{E}_{z \sim p_z(z)}[\log(1 - D(G(z)))]$$</p>
+                        <p>其中：</p>
+                        <ul style="list-style: none; padding-left: 20px;">
+                            <li>$G$ 是生成器，$D$ 是判别器</li>
+                            <li>$p_{data}(x)$ 是真实数据分布</li>
+                            <li>$p_z(z)$ 是噪声分布（通常是标准正态分布）</li>
+                            <li>生成器试图最小化，判别器试图最大化</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>最优判别器</h3>
+                    <div class="math-formula">
+                        <p>对于固定的生成器 $G$，最优判别器为：</p>
+                        <p>$$D^*(x) = \frac{p_{data}(x)}{p_{data}(x) + p_g(x)}$$</p>
+                        <p>其中 $p_g(x)$ 是生成器生成的数据分布</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>全局最优解</h3>
+                    <div class="math-formula">
+                        <p>当 $p_g = p_{data}$ 时达到全局最优，此时：</p>
+                        <p>$$D^*(x) = \frac{1}{2}$$</p>
+                        <p>判别器无法区分真实数据和生成数据</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 PyTorch 实现简单 GAN</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.nn.functional as F
+
+class Generator(nn.Module):
+    """生成器网络"""
+    def __init__(self, latent_dim, img_shape):
+        super(Generator, self).__init__()
+        self.img_shape = img_shape
+        
+        def block(in_feat, out_feat, normalize=True):
+            layers = [nn.Linear(in_feat, out_feat)]
+            if normalize:
+                layers.append(nn.BatchNorm1d(out_feat, 0.8))
+            layers.append(nn.LeakyReLU(0.2, inplace=True))
+            return layers
+        
+        self.model = nn.Sequential(
+            *block(latent_dim, 128, normalize=False),
+            *block(128, 256),
+            *block(256, 512),
+            *block(512, 1024),
+            nn.Linear(1024, int(torch.prod(torch.tensor(img_shape)))),
+            nn.Tanh()
+        )
+    
+    def forward(self, z):
+        img = self.model(z)
+        img = img.view(img.size(0), *self.img_shape)
+        return img
+
+class Discriminator(nn.Module):
+    """判别器网络"""
+    def __init__(self, img_shape):
+        super(Discriminator, self).__init__()
+        
+        self.model = nn.Sequential(
+            nn.Linear(int(torch.prod(torch.tensor(img_shape))), 512),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Linear(512, 256),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Linear(256, 1),
+            nn.Sigmoid()
+        )
+    
+    def forward(self, img):
+        img_flat = img.view(img.size(0), -1)
+        validity = self.model(img_flat)
+        return validity
+
+# 训练函数
+def train_gan(generator, discriminator, dataloader, epochs=200, lr=0.0002, latent_dim=100):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
+    generator = generator.to(device)
+    discriminator = discriminator.to(device)
+    
+    optimizer_G = optim.Adam(generator.parameters(), lr=lr, betas=(0.5, 0.999))
+    optimizer_D = optim.Adam(discriminator.parameters(), lr=lr, betas=(0.5, 0.999))
+    
+    adversarial_loss = nn.BCELoss()
+    
+    for epoch in range(epochs):
+        for i, (imgs, _) in enumerate(dataloader):
+            batch_size = imgs.size(0)
+            real_imgs = imgs.to(device)
+            
+            # 训练判别器
+            optimizer_D.zero_grad()
+            
+            # 真实数据
+            real_validity = discriminator(real_imgs)
+            real_loss = adversarial_loss(real_validity, torch.ones(batch_size, 1).to(device))
+            
+            # 生成数据
+            z = torch.randn(batch_size, latent_dim).to(device)
+            fake_imgs = generator(z)
+            fake_validity = discriminator(fake_imgs.detach())
+            fake_loss = adversarial_loss(fake_validity, torch.zeros(batch_size, 1).to(device))
+            
+            d_loss = (real_loss + fake_loss) / 2
+            d_loss.backward()
+            optimizer_D.step()
+            
+            # 训练生成器
+            optimizer_G.zero_grad()
+            
+            z = torch.randn(batch_size, latent_dim).to(device)
+            gen_imgs = generator(z)
+            validity = discriminator(gen_imgs)
+            g_loss = adversarial_loss(validity, torch.ones(batch_size, 1).to(device))
+            
+            g_loss.backward()
+            optimizer_G.step()
+            
+            if i % 100 == 0:
+                print(f"[Epoch {epoch}/{epochs}] [Batch {i}] [D loss: {d_loss.item():.4f}] [G loss: {g_loss.item():.4f}]")
+
+# 使用示例
+if __name__ == "__main__":
+    img_shape = (1, 28, 28)  # MNIST图像形状
+    latent_dim = 100
+    
+    generator = Generator(latent_dim, img_shape)
+    discriminator = Discriminator(img_shape)
+    
+    print(f"生成器参数量: {sum(p.numel() for p in generator.parameters()):,}")
+    print(f"判别器参数量: {sum(p.numel() for p in discriminator.parameters()):,}")</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 图片放大弹窗 -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal()">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+            modalImg.onclick = function(e) { e.stopPropagation(); };
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,54 @@
+{
+  "title": "MCTS (Monte Carlo Tree Search) 蒙特卡洛树搜索",
+  "subtitle": "在推理空间内进行启发式搜索，结合Value Head寻找最优路径",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "MCTS是一种在推理空间内进行启发式搜索的方法，通过模拟多个推理路径并评估每条路径的价值，找到最优的推理路径。在语言模型中，MCTS结合Value Head评估每个推理步骤的价值，指导模型选择最佳的推理方向。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "树搜索：在推理空间中构建搜索树，探索多个推理路径",
+            "价值评估：使用Value Head评估每个推理步骤的价值",
+            "最优路径：通过搜索找到最优的推理路径",
+            "性能提升：在复杂推理任务上显著提升模型性能",
+            "探索与利用：平衡探索新路径和利用已知好路径"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "树搜索、蒙特卡洛模拟、价值函数、策略网络、UCB算法"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "复杂推理、数学问题求解、代码生成、游戏AI、决策制定等需要搜索最优解的任务"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LLM 性能分析与优化</title>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+<header>
+    <h1>LLM 性能分析与优化</h1>
+    <p class="lead">用数据驱动的方式定位瓶颈、选择工具，并将训练/推理优化落地。</p>
+</header>
+<main>
+    <section>
+        <h2>性能分析路线图</h2>
+        <ol>
+            <li>PyTorch Profiler：算子耗时、内存、DataLoader；生成 TensorBoard/Chrome Trace。</li>
+            <li>Nsight Systems：系统级时间线，观察 CPU/GPU、NCCL、IO。</li>
+            <li>Nsight Compute：Kernel 指标，定位 SM/内存/指令瓶颈。</li>
+            <li>实验验证：制定假设→修改策略→对比基线→记录结果。</li>
+        </ol>
+        <table>
+            <thead><tr><th>场景</th><th>关键指标</th><th>常用工具</th></tr></thead>
+            <tbody>
+                <tr><td>训练</td><td>Samples/s、GPU 利用率、通信时间、显存</td><td>PyTorch Profiler、Nsight Systems</td></tr>
+                <tr><td>推理</td><td>延迟、吞吐、Tokens/s、KV Cache 命中</td><td>Serving 日志、Profiler</td></tr>
+                <tr><td>系统</td><td>CPU/GPU 占用、PCIe、网络</td><td>Nsight Systems、nvidia-smi、dcgm</td></tr>
+                <tr><td>Kernel</td><td>SM Occupancy、DRAM 带宽、Warp Stall</td><td>Nsight Compute</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>PyTorch Profiler</h2>
+        <ul>
+            <li>记录 CPU/GPU 算子、内存、分布式事件，输出 TensorBoard/Chrome Trace。</li>
+            <li>关注热点算子、DataLoader 阻塞、GPU idle、内存峰值。</li>
+        </ul>
+        <pre><code>import torch.profiler as profiler
+with profiler.profile(
+    activities=[profiler.ProfilerActivity.CPU, profiler.ProfilerActivity.CUDA],
+    schedule=profiler.schedule(wait=1, warmup=1, active=5),
+    record_shapes=True,
+    on_trace_ready=profiler.tensorboard_trace_handler("./log")
+) as prof:
+    for step, batch in enumerate(dataloader):
+        loss = model(batch)
+        loss.backward()
+        optimizer.step()
+        prof.step()</code></pre>
+    </section>
+
+    <section>
+        <h2>Nsight Systems</h2>
+        <ul>
+            <li>查看 CUDA Kernel、NCCL、CPU 线程、内存传输的时间线。</li>
+            <li>命令：<code>nsys profile -o llama_train --trace=cuda,osrt,nvtx,mpi python train.py</code></li>
+            <li>步骤：找 GPU Idle、核与通信重叠、DataLoader 是否阻塞、评估 PCIe/NVLink。</li>
+            <li>优化：NVTX 标记、多通道 NCCL、调节数据加载、计算/通信不同 Stream。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Nsight Compute</h2>
+        <ul>
+            <li>Kernel 级指标：SM Occupancy、DRAM Throughput、FLOPs Utilization、Warp Stall。</li>
+            <li>命令：<code>ncu --target-processes all --set full --kernel-name Regex:.*attention.* -o ncu_report python inference.py</code></li>
+            <li>优化：提高并行度、内存访问对齐、利用共享内存、启用 Tensor Core、借助 Cutlass/Triton。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>优化手段速查</h2>
+        <h3>计算</h3>
+        <ul>
+            <li>混合精度（FP16/BF16/FP8）。</li>
+            <li>Fused Kernel：FlashAttention、Fused MLP。</li>
+            <li>Cutlass/Triton 等高性能算子。</li>
+        </ul>
+        <h3>通信</h3>
+        <ul>
+            <li>梯度压缩、分层 AllReduce。</li>
+            <li>Pipeline/张量并行减少激活通信。</li>
+            <li>NCCL 多通道，计算与通信重叠。</li>
+        </ul>
+        <h3>内存</h3>
+        <ul>
+            <li>Activation Checkpoint、Recompute。</li>
+            <li>ZeRO/Offload、Paged KV Cache、内存池。</li>
+            <li>权重量化、FlashAttention 减 KV 存储。</li>
+        </ul>
+        <h3>IO</h3>
+        <ul>
+            <li>Async DataLoader、Prefetch、Pinned Memory。</li>
+            <li>Parquet/Zarr 等列存、NVMe-oF、分布式缓存。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>案例：LLaMA-65B 训练</h2>
+        <ul>
+            <li>FlashAttention + Fused MLP → 吞吐 +30%。</li>
+            <li>Activation Recompute + Offload → 显存节省 40%。</li>
+            <li>分层 AllReduce + 混合并行 → 通信 ↓25%。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>持续监控与回归</h2>
+        <ol>
+            <li>CI 中集成性能基准（固定 Prompt/Batch/Sequence）。</li>
+            <li>记录模型版本、硬件、批大小、优化器、并行策略、随机种子。</li>
+            <li>性能退化触发告警，自动回滚或要求分析报告。</li>
+            <li>结合业务指标（延迟、成本、用户体验）评估收益。</li>
+        </ol>
+    </section>
+</main>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

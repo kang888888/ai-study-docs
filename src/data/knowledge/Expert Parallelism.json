@@ -1,0 +1,54 @@
+{
+  "title": "Expert Parallelism 专家并行",
+  "subtitle": "MoE模型中专家路由到不同设备",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Expert Parallelism是专门用于MoE（Mixture of Experts）模型的并行训练方法，将不同的专家（Expert）分配到不同的设备上。通过专家并行，可以训练更大规模的MoE模型，同时保持计算效率。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "专家分配：将不同专家分配到不同设备",
+            "MoE优化：专门针对MoE模型的并行策略",
+            "规模扩展：支持训练更大规模的MoE模型",
+            "通信优化：优化专家间的通信开销",
+            "负载均衡：确保不同设备的负载均衡"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "专家路由、设备分配、通信优化、负载均衡"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "大规模MoE模型训练、专家混合模型、需要多设备协同的MoE训练"
+        }
+      ]
+    }
+  ]
+}

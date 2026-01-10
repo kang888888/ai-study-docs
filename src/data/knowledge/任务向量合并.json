@@ -1,0 +1,174 @@
+{
+  "title": "任务向量合并（Task Vector Merge）",
+  "subtitle": "通过提取任务向量（微调模型与基础模型的差异）来合并多个任务特化模型，实现多任务能力融合。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "任务向量合并是一种基于任务向量的模型合并方法。任务向量表示微调模型与基础模型之间的差异，通过合并多个任务向量，可以在保持基础模型能力的同时，融合多个任务的特化能力。这种方法特别适合需要多任务能力的场景。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "任务向量提取",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "任务向量提取",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "任务向量合并",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "任务向量合并",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "多任务能力融合",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "多任务能力融合",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "任务特化：能够融合多个任务的特化能力",
+            "保持基础能力：合并后仍保持基础模型的通用能力",
+            "灵活组合：可以灵活调整不同任务向量的权重",
+            "减少干扰：通过任务向量减少不同任务之间的干扰",
+            "可解释性：任务向量直观地表示任务特定的变化",
+            "多任务学习：适合需要同时处理多个任务的场景"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "任务向量定义",
+          "formulas": [
+            {
+              "display": "\\tau_i = \\theta_{fine-tuned}^{(i)} - \\theta_{base}"
+            },
+            {
+              "text": "任务向量 $\\tau_i$ 表示第 $i$ 个任务的微调模型与基础模型的参数差异。",
+              "inline": "\\tau_i"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "任务向量合并",
+          "formulas": [
+            {
+              "display": "\\theta_{merged} = \\theta_{base} + \\sum_{i=1}^{n} \\alpha_i \\tau_i"
+            },
+            {
+              "text": "其中 $\\alpha_i$ 控制第 $i$ 个任务向量的贡献，可以调整不同任务的重要性。",
+              "inline": "\\alpha_i"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "权重归一化",
+          "formulas": [
+            {
+              "display": "\\sum_{i=1}^{n} |\\alpha_i| \\leq 1"
+            },
+            {
+              "text": "为了保持模型稳定性，通常限制任务向量权重的总和不超过1。",
+              "inline": "\\alpha_i"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "任务向量提取与合并",
+          "language": "python",
+          "code": "import torch\nfrom transformers import AutoModelForCausalLM\n\n# 加载基础模型和微调模型\nbase_model = AutoModelForCausalLM.from_pretrained(\"base-model-path\")\nft_model_1 = AutoModelForCausalLM.from_pretrained(\"fine-tuned-model-1-path\")\nft_model_2 = AutoModelForCausalLM.from_pretrained(\"fine-tuned-model-2-path\")\n\n# 计算任务向量\ntask_vector_1 = {}\ntask_vector_2 = {}\nfor key in base_model.state_dict():\n    task_vector_1[key] = ft_model_1.state_dict()[key] - base_model.state_dict()[key]\n    task_vector_2[key] = ft_model_2.state_dict()[key] - base_model.state_dict()[key]\n\n# 合并任务向量（设置权重）\nalphas = [0.4, 0.3]  # 任务1和任务2的权重\nmerged_params = base_model.state_dict().copy()\n\nfor key in merged_params:\n    merged_params[key] = base_model.state_dict()[key]\n    merged_params[key] += alphas[0] * task_vector_1[key]\n    merged_params[key] += alphas[1] * task_vector_2[key]\n\n# 创建合并后的模型\nmerged_model = AutoModelForCausalLM.from_pretrained(\"base-model-path\")\nmerged_model.load_state_dict(merged_params)\nmerged_model.save_pretrained(\"./merged_model\")"
+        },
+        {
+          "type": "code-box",
+          "title": "使用MergeKit进行任务向量合并",
+          "language": "python",
+          "code": "from mergekit import MergeKit\n\n# 配置任务向量合并\nmerge_config = {\n    \"base_model\": \"base-model-path\",\n    \"task_vectors\": [\n        {\n            \"model\": \"fine-tuned-model-1-path\",\n            \"alpha\": 0.4\n        },\n        {\n            \"model\": \"fine-tuned-model-2-path\",\n            \"alpha\": 0.3\n        }\n    ],\n    \"merge_method\": \"task_vector\",\n    \"output_path\": \"./merged_model\"\n}\n\n# 执行合并\nmerger = MergeKit()\nmerged_model = merger.merge(merge_config)\nprint(\"任务向量合并完成！\")"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "多任务学习：合并多个任务特化模型，创建一个能同时处理多项任务的统一模型。领域适应：融合不同领域的特化模型，实现跨领域能力。技能组合：将不同技能（如代码生成、数学推理）的模型合并，创建多技能模型。快速迭代：无需重新训练，快速尝试不同任务组合。"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚠️ 注意事项",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "基础模型一致性：所有任务向量必须基于同一个基础模型",
+            "任务干扰：不同任务之间可能存在干扰，需要仔细调整权重",
+            "权重选择：权重过大可能导致模型不稳定，需要实验确定最佳值",
+            "任务相关性：相关任务更容易成功合并，不相关任务可能产生冲突",
+            "验证测试：合并后需要在各任务上进行验证，确保性能不下降"
+          ]
+        }
+      ]
+    }
+  ]
+}

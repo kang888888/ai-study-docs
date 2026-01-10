@@ -1,0 +1,354 @@
+---
+alwaysApply: true
+---
+
+# 末端节点和非末端节点规范
+
+## 📋 节点分类定义
+
+### 末端节点（叶子节点）
+
+**定义**：在 `hierarchy.js` 中，没有 `children` 属性或 `children` 数组长度为 0 的节点。
+
+**判断标准**：
+```javascript
+function isLeafNode(node) {
+  return !node.children || node.children.length === 0;
+}
+```
+
+**特点**：
+- 是知识图谱中的最终知识点
+- 不能再向下展开
+- 必须包含详细的技术文档
+
+### 非末端节点（中间节点）
+
+**定义**：在 `hierarchy.js` 中，有 `children` 属性且 `children` 数组长度大于 0 的节点。
+
+**判断标准**：
+```javascript
+function isNonLeafNode(node) {
+  return node.children && node.children.length > 0;
+}
+```
+
+**特点**：
+- 是知识图谱中的分类/分组节点
+- 可以向下展开查看子节点
+- 主要用于组织和导航，不需要详细技术文档
+
+---
+
+## 🎯 末端节点规范
+
+### 1. 展示方式优先级
+
+末端节点按照以下优先级展示内容：
+
+1. **优先级1**：React技术文档（`techDocuments.js`）
+   - 适用于已手动重构的节点
+   - 使用 `TechDocument` 组件展示
+
+2. **优先级2**：知识文档（`knowledgeMap.js`）✅ **推荐方式**
+   - 从 JSON 文件导入的知识文档
+   - 使用 `TechDocument` 组件展示
+   - 所有末端节点都应该有知识文档
+
+3. **优先级3**：HTML页面（iframe方式，仅用于兼容）
+   - 旧版本的 HTML 页面
+   - 通过 iframe 加载
+   - 不推荐新节点使用此方式
+
+### 2. 知识文档要求
+
+#### 2.1 文件位置
+- 知识文档存储在 `src/data/knowledge/` 目录
+- 文件命名：`{节点名称}.json`
+- 必须在 `src/data/knowledge/knowledgeMap.js` 中导入并映射
+
+#### 2.2 文档结构
+
+**标准模块结构**（参考 MoE）：
+
+1. **📖 核心概念**（必需）- `desc-box` 类型
+   - 节点的基本定义和核心思想
+   - 简洁明了的描述
+
+2. **🌟 核心特点**（必需）- `features` 类型
+   - 列出3-7个关键特点
+   - 使用列表形式展示
+
+3. **⚙️ 关键技术**（必需）- `tech-box` 类型
+   - 关键技术点和技术细节
+   - 可以包含多个技术要点
+
+4. **🚀 应用场景**（必需）- `app-box` 类型
+   - 实际应用场景和用例
+   - 说明在什么情况下使用
+
+5. **📊 架构图解**（可选）- `diagram-gallery` 类型
+   - 架构图、流程图、示意图等
+   - 支持静态图片（PNG/SVG）和交互式 SVG+D3 组件
+   - 如果节点没有架构图，可以省略
+
+6. **📐 数学原理**（可选）- `math-box` 类型
+   - 数学公式和原理说明
+   - 使用 LaTeX 格式
+   - 如果节点没有复杂的数学公式，可以省略
+
+7. **💻 Python 代码示例**（可选）- `code-box` 类型
+   - 实际可运行的代码示例
+   - 包含详细注释
+   - 如果节点不适合代码示例，可以省略
+
+#### 2.3 JSON 文档格式示例
+
+```json
+{
+  "title": "节点名称 (英文全称)",
+  "subtitle": "简短描述",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "核心概念描述..."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "特点1",
+            "特点2",
+            "特点3"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "关键技术描述..."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "应用场景描述..."
+        }
+      ]
+    }
+  ]
+}
+```
+
+#### 2.4 架构图解规范
+
+**静态图片**：
+```json
+{
+  "type": "diagram-gallery",
+  "images": [
+    {
+      "type": "image",
+      "src": "路径/图片名.png",
+      "caption": "图片说明"
+    }
+  ]
+}
+```
+
+**交互式 SVG+D3 组件**：
+```json
+{
+  "type": "diagram-gallery",
+  "images": [
+    {
+      "type": "svg-d3",
+      "component": "TransformerDiagram",
+      "caption": "架构图解说明",
+      "width": 1000,
+      "height": 600,
+      "interactive": true,
+      "props": {
+        "specificProp": "value"
+      }
+    }
+  ]
+}
+```
+
+**可用组件列表**：
+- `TransformerDiagram` - Transformer架构
+- `BERTDiagram` - BERT架构
+- `LSTMDiagram` - LSTM架构
+- `CNNDiagram` - CNN架构
+- `GANDiagram` - GAN架构
+- `MathFunctionDiagram` - 数学函数可视化
+- 等等（见 `src/components/diagrams/index.js`）
+
+### 3. 检查清单
+
+每个末端节点必须满足：
+
+- [ ] ✅ 在 `hierarchy.js` 中定义为末端节点（无 children）
+- [ ] ✅ 有对应的知识文档 JSON 文件（`src/data/knowledge/{节点名}.json`）
+- [ ] ✅ 在 `knowledgeMap.js` 中导入并映射
+- [ ] ✅ 包含至少4个必需模块（核心概念、核心特点、关键技术、应用场景）
+- [ ] ✅ 使用 `TechDocument` 组件展示（通过 `Sidebar` 组件自动处理）
+- [ ] ✅ 文档内容准确、完整、易懂
+
+### 4. 命名规范
+
+- **节点名称**：使用中文，简洁明了
+- **JSON文件名**：与节点名称完全一致
+- **导入变量名**：使用 PascalCase，如 `import Transformer from './Transformer.json'`
+- **映射键名**：使用节点名称（中文）
+
+---
+
+## 🌳 非末端节点规范
+
+### 1. 展示方式
+
+非末端节点**不显示**技术文档，而是显示：
+
+1. **节点信息**：
+   - 节点名称（标题）
+   - 节点标签（tag）
+   - 节点描述（value）
+
+2. **子节点列表**：
+   - 列出所有子节点
+   - 显示每个子节点的名称和描述
+   - 用户可以点击子节点继续导航
+
+### 2. 判断逻辑
+
+在 `Sidebar.jsx` 中的判断逻辑：
+
+```javascript
+const hasChildren = nodeData.children && nodeData.children.length > 0;
+
+// 如果有子节点，即使有 HTML 页面也不显示 iframe
+if (hasPage && !isOverviewNode && !hasChildren) {
+  // 显示 iframe（仅末端节点）
+} else {
+  // 显示节点信息和子节点列表（非末端节点）
+}
+```
+
+### 3. 要求
+
+非末端节点应该：
+
+- [ ] ✅ 在 `hierarchy.js` 中正确定义 children
+- [ ] ✅ 提供清晰的节点描述（value）
+- [ ] ✅ 使用合适的标签（tag）进行分类
+- [ ] ✅ 子节点组织合理，逻辑清晰
+- [ ] ❌ **不需要**知识文档 JSON 文件
+- [ ] ❌ **不需要**在 `knowledgeMap.js` 中映射
+
+### 4. 命名规范
+
+- **节点名称**：使用中文，体现分类/分组含义
+- **节点标签（tag）**：使用英文，用于分类标识
+- **节点描述（value）**：简洁说明该分类下的内容
+
+---
+
+## 🔍 验证和检查
+
+### 检查脚本
+
+使用以下脚本检查节点规范：
+
+1. **检查末端节点映射**：
+   ```bash
+   node scripts/check-leaf-nodes.js
+   ```
+
+2. **检查知识文档结构**：
+   ```bash
+   node scripts/check-leaf-nodes-structure.js
+   ```
+
+3. **检查架构图解**：
+   ```bash
+   node scripts/check-missing-diagrams.js
+   ```
+
+### 常见问题
+
+1. **问题**：末端节点没有知识文档
+   - **解决**：创建对应的 JSON 文件并在 `knowledgeMap.js` 中映射
+
+2. **问题**：非末端节点被当作末端节点处理
+   - **解决**：检查 `hierarchy.js` 中节点的 children 定义
+
+3. **问题**：知识文档结构不完整
+   - **解决**：确保包含至少4个必需模块
+
+4. **问题**：架构图解无法显示
+   - **解决**：检查图片路径或组件名称是否正确
+
+---
+
+## 📝 最佳实践
+
+### 末端节点
+
+1. **内容质量**：
+   - 核心概念要准确、易懂
+   - 核心特点要突出、有针对性
+   - 关键技术要详细、实用
+   - 应用场景要具体、真实
+
+2. **架构图解**：
+   - 优先使用交互式 SVG+D3 组件
+   - 静态图片要清晰、标注完整
+   - 图解要与内容匹配
+
+3. **代码示例**：
+   - 代码要可运行
+   - 注释要详细
+   - 示例要贴近实际应用
+
+### 非末端节点
+
+1. **组织结构**：
+   - 分类要清晰、逻辑要合理
+   - 避免层级过深（建议3-4层）
+   - 子节点数量要适中（建议5-15个）
+
+2. **命名规范**：
+   - 名称要体现分类含义
+   - 描述要概括子节点内容
+   - 标签要统一、规范
+
+---
+
+## ✅ 总结
+
+- **末端节点**：必须有知识文档，使用 `TechDocument` 组件展示详细内容
+- **非末端节点**：不需要知识文档，只显示节点信息和子节点列表
+- **展示优先级**：React文档 > 知识文档 > HTML页面（仅末端节点）
+- **文档结构**：4个必需模块 + 3个可选模块
+- **检查工具**：使用脚本定期检查节点规范

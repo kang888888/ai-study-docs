@@ -1,0 +1,162 @@
+{
+  "title": "RNN (Recurrent Neural Network) 循环神经网络",
+  "subtitle": "专门处理序列数据的神经网络",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "专门处理序列数据的神经网络，具有记忆能力。通过隐藏状态（Hidden State）在时间步之间传递信息，捕捉序列中的时序依赖。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "时序建模：能够处理变长序列数据",
+            "参数共享：所有时间步共享同一组参数",
+            "记忆机制：隐藏状态 h_t 包含历史信息",
+            "梯度消失：长序列训练时容易出现梯度消失问题",
+            "无法并行：训练时必须按时间步顺序计算"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "BPTT（反向传播穿越时间）、梯度裁剪、隐藏状态传递"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "时间序列预测、语音识别、文本生成、机器翻译（早期）"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "RNNDiagram",
+              "caption": "RNN架构图（循环形式）",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "RNN架构图（循环形式）"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "RNNDiagram",
+              "caption": "RNN展开形式",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "unfolded",
+                "title": "RNN展开形式"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "RNNDiagram",
+              "caption": "RNN单元内部结构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "cell",
+                "title": "RNN单元内部结构"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "RNN 前向传播",
+          "formulas": [
+            {
+              "text": "在时间步 $t$，RNN 的计算公式：",
+              "inline": "t"
+            },
+            {
+              "display": "h_t = \\tanh(W_{xh} x_t + W_{hh} h_{t-1} + b_h)"
+            },
+            {
+              "display": "y_t = W_{hy} h_t + b_y"
+            },
+            {
+              "text": "其中："
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "BPTT（反向传播穿越时间）",
+          "formulas": [
+            {
+              "text": "梯度通过时间反向传播："
+            },
+            {
+              "display": "\\frac{\\partial L}{\\partial W} = \\sum_{t=1}^{T} \\frac{\\partial L_t}{\\partial W}"
+            },
+            {
+              "display": "\\frac{\\partial h_t}{\\partial h_{t-1}} = W_{hh}^T \\cdot \\text{diag}(1 - h_t^2)"
+            },
+            {
+              "text": "长序列会导致梯度消失或爆炸问题"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 PyTorch 实现 RNN",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\n\nclass SimpleRNN(nn.Module):\n    \"\"\"简单的 RNN 实现\"\"\"\n    def __init__(self, input_size, hidden_size, output_size):\n        super(SimpleRNN, self).__init__()\n        self.hidden_size = hidden_size\n        \n        self.rnn = nn.RNN(input_size, hidden_size, batch_first=True)\n        self.fc = nn.Linear(hidden_size, output_size)\n    \n    def forward(self, x):\n        # x shape: (batch_size, seq_len, input_size)\n        out, h_n = self.rnn(x)\n        # 使用最后一个时间步的输出\n        out = self.fc(out[:, -1, :])\n        return out\n\n# 使用示例\nif __name__ == \"__main__\":\n    model = SimpleRNN(input_size=10, hidden_size=64, output_size=2)\n    x = torch.randn(32, 50, 10)  # (batch, seq_len, input_size)\n    output = model(x)\n    print(f\"输出形状: {output.shape}\")  # [32, 2]"
+        },
+        {
+          "type": "code-box",
+          "title": "使用 NumPy 手动实现 RNN",
+          "language": "python",
+          "code": "import numpy as np\n\nclass RNN_Numpy:\n    \"\"\"使用 NumPy 手动实现 RNN\"\"\"\n    def __init__(self, input_size, hidden_size, output_size):\n        self.input_size = input_size\n        self.hidden_size = hidden_size\n        self.output_size = output_size\n        \n        # 初始化权重\n        scale = 0.01\n        self.W_xh = np.random.randn(input_size, hidden_size) * scale\n        self.W_hh = np.random.randn(hidden_size, hidden_size) * scale\n        self.W_hy = np.random.randn(hidden_size, output_size) * scale\n        \n        self.b_h = np.zeros((1, hidden_size))\n        self.b_y = np.zeros((1, output_size))\n    \n    def tanh(self, x):\n        return np.tanh(x)\n    \n    def forward(self, X):\n        \"\"\"前向传播\"\"\"\n        batch_size, seq_len, _ = X.shape\n        h = np.zeros((batch_size, self.hidden_size))\n        \n        outputs = []\n        hidden_states = [h]\n        \n        for t in range(seq_len):\n            x_t = X[:, t, :]\n            h = self.tanh(np.dot(x_t, self.W_xh) + np.dot(h, self.W_hh) + self.b_h)\n            y_t = np.dot(h, self.W_hy) + self.b_y\n            \n            hidden_states.append(h)\n            outputs.append(y_t)\n        \n        return np.array(outputs), hidden_states\n\n# 使用示例\nif __name__ == \"__main__\":\n    rnn = RNN_Numpy(input_size=10, hidden_size=64, output_size=2)\n    X = np.random.randn(5, 20, 10)  # (batch, seq_len, input_size)\n    outputs, hidden_states = rnn.forward(X)\n    print(f\"输出形状: {outputs.shape}\")  # (20, 5, 2)"
+        }
+      ]
+    }
+  ]
+}

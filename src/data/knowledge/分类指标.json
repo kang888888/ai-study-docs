@@ -1,0 +1,61 @@
+{
+  "title": "分类指标",
+  "subtitle": "Accuracy、Precision、Recall、F1、AUC-ROC等分类任务评估指标。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "分类指标体系",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "分类指标体系",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "混淆矩阵",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "混淆矩阵",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "计算分类指标",
+          "language": "python",
+          "code": "from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score\nimport numpy as np\n\n# 真实标签和预测结果\ny_true = np.array([0, 1, 1, 0, 1, 0, 1, 1, 0, 1])\ny_pred = np.array([0, 1, 1, 0, 0, 0, 1, 1, 0, 1])\ny_proba = np.array([0.1, 0.9, 0.8, 0.2, 0.4, 0.1, 0.9, 0.85, 0.15, 0.95])\n\n# 计算各项指标\naccuracy = accuracy_score(y_true, y_pred)\nprecision = precision_score(y_true, y_pred)\nrecall = recall_score(y_true, y_pred)\nf1 = f1_score(y_true, y_pred)\nroc_auc = roc_auc_score(y_true, y_proba)\n\nprint(f\"Accuracy: {accuracy:.4f}\")\nprint(f\"Precision: {precision:.4f}\")\nprint(f\"Recall: {recall:.4f}\")\nprint(f\"F1 Score: {f1:.4f}\")\nprint(f\"ROC-AUC: {roc_auc:.4f}\")"
+        },
+        {
+          "type": "code-box",
+          "title": "混淆矩阵可视化",
+          "language": "python",
+          "code": "from sklearn.metrics import confusion_matrix\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n\n# 计算混淆矩阵\ncm = confusion_matrix(y_true, y_pred)\n\n# 可视化\nplt.figure(figsize=(8, 6))\nsns.heatmap(cm, annot=True, fmt='d', cmap='Blues', \n            xticklabels=['Negative', 'Positive'],\n            yticklabels=['Negative', 'Positive'])\nplt.ylabel('True Label')\nplt.xlabel('Predicted Label')\nplt.title('Confusion Matrix')\nplt.show()"
+        }
+      ]
+    }
+  ]
+}

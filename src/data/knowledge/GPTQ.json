@@ -1,0 +1,99 @@
+{
+  "title": "GPTQ：梯度驱动的后训练 4bit 量化",
+  "subtitle": "通过最小二乘 + 梯度校正的方式在不重新训练的情况下实现高精度 4bit 权重量化，被广泛用于 LLaMA/OPT 家族。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "流程"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "误差补偿",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "误差补偿"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "精度 vs 推理速度",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "精度 vs 推理速度"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "最小二乘量化",
+          "formulas": [
+            {
+              "display": "\\hat{w} = \\arg\\min_{q} (w - q)^T H (w - q)"
+            },
+            {
+              "text": "其中 $H$ 是 Hessian 近似，通过梯度积累或近似 Fisher 信息获得。",
+              "inline": "H"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "误差回传",
+          "formulas": [
+            {
+              "text": "量化第 i 列后更新剩余列："
+            },
+            {
+              "display": "W_{j} \\leftarrow W_{j} - \\frac{H_{ji}}{H_{ii}} (w_i - \\hat{w}_i)"
+            },
+            {
+              "text": "避免误差集中，提升整体精度。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 AutoGPTQ 导出 4bit 模型",
+          "language": "python",
+          "code": "from auto_gptq import AutoGPTQForCausalLM, BaseQuantizeConfig\nfrom transformers import AutoTokenizer\n\nmodel_name = \"meta-llama/Llama-2-13b-hf\"\nquant_config = BaseQuantizeConfig(\n    bits=4,\n    group_size=128,\n    damp_percent=0.01,\n    desc_act=False\n)\n\nmodel = AutoGPTQForCausalLM.from_pretrained(\n    model_name,\n    quantize_config=quant_config\n)\n\ntokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=False)\nmodel.quantize(dataset=\"c4\", batch_size=16, cache_examples_on_gpu=False)\nmodel.save_quantized(\"./llama2-13b-gptq\", use_safetensors=True)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,203 @@
+{
+  "title": "模型合并（Model Merging）",
+  "subtitle": "无需重新训练即可组合多个大语言模型优势的技术，通过MergeKit等工具可以轻松创建定制模型。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "模型合并是一种无需重新训练即可组合多个预训练模型优势的技术。通过参数空间操作、任务向量提取或分层策略，可以将不同模型的专长融合到一个统一模型中，实现多任务能力或性能提升。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "模型合并方法",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "模型合并方法",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "模型合并对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "模型合并对比",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "合并流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "合并流程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "无需GPU训练：在CPU上完成模型合并，资源消耗低",
+            "多种策略：支持线性合并、任务向量合并、分层合并等多种方法",
+            "灵活组合：可以组合不同模型的优势，实现多任务能力",
+            "快速实验：无需重新训练，快速尝试不同模型组合",
+            "保持性能：合并后的模型通常能保持或接近原始模型的性能",
+            "工具支持：MergeKit等工具简化合并流程，支持多种格式"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🔧 合并方法",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "模型合并有多种方法，每种方法适用于不同的场景："
+          ]
+        },
+        {
+          "type": "features",
+          "items": [
+            "线性合并（Linear Merge）：简单的加权平均，适合相似架构的模型",
+            "任务向量合并（Task Vector Merge）：基于任务向量的合并，适合任务特化模型",
+            "分层合并（Layer-wise Merge）：对不同层使用不同策略，精细控制合并过程",
+            "参数空间合并（Parameter Space Merge）：直接对模型参数进行算术操作",
+            "功能锚点合并（Functional Anchor Merge）：利用功能锚点捕捉任务特定功能变化"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "线性合并",
+          "formulas": [
+            {
+              "display": "\\theta_{merged} = \\sum_{i=1}^{n} w_i \\theta_i"
+            },
+            {
+              "text": "其中 $w_i$ 是第 $i$ 个模型的权重，$\\theta_i$ 是第 $i$ 个模型的参数，通常 $\\sum_{i=1}^{n} w_i = 1$。",
+              "inline": "w_i"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "任务向量合并",
+          "formulas": [
+            {
+              "display": "\\tau = \\theta_{fine-tuned} - \\theta_{base}"
+            },
+            {
+              "text": "任务向量 $\\tau$ 表示微调模型与基础模型的差异，合并时：",
+              "inline": "\\tau"
+            },
+            {
+              "display": "\\theta_{merged} = \\theta_{base} + \\sum_{i=1}^{n} \\alpha_i \\tau_i"
+            },
+            {
+              "text": "其中 $\\alpha_i$ 控制不同任务向量的贡献。",
+              "inline": "\\alpha_i"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "分层合并",
+          "formulas": [
+            {
+              "display": "\\theta_{merged}^{(l)} = f_l(\\theta_1^{(l)}, \\theta_2^{(l)}, \\ldots, \\theta_n^{(l)})"
+            },
+            {
+              "text": "对每一层 $l$ 使用不同的合并函数 $f_l$，可以是加权平均、最大值或其他策略。",
+              "inline": "f_l"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用MergeKit进行模型合并",
+          "language": "python",
+          "code": "# 安装MergeKit\n!pip install mergekit\n!pip install transformers torch\n\n# 基本合并配置\nmerge_config = {\n    \"models\": [\n        {\n            \"model\": \"microsoft/DialoGPT-medium\",\n            \"weight\": 0.5\n        },\n        {\n            \"model\": \"microsoft/DialoGPT-large\", \n            \"weight\": 0.5\n        }\n    ],\n    \"merge_method\": \"linear\",\n    \"output_path\": \"./merged_model\"\n}\n\n# 执行合并\nfrom mergekit import MergeKit\nmerger = MergeKit()\nmerged_model = merger.merge(merge_config)"
+        },
+        {
+          "type": "code-box",
+          "title": "任务向量合并示例",
+          "language": "python",
+          "code": "import torch\nfrom transformers import AutoModelForCausalLM\n\n# 加载基础模型和微调模型\nbase_model = AutoModelForCausalLM.from_pretrained(\"base-model\")\nft_model = AutoModelForCausalLM.from_pretrained(\"fine-tuned-model\")\n\n# 计算任务向量\ntask_vector = {}\nfor key in base_model.state_dict():\n    task_vector[key] = ft_model.state_dict()[key] - base_model.state_dict()[key]\n\n# 合并多个任务向量\nmerged_params = base_model.state_dict().copy()\nalphas = [0.3, 0.4, 0.3]  # 不同任务的权重\ntask_vectors = [task_vector_1, task_vector_2, task_vector_3]\n\nfor key in merged_params:\n    merged_params[key] = base_model.state_dict()[key]\n    for alpha, tv in zip(alphas, task_vectors):\n        merged_params[key] += alpha * tv[key]\n\n# 保存合并后的模型\nmerged_model = AutoModelForCausalLM.from_pretrained(\"base-model\")\nmerged_model.load_state_dict(merged_params)\nmerged_model.save_pretrained(\"./merged_model\")"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "多任务学习：通过合并多个任务特定模型，创建一个能够同时处理多项任务的统一模型。模型压缩：将多个模型合并为一个，以减少存储和计算资源的消耗。性能提升：组合不同模型的优势，实现性能提升。快速实验：无需重新训练，快速尝试不同模型组合。"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚠️ 注意事项",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "模型架构兼容性：合并的模型需要具有相同的架构或兼容的架构",
+            "任务干扰：不同任务之间可能存在干扰，导致合并模型性能下降",
+            "数据异质性：测试数据的多样性可能影响合并模型的适应性和性能",
+            "权重选择：需要仔细选择各模型的权重，以获得最佳性能",
+            "验证测试：合并后需要进行充分的验证测试，确保性能符合预期"
+          ]
+        }
+      ]
+    }
+  ]
+}

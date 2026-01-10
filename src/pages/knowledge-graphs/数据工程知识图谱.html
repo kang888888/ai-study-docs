@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据工程知识图谱</title>
+    
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+    
+    <!-- 页面特定样式 -->
+    <style>
+        body {
+            background: radial-gradient(circle at top, var(--bg-primary) 0%, #030712 60%, #010409 100%);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- 知识图谱容器 -->
+        <div id="chart"></div>
+        
+        <!-- 标题栏 -->
+        <div class="title-bar">
+            <h1>数据工程知识图谱</h1>
+            <p>从数据收集到质量评估，全面掌握大模型数据工程全流程。</p>
+            <div class="legend">
+                <span><i style="background:#fbbf24"></i>数据收集</span>
+            <span><i style="background:#38bdf8"></i>数据处理</span>
+            <span><i style="background:#22c55e"></i>质量保证</span>
+            </div>
+        </div>
+        
+        <!-- 控制栏 -->
+        <div class="control-bar">
+            <button class="control-btn" onclick="resetView()">重新布局</button>
+            <button class="control-btn" onclick="toggleAnimation()">暂停/继续动画</button>
+        </div>
+        
+        <!-- 侧边栏 -->
+        <div class="sidebar" id="sidebar">
+            <button class="close-btn" onclick="closeSidebar()">×</button>
+            <div class="sidebar-header">
+                <h2 class="sidebar-title" id="sidebar-title">数据工程知识图谱</h2>
+                <div class="sidebar-tag" id="sidebar-tag">指南</div>
+            </div>
+            <div class="sidebar-body" id="sidebar-content">
+                <div class="sidebar-placeholder">
+                    <p>👇 在左侧图谱中选择一个节点即可查看详情。</p>
+                    <p>• 点击分类节点查看概览说明<br>• 点击具体技术节点，会在此侧边栏加载对应的 HTML 讲解页</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 公共脚本 -->
+    <script src="../common/knowledge-graph.js"></script>
+    
+    <!-- 页面特定数据 -->
+    <script>
+        // 页面配置
+        const pageConfig = {
+          "containerId": "chart",
+          "data": {
+                    "name": "数据工程技术地图",
+                    "value": "根节点",
+                    "symbolSize": 70,
+                    "itemStyle": {
+                              "color": "#fbbf24",
+                              "borderColor": "#f8fafc",
+                              "borderWidth": 4
+                    },
+                    "children": [
+                              {
+                                        "name": "数据收集",
+                                        "tag": "Collection",
+                                        "value": "从多个来源收集高质量训练数据。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#fbbf24",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "children": [
+                                                  {
+                                                            "name": "数据收集",
+                                                            "tag": "Sources",
+                                                            "value": "公开数据集、网络爬取、人工标注、合成数据等数据来源。"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "数据处理",
+                                        "tag": "Processing",
+                                        "value": "数据清洗、格式转换、数据增强等处理技术。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#38bdf8",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "children": [
+                                                  {
+                                                            "name": "数据清洗",
+                                                            "tag": "Cleaning",
+                                                            "value": "去重、过滤、标准化、验证等数据清洗技术。"
+                                                  },
+                                                  {
+                                                            "name": "数据格式转换",
+                                                            "tag": "Format",
+                                                            "value": "转换为Alpaca、ShareGPT、偏好格式等训练格式。"
+                                                  },
+                                                  {
+                                                            "name": "数据增强",
+                                                            "tag": "Augmentation",
+                                                            "value": "回译、同义词替换、句子重组等数据增强方法。"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "质量保证",
+                                        "tag": "Quality",
+                                        "value": "数据质量评估和数据集管理。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#22c55e",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "children": [
+                                                  {
+                                                            "name": "数据质量评估",
+                                                            "tag": "Evaluation",
+                                                            "value": "准确性、相关性、多样性、平衡性等质量评估维度。"
+                                                  },
+                                                  {
+                                                            "name": "数据集管理",
+                                                            "tag": "Management",
+                                                            "value": "数据版本管理、元数据管理、数据监控。"
+                                                  }
+                                        ]
+                              }
+                    ]
+          },
+          "techPages": {
+                    "数据收集": "../tech-docs/数据收集.html",
+                    "数据清洗": "../tech-docs/数据清洗.html",
+                    "数据格式转换": "../tech-docs/数据格式转换.html",
+                    "数据增强": "../tech-docs/数据增强.html",
+                    "数据质量评估": "../tech-docs/数据质量评估.html",
+                    "数据集管理": "../tech-docs/数据集管理.html"
+          },
+          "categoryDescriptions": {
+                    "数据收集": "从公开数据集、网络爬取、人工标注、合成数据等多个来源收集高质量训练数据，确保数据的多样性、质量和合规性。",
+                    "数据处理": "数据清洗、格式转换、数据增强等数据处理技术，将原始数据转换为可用于训练的格式，提升数据质量和多样性。",
+                    "质量保证": "数据质量评估和数据集管理，确保数据质量，管理数据版本，建立数据质量监控体系。"
+          },
+          "force": {
+                    "repulsion": 1800,
+                    "gravity": 0.15,
+                    "edgeLength": [
+                              80,
+                              240
+                    ],
+                    "friction": 0.2
+          }
+};
+        
+        // 初始化页面
+        initKnowledgeGraph(pageConfig);
+        
+        // 窗口大小改变时重新调整
+        window.addEventListener('resize', function() {
+            if (typeof chart !== 'undefined' && chart) {
+                chart.resize();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+{
+  "title": "MLA (Multi-head Latent Attention)",
+  "subtitle": "多头潜在注意力",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "MLA (Multi-head Latent Attention) 是 DeepSeek-V3 及其 2026 年相关论文中披露的分布式训练协同优化技术。该技术通过低秩压缩技术大幅削减 KV Cache 显存占用，在训练和推理阶段都能显著提升效率。MLA 是软硬一体协同优化的关键组件，通过潜在注意力机制实现高效的注意力计算。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "显存优化：通过低秩压缩技术大幅削减 KV Cache 显存占用",
+            "训练效率：在训练阶段显著提升效率",
+            "推理效率：在推理阶段提升推理效率",
+            "低秩压缩：采用低秩压缩技术实现高效计算",
+            "软硬协同：作为软硬一体协同优化的关键组件"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "低秩压缩、KV Cache 优化、潜在注意力机制、多头注意力、显存优化、训练与推理协同优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "大规模模型训练、长上下文推理、显存受限场景、KV Cache 优化需求、分布式训练协同优化、软硬一体优化场景"
+        }
+      ]
+    }
+  ]
+}

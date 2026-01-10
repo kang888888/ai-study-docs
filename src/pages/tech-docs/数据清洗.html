@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据清洗</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>数据清洗</h1>
+        <p class="tagline">通过去重、过滤、标准化、验证等技术，确保数据质量。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card"><h3>清洗步骤</h3><p>去重、过滤、标准化、验证。</p></div>
+            <div class="meta-card"><h3>主要技术</h3><p>去重技术、质量过滤、标准化处理。</p></div>
+            <div class="meta-card"><h3>工具</h3><p>AutoDedup、自定义脚本、数据清洗库。</p></div>
+            <div class="meta-card"><h3>应用场景</h3><p>大规模数据、多源数据、低质量数据。</p></div>
+        </div>
+
+        <div class="section">
+            <h2>⚙️ 清洗步骤</h2>
+            <ul>
+                <li><strong>去重</strong>：移除完全重复和近似重复的数据</li>
+                <li><strong>过滤</strong>：移除过短、过长、低质量的数据</li>
+                <li><strong>标准化</strong>：统一编码、格式、字符</li>
+                <li><strong>验证</strong>：检查数据完整性、格式、一致性</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>💻 代码示例</h2>
+            <div class="code-box">
+                <h3>数据去重</h3>
+                <pre><code class="language-python">from datasets import load_dataset
+
+# 加载数据集
+dataset = load_dataset("your_dataset")
+
+# 去重
+seen = set()
+def is_unique(example):
+    text_hash = hash(example["text"])
+    if text_hash in seen:
+        return False
+    seen.add(text_hash)
+    return True
+
+dataset = dataset.filter(is_unique)</code></pre>
+            </div>
+
+            <div class="code-box">
+                <h3>质量过滤</h3>
+                <pre><code class="language-python">def filter_by_length(example, min_length=10, max_length=2048):
+    text = example["text"]
+    length = len(text.split())
+    return min_length <= length <= max_length
+
+dataset = dataset.filter(filter_by_length)</code></pre>
+            </div>
+        </div>
+    </div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

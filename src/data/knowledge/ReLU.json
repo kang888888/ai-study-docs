@@ -1,0 +1,129 @@
+{
+  "title": "ReLU (Rectified Linear Unit)",
+  "subtitle": "最常用的激活函数",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "ReLU（Rectified Linear Unit，修正线性单元）是深度神经网络中最常用的激活函数。它将所有负值置为0，正值保持不变，计算简单且有效缓解梯度消失问题。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学表达",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "ReLU函数定义",
+          "formulas": [
+            {
+              "text": "ReLU函数定义为："
+            },
+            {
+              "display": "\\text{ReLU}(x) = \\max(0, x) = \\begin{cases} x & \\text{if } x > 0 \\\\ 0 & \\text{if } x \\leq 0 \\end{cases}"
+            },
+            {
+              "text": "分段函数形式："
+            },
+            {
+              "display": "f(x) = \\begin{cases} x & x > 0 \\\\ 0 & x \\leq 0 \\end{cases}"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "导数",
+          "formulas": [
+            {
+              "text": "ReLU的导数为："
+            },
+            {
+              "display": "\\frac{d}{dx}\\text{ReLU}(x) = \\begin{cases} 1 & \\text{if } x > 0 \\\\ 0 & \\text{if } x \\leq 0 \\end{cases}"
+            },
+            {
+              "text": "在 $x=0$ 处不可导（但实际应用中通常定义为0）"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "计算简单：只需比较和选择操作，计算速度快",
+            "非饱和：正值区域梯度恒为1，缓解梯度消失",
+            "稀疏激活：负值输出为0，产生稀疏表示",
+            "死神经元问题：负值梯度为0，可能导致神经元永久失活",
+            "非零中心：输出均值不为0，可能影响收敛"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 函数图像",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "MathFunctionDiagram",
+              "caption": "ReLU函数图像",
+              "width": 1000,
+              "height": 600,
+              "interactive": true,
+              "props": {
+                "type": "activation",
+                "title": "ReLU函数图像",
+                "function": "relu"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 变体",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "Leaky ReLU: f(x) = max(αx, x)，其中α通常为0.01，解决死神经元问题\nPReLU: 可学习的Leaky ReLU，α作为可训练参数\nRReLU: 随机Leaky ReLU，训练时α随机采样，测试时取平均\nELU: 指数线性单元，负值部分平滑"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "CNN卷积层、全连接层、Transformer的FFN层、大多数深度神经网络的隐藏层"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "ReLU实现与使用",
+          "language": "python",
+          "code": "import numpy as np\nimport torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nimport matplotlib.pyplot as plt\n\n# 1. 基础实现\ndef relu(x):\n    \"\"\"ReLU函数实现\"\"\"\n    return np.maximum(0, x)\n\n# 测试\nx = np.array([-2, -1, 0, 1, 2])\nprint(f\"输入: {x}\")\nprint(f\"ReLU输出: {relu(x)}\")\n# 输出: [0, 0, 0, 1, 2]\n\n# 2. PyTorch实现\nx_tensor = torch.tensor([-2.0, -1.0, 0.0, 1.0, 2.0])\nrelu_output = F.relu(x_tensor)\nprint(f\"PyTorch ReLU: {relu_output}\")\n\n# 3. 在神经网络中使用\nclass SimpleNet(nn.Module):\n    def __init__(self):\n        super(SimpleNet, self).__init__()\n        self.fc1 = nn.Linear(10, 50)\n        self.relu = nn.ReLU()  # ReLU激活层\n        self.fc2 = nn.Linear(50, 1)\n    \n    def forward(self, x):\n        x = self.fc1(x)\n        x = self.relu(x)  # 应用ReLU\n        x = self.fc2(x)\n        return x\n\n# 4. 可视化ReLU函数\nx = np.linspace(-5, 5, 100)\ny = relu(x)\n\nplt.figure(figsize=(10, 6))\nplt.plot(x, y, linewidth=2, label='ReLU')\nplt.axhline(y=0, color='k', linestyle='--', alpha=0.3)\nplt.axvline(x=0, color='k', linestyle='--', alpha=0.3)\nplt.xlabel('x')\nplt.ylabel('ReLU(x)')\nplt.title('ReLU Activation Function')\nplt.grid(True, alpha=0.3)\nplt.legend()\nplt.savefig('relu_function.png')\n\n# 5. 对比ReLU和Leaky ReLU\nleaky_relu = lambda x, alpha=0.01: np.where(x > 0, x, alpha * x)\n\nx = np.linspace(-3, 3, 100)\ny_relu = relu(x)\ny_leaky = leaky_relu(x)\n\nplt.figure(figsize=(10, 6))\nplt.plot(x, y_relu, linewidth=2, label='ReLU')\nplt.plot(x, y_leaky, linewidth=2, label='Leaky ReLU (α=0.01)', linestyle='--')\nplt.axhline(y=0, color='k', linestyle='--', alpha=0.3)\nplt.axvline(x=0, color='k', linestyle='--', alpha=0.3)\nplt.xlabel('x')\nplt.ylabel('f(x)')\nplt.title('ReLU vs Leaky ReLU')\nplt.grid(True, alpha=0.3)\nplt.legend()\nplt.savefig('relu_comparison.png')\n\n# 6. 梯度检查\nx = torch.tensor([-1.0, 0.0, 1.0], requires_grad=True)\ny = F.relu(x)\ny.sum().backward()\nprint(f\"输入: {x}\")\nprint(f\"输出: {y}\")\nprint(f\"梯度: {x.grad}\")\n# 梯度: [0, 0, 1] - 负值梯度为0，正值梯度为1\n\n# 7. 实际应用：CNN中的ReLU\nclass CNNWithReLU(nn.Module):\n    def __init__(self, num_classes=10):\n        super(CNNWithReLU, self).__init__()\n        self.conv1 = nn.Conv2d(3, 64, 3, padding=1)\n        self.relu1 = nn.ReLU()\n        self.conv2 = nn.Conv2d(64, 128, 3, padding=1)\n        self.relu2 = nn.ReLU()\n        self.fc = nn.Linear(128 * 8 * 8, num_classes)\n    \n    def forward(self, x):\n        x = self.conv1(x)\n        x = self.relu1(x)  # ReLU激活\n        x = self.conv2(x)\n        x = self.relu2(x)  # ReLU激活\n        x = x.view(x.size(0), -1)\n        x = self.fc(x)\n        return x\n\n# 8. 统计ReLU的激活率\nmodel = SimpleNet()\nx = torch.randn(100, 10)\nwith torch.no_grad():\n    output = model(x)\n    # 计算激活率（非零输出的比例）\n    activation_rate = (output > 0).float().mean()\n    print(f\"激活率: {activation_rate.item():.2%}\")"
+        }
+      ]
+    }
+  ]
+}

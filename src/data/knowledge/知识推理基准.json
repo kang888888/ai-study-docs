@@ -1,0 +1,61 @@
+{
+  "title": "知识推理基准",
+  "subtitle": "MMLU、HellaSwag等多学科知识与推理评估基准。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "知识推理基准分类",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "知识推理基准分类",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "MMLU基准结构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "MMLU基准结构",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用MMLU基准评估",
+          "language": "python",
+          "code": "from datasets import load_dataset\n\n# MMLU (Massive Multitask Language Understanding)\n# 包含57个学科领域的多项选择题\nmmlu_dataset = load_dataset(\"cais/mmlu\", \"all\")\n\n# 查看数据集结构\nprint(f\"MMLU包含 {len(mmlu_dataset)} 个学科\")\nprint(f\"示例学科: {list(mmlu_dataset.keys())[:5]}\")\n\n# 加载特定学科的数据\nastronomy = load_dataset(\"cais/mmlu\", \"astronomy\")\nprint(f\"天文学测试集: {len(astronomy['test'])} 题\")\n\n# 评估模型\nfrom transformers import pipeline\n\nqa_pipeline = pipeline(\"question-answering\", model=\"bert-base-uncased\")\n\ndef evaluate_mmlu(model, dataset, subject):\n    \"\"\"评估模型在MMLU特定学科上的表现\"\"\"\n    correct = 0\n    total = 0\n    \n    for example in dataset['test']:\n        question = example['question']\n        choices = example['choices']\n        correct_answer = example['answer']\n        \n        # 模型预测（简化示例）\n        # 实际应该使用完整的推理流程\n        predicted = model.predict(question, choices)\n        \n        if predicted == correct_answer:\n            correct += 1\n        total += 1\n    \n    return correct / total if total > 0 else 0.0\n\nprint(f\"MMLU评估完成\")"
+        },
+        {
+          "type": "code-box",
+          "title": "使用HellaSwag基准",
+          "language": "python",
+          "code": "from datasets import load_dataset\n\n# HellaSwag: 常识推理基准\nhellaswag = load_dataset(\"Rowan/hellaswag\")\n\nprint(f\"HellaSwag训练集: {len(hellaswag['train'])} 样本\")\nprint(f\"HellaSwag验证集: {len(hellaswag['validation'])} 样本\")\n\n# 查看示例\n example = hellaswag['validation'][0]\nprint(f\"上下文: {example['ctx']}\")\nprint(f\"活动: {example['activity_label']}\")\nprint(f\"选项: {example['endings']}\")\nprint(f\"正确答案: {example['label']}\")\n\ndef evaluate_hellaswag(model, dataset):\n    \"\"\"评估模型在HellaSwag上的表现\"\"\"\n    correct = 0\n    total = 0\n    \n    for example in dataset['validation']:\n        context = example['ctx']\n        endings = example['endings']\n        correct_idx = example['label']\n        \n        # 模型选择最合理的结尾\n        predicted_idx = model.predict_best_ending(context, endings)\n        \n        if predicted_idx == correct_idx:\n            correct += 1\n        total += 1\n    \n    accuracy = correct / total if total > 0 else 0.0\n    return accuracy\n\nprint(f\"HellaSwag评估完成\")"
+        }
+      ]
+    }
+  ]
+}

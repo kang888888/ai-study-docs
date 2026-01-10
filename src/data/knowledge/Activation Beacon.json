@@ -1,0 +1,54 @@
+{
+  "title": "Activation Beacon 激活信标",
+  "subtitle": "压缩历史激活实现长上下文",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Activation Beacon是一种长上下文处理技术，通过压缩历史激活值（activation）来减少显存占用，同时保留重要的历史信息。它将历史激活压缩为信标（beacon），在需要时恢复使用，实现了在有限显存下处理超长序列。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "激活压缩：压缩历史激活值，减少显存占用",
+            "信息保留：通过信标保留重要历史信息",
+            "长上下文：支持处理超长序列",
+            "显存优化：显著减少长序列的显存占用",
+            "性能保持：在压缩的同时保持模型性能"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "激活压缩、信标机制、历史信息保留、显存优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "长文档理解、长对话系统、超长序列处理、资源受限环境"
+        }
+      ]
+    }
+  ]
+}

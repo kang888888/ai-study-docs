@@ -1,0 +1,129 @@
+{
+  "title": "HuggingFace Tokenizers",
+  "subtitle": "快速、高效的分词器训练、编码/解码与批处理库",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "HuggingFace Tokenizers 是一个用Rust编写的高性能分词库，提供了快速的分词、编码和解码功能。支持多种分词算法（BPE、WordPiece、Unigram、SentencePiece），可以训练自定义分词器，是Transformers库的核心依赖。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "高性能：Rust实现，分词速度比Python实现快10-100倍",
+            "多种算法：支持BPE、WordPiece、Unigram、SentencePiece等分词算法",
+            "训练分词器：可以从零开始训练自定义分词器",
+            "批处理：高效的批量编码和解码",
+            "特殊Token：支持添加特殊token（如[CLS]、[SEP]、[PAD]等）",
+            "后处理：支持添加后处理步骤（如截断、填充等）",
+            "多语言：支持多种语言的分词"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "BPE（Byte Pair Encoding）、WordPiece、Unigram、SentencePiece、子词分词、特殊Token处理、批处理优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "文本预处理：为NLP模型准备输入数据\n                    自定义分词器：为特定领域或语言训练分词器\n                    批量处理：高效处理大量文本数据\n                    模型部署：在推理时快速分词\n                    多语言支持：处理不同语言的文本"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Tokenizers架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Tokenizers架构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Tokenizers流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Tokenizers流程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用预训练分词器",
+          "language": "python",
+          "code": "from tokenizers import Tokenizer\nfrom tokenizers.models import BPE\nfrom tokenizers.trainers import BpeTrainer\nfrom tokenizers.pre_tokenizers import Whitespace\n\n# 加载预训练的分词器\nfrom transformers import AutoTokenizer\n\ntokenizer = AutoTokenizer.from_pretrained(\"bert-base-uncased\")\n\n# 编码文本\ntext = \"Hello, how are you?\"\nencoded = tokenizer(text)\nprint(encoded)\n# {'input_ids': [101, 7592, 1010, 2129, 2024, 2017, 1029, 102], ...}\n\n# 解码\ndecoded = tokenizer.decode(encoded['input_ids'])\nprint(decoded)\n# \"hello, how are you?\""
+        },
+        {
+          "type": "code-box",
+          "title": "训练自定义分词器",
+          "language": "python",
+          "code": "from tokenizers import Tokenizer\nfrom tokenizers.models import BPE\nfrom tokenizers.trainers import BpeTrainer\nfrom tokenizers.pre_tokenizers import Whitespace\n\n# 初始化分词器\ntokenizer = Tokenizer(BPE(unk_token=\"<UNK>\"))\ntokenizer.pre_tokenizer = Whitespace()\n\n# 准备训练数据\nfiles = [\"data.txt\"]  # 文本文件列表\n\n# 训练分词器\ntrainer = BpeTrainer(vocab_size=30000, special_tokens=[\"<UNK>\", \"<CLS>\", \"<SEP>\", \"<PAD>\", \"<MASK>\"])\ntokenizer.train(files, trainer)\n\n# 保存分词器\ntokenizer.save(\"./my_tokenizer.json\")\n\n# 加载分词器\nloaded_tokenizer = Tokenizer.from_file(\"./my_tokenizer.json\")"
+        },
+        {
+          "type": "code-box",
+          "title": "批处理编码",
+          "language": "python",
+          "code": "from transformers import AutoTokenizer\n\ntokenizer = AutoTokenizer.from_pretrained(\"bert-base-uncased\")\n\n# 批量编码\ntexts = [\"Hello world\", \"How are you?\", \"I am fine\"]\n\n# 编码（自动填充和截断）\nencoded = tokenizer(\n    texts,\n    padding=True,\n    truncation=True,\n    max_length=128,\n    return_tensors=\"pt\"  # 返回PyTorch张量\n)\n\nprint(encoded['input_ids'].shape)\n# torch.Size([3, 128])\n\n# 不填充\nencoded_no_pad = tokenizer(texts, padding=False, return_tensors=\"pt\")\nprint([len(ids) for ids in encoded_no_pad['input_ids']])\n# [4, 5, 4]  # 每个序列的实际长度"
+        },
+        {
+          "type": "code-box",
+          "title": "添加特殊Token",
+          "language": "python",
+          "code": "from transformers import AutoTokenizer\n\ntokenizer = AutoTokenizer.from_pretrained(\"bert-base-uncased\")\n\n# 添加特殊token\ntokenizer.add_special_tokens({\"additional_special_tokens\": [\"<CUSTOM>\"]})\n\n# 调整模型嵌入层大小（如果使用模型）\n# model.resize_token_embeddings(len(tokenizer))\n\n# 使用特殊token\ntext = \"Hello <CUSTOM> world\"\nencoded = tokenizer(text)\nprint(encoded['input_ids'])"
+        },
+        {
+          "type": "code-box",
+          "title": "后处理（截断和填充）",
+          "language": "python",
+          "code": "from transformers import AutoTokenizer\n\ntokenizer = AutoTokenizer.from_pretrained(\"bert-base-uncased\")\n\n# 编码时自动截断和填充\ntext = \"This is a very long text that needs to be truncated.\"\n\n# 截断到最大长度\nencoded = tokenizer(\n    text,\n    truncation=True,\n    max_length=10,\n    return_tensors=\"pt\"\n)\nprint(tokenizer.decode(encoded['input_ids'][0]))\n# \"[CLS] this is a very long text that [SEP]\"\n\n# 填充到指定长度\nencoded = tokenizer(\n    \"Short text\",\n    padding=\"max_length\",\n    max_length=20,\n    return_tensors=\"pt\"\n)\nprint(encoded['input_ids'].shape)\n# torch.Size([1, 20])"
+        }
+      ]
+    }
+  ]
+}

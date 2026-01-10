@@ -1,0 +1,103 @@
+{
+  "title": "ORPO：单阶段奇偶比偏好优化",
+  "subtitle": "将监督微调与偏好对齐合并为一次训练，通过 odds ratio 损失在单模型上同时学习任务能力与人类偏好。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "单阶段流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "单阶段流程"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "联合损失曲线",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "联合损失曲线"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "与 DPO / PPO 对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "与 DPO / PPO 对比"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "奇偶比损失",
+          "formulas": [
+            {
+              "text": "偏好损失定义为："
+            },
+            {
+              "display": "\\mathcal{L}_{\\text{ORPO}} = -\\log \\sigma\\Big( \\eta + \\log \\frac{\\pi_\\theta(y^{+}|x)}{\\pi_\\theta(y^{-}|x)} \\Big)"
+            },
+            {
+              "text": "其中 $\\eta$ 控制 margin，促使模型提高优质回答概率。",
+              "inline": "\\eta"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "联合目标",
+          "formulas": [
+            {
+              "text": "总损失："
+            },
+            {
+              "display": "\\mathcal{L} = \\mathcal{L}_{\\text{SFT}} + \\lambda \\cdot \\mathcal{L}_{\\text{ORPO}}"
+            },
+            {
+              "text": "$\\lambda$ 控制监督与偏好之间的权衡，一般取 0.1~0.3。",
+              "inline": "\\lambda"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "Axolotl ORPO 片段",
+          "language": "yaml",
+          "code": "base_model: meta-llama/Llama-3-8b-Instruct\nadapter: lora\nlora_r: 64\nlora_alpha: 128\nqlora: true\noptim: adamw_torch\nlr: 1e-5\norpo:\n  enabled: true\n  lambda: 0.2\n  margin: 2.0\n  mixing_ratio: 0.5   # SFT : Preference"
+        }
+      ]
+    }
+  ]
+}

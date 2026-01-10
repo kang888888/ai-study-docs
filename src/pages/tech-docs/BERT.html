@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BERT (Bidirectional Encoder Representations from Transformers) - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>BERT (Bidirectional Encoder Representations from Transformers)</h1>
+            <p>Google的预训练语言模型</p>
+        </div>
+        <div class="content">
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>Google在2018年提出的预训练模型，只使用Transformer的Encoder部分。通过掩码语言模型（MLM）和下一句预测（NSP）任务进行预训练，学习双向上下文表示。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>双向理解：同时利用左侧和右侧的上下文信息</li>
+                    <li>掩码语言模型（MLM）：随机遮盖15%的词，预测被遮盖的词</li>
+                    <li>预训练+微调：在大规模语料上预训练，然后在下游任务微调</li>
+                    <li>只有Encoder：不包含Decoder，不适合生成任务</li>
+                    <li>SOTA性能：在多个NLP理解任务上刷新记录</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box"><p><strong>Masked Language Model、Next Sentence Prediction、WordPiece分词、[CLS]和[SEP]特殊Token</strong></p></div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box"><p>文本分类、命名实体识别（NER）、问答系统（QA）、语义相似度、情感分析</p></div>
+            </div>
+            <div class="section">
+                <h2>📊 架构图解</h2>
+                <div class="diagram-gallery">
+                    <div class="diagram-item"><img src="BERT_MLM_Visualization.png" alt="BERT MLM可视化" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">BERT MLM可视化</div></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>掩码语言模型（MLM）损失</h3>
+                    <div class="math-formula">
+                        <p>对于被掩码的位置 $m$，预测被掩码的词：</p>
+                        <p>$$L_{MLM} = -\sum_{m \in M} \log P(x_m | x_{\backslash m})$$</p>
+                        <p>其中 $M$ 是被掩码的位置集合，$x_{\backslash m}$ 是除位置 $m$ 外的所有词</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>下一句预测（NSP）损失</h3>
+                    <div class="math-formula">
+                        <p>预测句子B是否是句子A的下一句：</p>
+                        <p>$$L_{NSP} = -\log P(\text{IsNext} | \text{CLS})$$</p>
+                        <p>总损失：$L = L_{MLM} + L_{NSP}$</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>双向注意力</h3>
+                    <div class="math-formula">
+                        <p>BERT使用双向自注意力，每个词可以同时看到左右两侧的上下文：</p>
+                        <p>$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$</p>
+                        <p>与GPT的单向注意力不同，BERT可以同时利用前后文信息</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 Transformers 库加载 BERT</h3>
+                    <pre><code class="language-python">from transformers import BertModel, BertTokenizer, BertForMaskedLM
+import torch
+
+# 加载预训练的BERT模型和分词器
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+model = BertModel.from_pretrained('bert-base-uncased')
+
+# 输入文本
+text = "The cat sat on the [MASK]."
+
+# 分词和编码
+inputs = tokenizer(text, return_tensors='pt', padding=True, truncation=True)
+
+# 前向传播
+with torch.no_grad():
+    outputs = model(**inputs)
+
+# 获取词嵌入
+embeddings = outputs.last_hidden_state
+print(f"词嵌入形状: {embeddings.shape}")  # [batch_size, seq_len, hidden_size]
+
+# 使用MLM模型进行掩码预测
+mlm_model = BertForMaskedLM.from_pretrained('bert-base-uncased')
+with torch.no_grad():
+    mlm_outputs = mlm_model(**inputs)
+    predictions = mlm_outputs.logits
+
+# 预测被掩码的词
+masked_index = inputs['input_ids'][0].tolist().index(tokenizer.mask_token_id)
+predicted_token_id = predictions[0, masked_index].argmax().item()
+predicted_token = tokenizer.decode([predicted_token_id])
+print(f"预测的词: {predicted_token}")</code></pre>
+                </div>
+                <div class="code-box">
+                    <h3>手动实现 BERT 的掩码语言模型</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import math
+
+class BertEmbedding(nn.Module):
+    """BERT词嵌入层"""
+    def __init__(self, vocab_size, hidden_size, max_seq_length, dropout=0.1):
+        super(BertEmbedding, self).__init__()
+        self.token_embedding = nn.Embedding(vocab_size, hidden_size)
+        self.position_embedding = nn.Embedding(max_seq_length, hidden_size)
+        self.segment_embedding = nn.Embedding(2, hidden_size)  # 句子A和B
+        self.layer_norm = nn.LayerNorm(hidden_size)
+        self.dropout = nn.Dropout(dropout)
+    
+    def forward(self, input_ids, segment_ids=None):
+        seq_length = input_ids.size(1)
+        position_ids = torch.arange(seq_length, dtype=torch.long, device=input_ids.device)
+        position_ids = position_ids.unsqueeze(0).expand_as(input_ids)
+        
+        if segment_ids is None:
+            segment_ids = torch.zeros_like(input_ids)
+        
+        token_emb = self.token_embedding(input_ids)
+        position_emb = self.position_embedding(position_ids)
+        segment_emb = self.segment_embedding(segment_ids)
+        
+        embeddings = token_emb + position_emb + segment_emb
+        embeddings = self.layer_norm(embeddings)
+        embeddings = self.dropout(embeddings)
+        
+        return embeddings
+
+class BertMLMHead(nn.Module):
+    """BERT MLM预测头"""
+    def __init__(self, hidden_size, vocab_size):
+        super(BertMLMHead, self).__init__()
+        self.dense = nn.Linear(hidden_size, hidden_size)
+        self.layer_norm = nn.LayerNorm(hidden_size)
+        self.decoder = nn.Linear(hidden_size, vocab_size)
+    
+    def forward(self, hidden_states):
+        hidden_states = self.dense(hidden_states)
+        hidden_states = F.gelu(hidden_states)
+        hidden_states = self.layer_norm(hidden_states)
+        logits = self.decoder(hidden_states)
+        return logits
+
+# 使用示例
+if __name__ == "__main__":
+    vocab_size = 30522  # BERT-base词汇表大小
+    hidden_size = 768
+    max_seq_length = 512
+    
+    embedding = BertEmbedding(vocab_size, hidden_size, max_seq_length)
+    mlm_head = BertMLMHead(hidden_size, vocab_size)
+    
+    # 模拟输入
+    input_ids = torch.randint(0, vocab_size, (2, 128))  # batch_size=2, seq_len=128
+    segment_ids = torch.zeros(2, 128, dtype=torch.long)
+    
+    # 前向传播
+    embeddings = embedding(input_ids, segment_ids)
+    print(f"嵌入形状: {embeddings.shape}")  # [2, 128, 768]
+    
+    # MLM预测
+    logits = mlm_head(embeddings)
+    print(f"MLM logits形状: {logits.shape}")  # [2, 128, 30522]</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 图片放大弹窗 -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal()">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+            modalImg.onclick = function(e) { e.stopPropagation(); };
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

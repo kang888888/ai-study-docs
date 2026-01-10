@@ -1,0 +1,133 @@
+{
+  "title": "LangChain框架",
+  "subtitle": "LangChain 框架的核心概念、进阶特性、RAG/智能体集成与实践案例。",
+  "content": [
+    {
+      "type": "section",
+      "title": "🚀 快速开始",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "安装与最小示例",
+          "language": "python",
+          "code": "from langchain_openai import ChatOpenAI\nfrom langchain.prompts import PromptTemplate\n\nllm = ChatOpenAI(model=\"gpt-3.5-turbo\", temperature=0.7)\nprompt = PromptTemplate(\n    input_variables=[\"topic\"],\n    template=\"写一段关于{topic}的介绍\"\n)\nchain = prompt | llm\nprint(chain.invoke({\"topic\": \"LangChain\"}).content)"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🧱 核心组件",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "from langchain_openai import ChatOpenAI, OpenAIEmbeddings\nllm = ChatOpenAI(model_name=\"gpt-4\")\nembeddings = OpenAIEmbeddings()"
+        },
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "from langchain.agents import initialize_agent, Tool\n\ntools = [Tool(name=\"Search\", func=search_web, description=\"网络搜索\")]\nagent = initialize_agent(tools, llm, agent=\"zero-shot-react-description\")\nresponse = agent.run(\"帮我查一下今天的AI新闻\")"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ LangChain + RAG",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "from langchain.document_loaders import TextLoader\nfrom langchain.text_splitter import RecursiveCharacterTextSplitter\nfrom langchain.vectorstores import Chroma\nfrom langchain.chains import RetrievalQA\n\nloader = TextLoader(\"docs.txt\")\nchunks = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=200).split_documents(loader.load())\nvectorstore = Chroma.from_documents(chunks, embeddings)\nqa_chain = RetrievalQA.from_chain_type(llm=llm, chain_type=\"stuff\", retriever=vectorstore.as_retriever())\nanswer = qa_chain.run(\"文档的核心观点是什么？\")"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🤖 LangChain + 智能体",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "from langchain.tools import StructuredTool\nfrom pydantic import BaseModel\n\nclass CalculatorInput(BaseModel):\n    expression: str\n\ncalc_tool = StructuredTool.from_function(\n    func=calculate,\n    name=\"Calculator\",\n    description=\"执行数学计算\",\n    args_schema=CalculatorInput\n)"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "✨ 高级特性",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler\nllm = ChatOpenAI(streaming=True, callbacks=[StreamingStdOutCallbackHandler()])"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "LangChain框架架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "LangChain框架架构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "LangChain框架流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "LangChain框架流程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🧪 实践案例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "from langchain.chains import LLMChain\nfrom langchain.prompts import PromptTemplate\n\nprompt = PromptTemplate.from_template(\"问题：{question}\\n回答：\")\nqa_chain = LLMChain(llm=llm, prompt=prompt)\nqa_chain.run(\"什么是LangChain？\")"
+        },
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "qa_chain = RetrievalQA.from_chain_type(\n    llm=llm,\n    chain_type=\"stuff\",\n    retriever=vectorstore.as_retriever()\n)\nqa_chain.run(\"文档中提到了哪些关键技术？\")"
+        },
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "from langchain.chains import ConversationChain\nfrom langchain.memory import ConversationBufferMemory\n\nconversation = ConversationChain(llm=llm, memory=ConversationBufferMemory())\nconversation.predict(input=\"你好\")\nconversation.predict(input=\"介绍一下你自己\")"
+        }
+      ]
+    }
+  ]
+}

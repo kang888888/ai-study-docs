@@ -1,0 +1,58 @@
+{
+  "title": "去审查化（Uncensoring）",
+  "subtitle": "无需重新训练的微调技术，能够移除模型的内容审查机制，让模型更加开放和自由。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "去审查化方法",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "去审查化方法",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "去审查化流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "去审查化流程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "确保符合法律法规",
+            "考虑伦理影响",
+            "保留基本安全机制",
+            "定期进行安全测试"
+          ]
+        }
+      ]
+    }
+  ]
+}

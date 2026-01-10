@@ -1,0 +1,61 @@
+{
+  "title": "性能优化",
+  "subtitle": "Minimind项目中的训练加速、内存优化、收敛策略等性能优化技巧。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "性能优化策略",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "性能优化策略",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "内存优化方法",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "内存优化方法",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "混合精度训练",
+          "language": "python",
+          "code": "from torch.cuda.amp import autocast, GradScaler\n\ndef train_with_amp(model, dataloader, optimizer):\n    \"\"\"使用混合精度训练加速\"\"\"\n    scaler = GradScaler()\n    \n    for batch in dataloader:\n        optimizer.zero_grad()\n        \n        # 前向传播使用FP16\n        with autocast():\n            outputs = model(batch['input_ids'])\n            loss = compute_loss(outputs, batch['labels'])\n        \n        # 反向传播和梯度缩放\n        scaler.scale(loss).backward()\n        scaler.step(optimizer)\n        scaler.update()"
+        },
+        {
+          "type": "code-box",
+          "title": "梯度检查点",
+          "language": "python",
+          "code": "from torch.utils.checkpoint import checkpoint\n\ndef apply_gradient_checkpointing(model):\n    \"\"\"应用梯度检查点节省内存\"\"\"\n    def checkpoint_wrapper(module):\n        def forward(*args, **kwargs):\n            return checkpoint(module, *args, **kwargs)\n        return forward\n    \n    # 对Transformer块应用检查点\n    for block in model.transformer.blocks:\n        block.forward = checkpoint_wrapper(block)\n    \n    return model\n\n# 使用示例\nmodel = GPT(config)\nmodel = apply_gradient_checkpointing(model)  # 节省约50%内存"
+        }
+      ]
+    }
+  ]
+}

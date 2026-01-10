@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accelerate库</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Accelerate库</h1>
+        <p class="tagline">简化分布式训练和混合精度训练的加速库，让训练代码更简洁高效。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card"><h3>核心功能</h3><p>分布式训练、混合精度、设备管理、训练加速。</p></div>
+            <div class="meta-card"><h3>主要特性</h3><p>代码简化、自动设备选择、多GPU支持、TPU支持。</p></div>
+            <div class="meta-card"><h3>应用场景</h3><p>大规模模型训练、多GPU训练、混合精度训练。</p></div>
+            <div class="meta-card"><h3>优势</h3><p>最小代码改动、自动优化、跨平台支持。</p></div>
+        </div>
+
+        <div class="section">
+            <h2>⚙️ 核心功能</h2>
+            
+            <h3 style="color:#60a5fa; margin-top:20px;">1. 分布式训练</h3>
+            <ul>
+                <li><strong>数据并行</strong>：自动数据并行训练</li>
+                <li><strong>模型并行</strong>：支持模型并行训练</li>
+                <li><strong>混合并行</strong>：数据并行和模型并行结合</li>
+            </ul>
+
+            <h3 style="color:#60a5fa; margin-top:20px;">2. 混合精度训练</h3>
+            <ul>
+                <li><strong>自动混合精度</strong>：自动使用FP16/BF16</li>
+                <li><strong>梯度缩放</strong>：自动梯度缩放</li>
+                <li><strong>性能优化</strong>：提升训练速度和降低内存占用</li>
+            </ul>
+
+            <h3 style="color:#60a5fa; margin-top:20px;">3. 设备管理</h3>
+            <ul>
+                <li><strong>自动设备选择</strong>：自动选择GPU/CPU</li>
+                <li><strong>多GPU支持</strong>：支持多GPU训练</li>
+                <li><strong>TPU支持</strong>：支持Google TPU</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>💻 代码示例</h2>
+            <div class="code-box">
+                <h3>基本使用</h3>
+                <pre><code class="language-python">from accelerate import Accelerator
+
+# 初始化Accelerator
+accelerator = Accelerator()
+
+# 准备模型、优化器、数据加载器
+model, optimizer, train_dataloader = accelerator.prepare(
+    model, optimizer, train_dataloader
+)
+
+# 训练循环
+for epoch in range(num_epochs):
+    for batch in train_dataloader:
+        outputs = model(**batch)
+        loss = outputs.loss
+        accelerator.backward(loss)
+        optimizer.step()
+        optimizer.zero_grad()</code></pre>
+            </div>
+
+            <div class="code-box">
+                <h3>混合精度训练</h3>
+                <pre><code class="language-python">from accelerate import Accelerator
+
+# 启用混合精度
+accelerator = Accelerator(mixed_precision="fp16")
+
+# 准备模型和数据
+model, optimizer, train_dataloader = accelerator.prepare(
+    model, optimizer, train_dataloader
+)
+
+# 训练（自动使用混合精度）
+for batch in train_dataloader:
+    outputs = model(**batch)
+    loss = outputs.loss
+    accelerator.backward(loss)
+    optimizer.step()</code></pre>
+            </div>
+        </div>
+    </div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

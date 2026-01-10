@@ -1,0 +1,142 @@
+{
+  "title": "余弦相似度 (Cosine Similarity)",
+  "subtitle": "衡量向量间夹角的相似度度量",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "余弦相似度通过计算两个向量的夹角余弦值来衡量它们的相似性，而不考虑向量的长度。它广泛应用于文本相似度、推荐系统、特征匹配等场景。余弦相似度的取值范围是[-1, 1]，值越大表示越相似。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学表达",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "余弦相似度定义",
+          "formulas": [
+            {
+              "text": "余弦相似度定义为："
+            },
+            {
+              "display": "\\text{cos}(\\mathbf{x}, \\mathbf{y}) = \\frac{\\mathbf{x} \\cdot \\mathbf{y}}{||\\mathbf{x}|| \\cdot ||\\mathbf{y}||} = \\frac{\\sum_{i=1}^{n}x_i y_i}{\\sqrt{\\sum_{i=1}^{n}x_i^2} \\cdot \\sqrt{\\sum_{i=1}^{n}y_i^2}}"
+            },
+            {
+              "text": "等价于向量夹角的余弦值："
+            },
+            {
+              "display": "\\text{cos}(\\mathbf{x}, \\mathbf{y}) = \\cos(\\theta)"
+            },
+            {
+              "text": "其中 $\\theta$ 是两个向量之间的夹角"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "归一化形式",
+          "formulas": [
+            {
+              "text": "如果向量已归一化（L2范数为1），则："
+            },
+            {
+              "display": "\\text{cos}(\\mathbf{x}, \\mathbf{y}) = \\mathbf{x} \\cdot \\mathbf{y}"
+            },
+            {
+              "text": "此时余弦相似度等于点积"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "性质",
+          "formulas": [
+            {
+              "text": "重要性质："
+            },
+            {
+              "text": "- 取值范围：$[-1, 1]$"
+            },
+            {
+              "text": "- 对称性：$\\text{cos}(\\mathbf{x}, \\mathbf{y}) = \\text{cos}(\\mathbf{y}, \\mathbf{x})$"
+            },
+            {
+              "text": "- 尺度不变：只考虑方向，不考虑长度"
+            },
+            {
+              "text": "- 1表示完全相同方向，-1表示完全相反方向，0表示正交"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "尺度不变：只考虑方向，不受向量长度影响",
+            "范围明确：[-1, 1]的固定范围，易于解释",
+            "计算高效：只需点积和范数计算",
+            "广泛应用：文本相似度、推荐系统、特征匹配",
+            "几何直观：直接对应向量夹角"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 可视化",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "MathFunctionDiagram",
+              "caption": "余弦相似度可视化",
+              "width": 1000,
+              "height": 600,
+              "interactive": true,
+              "props": {
+                "type": "distance",
+                "title": "余弦相似度可视化"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "文本相似度计算、推荐系统、特征匹配、词向量相似度、图像检索、CLIP等对比学习模型"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "余弦相似度实现与使用",
+          "language": "python",
+          "code": "import torch\nimport torch.nn.functional as F\nimport numpy as np\nfrom sklearn.metrics.pairwise import cosine_similarity\n\n# 1. 基础实现\ndef cosine_similarity_np(x, y):\n    \"\"\"计算两个向量的余弦相似度\"\"\"\n    dot_product = np.dot(x, y)\n    norm_x = np.linalg.norm(x)\n    norm_y = np.linalg.norm(y)\n    return dot_product / (norm_x * norm_y)\n\n# 测试\nx = np.array([1, 2, 3])\ny = np.array([2, 4, 6])  # y = 2x，方向相同\nsimilarity = cosine_similarity_np(x, y)\nprint(f\"余弦相似度: {similarity:.4f}\")  # 应该接近1.0\n\n# 2. PyTorch实现\nx_tensor = torch.tensor([1.0, 2.0, 3.0])\ny_tensor = torch.tensor([2.0, 4.0, 6.0])\nsimilarity_torch = F.cosine_similarity(x_tensor.unsqueeze(0), y_tensor.unsqueeze(0))\nprint(f\"PyTorch余弦相似度: {similarity_torch.item():.4f}\")\n\n# 3. 批量计算（多个向量对）\n# 计算矩阵中每对向量的余弦相似度\nvectors = torch.randn(10, 128)  # [num_vectors, dim]\n# 归一化\nvectors_norm = F.normalize(vectors, p=2, dim=1)\n# 计算相似度矩阵\nsimilarity_matrix = torch.mm(vectors_norm, vectors_norm.t())\nprint(f\"相似度矩阵形状: {similarity_matrix.shape}\")\nprint(f\"对角线（自相似）: {similarity_matrix.diag()}\")  # 应该全为1\n\n# 4. 在推荐系统中使用\n# 用户特征向量\nuser_features = torch.randn(100, 64)  # [num_users, feature_dim]\n# 物品特征向量\nitem_features = torch.randn(1000, 64)  # [num_items, feature_dim]\n\n# 归一化\nuser_norm = F.normalize(user_features, p=2, dim=1)\nitem_norm = F.normalize(item_features, p=2, dim=1)\n\n# 计算用户-物品相似度矩阵\nuser_item_similarity = torch.mm(user_norm, item_norm.t())  # [100, 1000]\nprint(f\"用户-物品相似度矩阵形状: {user_item_similarity.shape}\")\n\n# 为每个用户推荐最相似的物品\nuser_id = 0\ntop_k = 5\n_, top_items = torch.topk(user_item_similarity[user_id], k=top_k)\nprint(f\"用户{user_id}的Top-{top_k}推荐物品: {top_items}\")\n\n# 5. 在文本相似度中使用\n# 词向量（Word Embeddings）\nword1 = torch.randn(300)  # 300维词向量\nword2 = torch.randn(300)\nword3 = torch.randn(300)\n\n# 计算词间相似度\nsim_12 = F.cosine_similarity(word1.unsqueeze(0), word2.unsqueeze(0))\nsim_13 = F.cosine_similarity(word1.unsqueeze(0), word3.unsqueeze(0))\nprint(f\"词1-词2相似度: {sim_12.item():.4f}\")\nprint(f\"词1-词3相似度: {sim_13.item():.4f}\")\n\n# 6. 在CLIP等对比学习中使用\n# 图像特征和文本特征\nimage_features = torch.randn(32, 512)  # [batch_size, feature_dim]\ntext_features = torch.randn(32, 512)\n\n# 归一化\nimage_norm = F.normalize(image_features, p=2, dim=1)\ntext_norm = F.normalize(text_features, p=2, dim=1)\n\n# 计算相似度矩阵（对角线是匹配对）\nsimilarity = torch.mm(image_norm, text_norm.t())  # [32, 32]\nprint(f\"图像-文本相似度矩阵形状: {similarity.shape}\")\n\n# 7. 余弦距离（1 - 余弦相似度）\ndef cosine_distance(x, y):\n    return 1 - F.cosine_similarity(x.unsqueeze(0), y.unsqueeze(0))\n\n# 8. 实际应用：查找最相似的向量\nquery_vector = torch.randn(128)\ndatabase = torch.randn(1000, 128)  # 数据库中的向量\n\n# 归一化\nquery_norm = F.normalize(query_vector.unsqueeze(0), p=2, dim=1)\ndb_norm = F.normalize(database, p=2, dim=1)\n\n# 计算与所有数据库向量的相似度\nsimilarities = torch.mm(query_norm, db_norm.t()).squeeze(0)\n\n# 找到最相似的向量\nmost_similar_idx = torch.argmax(similarities)\nmost_similar_score = similarities[most_similar_idx]\nprint(f\"最相似向量索引: {most_similar_idx.item()}\")\nprint(f\"相似度分数: {most_similar_score.item():.4f}\")"
+        }
+      ]
+    }
+  ]
+}

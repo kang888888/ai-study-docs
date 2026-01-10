@@ -1,0 +1,54 @@
+{
+  "title": "Epsilon预测 (Epsilon Prediction)",
+  "subtitle": "优化器epsilon参数的自适应预测与调整",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Epsilon预测是一种训练稳定性技术，用于自适应预测和调整优化器中的epsilon参数（如Adam优化器中的eps）。通过分析训练过程中的梯度信息，动态调整epsilon值，优化训练稳定性和收敛速度。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "自适应调整：根据训练状态自动调整epsilon",
+            "稳定性提升：提升训练过程的数值稳定性",
+            "收敛优化：优化模型收敛速度",
+            "自动化：无需手动调参",
+            "性能提升：通过优化参数提升训练效果"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "梯度分析、数值稳定性、参数预测、自适应调整、优化器调优"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "模型训练、优化器调优、训练稳定性、数值优化"
+        }
+      ]
+    }
+  ]
+}

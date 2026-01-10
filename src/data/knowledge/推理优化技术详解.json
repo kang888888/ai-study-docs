@@ -1,0 +1,57 @@
+{
+  "title": "推理优化技术详解",
+  "subtitle": "大语言模型推理优化的核心技术，包括注意力优化、缓存机制和推测解码等方法。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "推理优化技术详解",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "推理优化技术详解",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "推理优化对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "推理优化对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "分块计算：将注意力矩阵分块计算",
+            "在线softmax：避免存储完整注意力矩阵",
+            "内存优化：减少内存占用"
+          ]
+        }
+      ]
+    }
+  ]
+}

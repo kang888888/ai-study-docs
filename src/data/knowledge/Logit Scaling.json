@@ -1,0 +1,75 @@
+{
+  "title": "Logit Scaling 对数缩放技术",
+  "subtitle": "多模态模型中的温度参数调节技术",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Logit Scaling是多模态模型（如CLIP）中用于调节不同模态之间相似度计算的技术。通过可学习的温度参数对logits进行缩放，平衡不同模态的嵌入空间，提升跨模态对齐效果。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "温度调节：通过可学习的温度参数控制相似度分布",
+            "模态平衡：平衡不同模态的嵌入空间尺度",
+            "可学习参数：温度参数在训练中自动学习",
+            "简单有效：实现简单但效果显著",
+            "广泛应用：CLIP、ALIGN等多模态模型采用"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "温度参数、相似度缩放、多模态对齐、嵌入空间平衡"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "图文检索、多模态理解、跨模态搜索、视觉语言模型等需要跨模态对齐的场景"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "Logit Scaling公式",
+          "formulas": [
+            {
+              "text": "相似度计算：sim = exp(logit / τ)"
+            },
+            {
+              "text": "其中τ是可学习的温度参数，logit是原始相似度分数"
+            },
+            {
+              "text": "温度参数通常初始化为较小的值（如0.07），在训练中学习"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

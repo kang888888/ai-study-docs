@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipeline并行训练</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Pipeline并行训练（Pipeline Parallelism）</h1>
+        <p class="tagline">按层拆分模型，形成流水线提高设备利用率。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card"><h3>核心原理</h3><p>将模型按层拆分到不同设备，形成流水线处理。</p></div>
+            <div class="meta-card"><h3>工作流程</h3><p>设备1处理层1-4，设备2处理层5-8，依次传递激活值。</p></div>
+            <div class="meta-card"><h3>优势</h3><p>提高设备利用率、突破单卡内存限制。</p></div>
+            <div class="meta-card"><h3>挑战</h3><p>流水线气泡、负载均衡、内存管理。</p></div>
+        </div>
+
+        <div class="section">
+            <h2>⚙️ 工作原理</h2>
+            <ul>
+                <li><strong>模型拆分</strong>：将模型按层拆分到不同设备</li>
+                <li><strong>流水线处理</strong>：不同设备同时处理不同批次的激活值</li>
+                <li><strong>激活值传递</strong>：前向传播时传递激活值，反向传播时传递梯度</li>
+                <li><strong>微批次</strong>：将批次拆分为多个微批次，填充流水线</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>🔧 关键技术</h2>
+            
+            <h3 style="color:#fbbf24; margin-top:20px;">1. 流水线气泡（Pipeline Bubble）</h3>
+            <ul>
+                <li><strong>问题</strong>：流水线启动和结束时，部分设备空闲</li>
+                <li><strong>解决</strong>：使用微批次填充流水线，减少气泡</li>
+            </ul>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">2. 负载均衡</h3>
+            <ul>
+                <li><strong>问题</strong>：不同层的计算量不同</li>
+                <li><strong>解决</strong>：合理分配层到设备，平衡计算负载</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>💻 代码示例</h2>
+            <div class="code-box">
+                <h3>Pipeline并行示例</h3>
+                <pre><code class="language-python"># 将模型按层拆分
+class PipelineModel(nn.Module):
+    def __init__(self, layers_per_device):
+        super().__init__()
+        self.device_layers = []
+        for device_id, layers in enumerate(layers_per_device):
+            device_layers = nn.ModuleList(layers).to(device_id)
+            self.device_layers.append(device_layers)
+    
+    def forward(self, x):
+        for device_layers in self.device_layers:
+            x = x.to(device_layers[0].weight.device)
+            for layer in device_layers:
+                x = layer(x)
+        return x</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📊 性能优化</h2>
+            <ul>
+                <li><strong>微批次大小</strong>：合理设置微批次大小，平衡内存和效率</li>
+                <li><strong>1F1B调度</strong>：One Forward One Backward，减少内存占用</li>
+                <li><strong>梯度累积</strong>：在流水线中累积梯度，提高训练稳定性</li>
+            </ul>
+        </div>
+    </div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

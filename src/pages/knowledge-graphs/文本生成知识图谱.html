@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文本生成技术知识图谱</title>
+    
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+    
+    <!-- 页面特定样式 -->
+    <style>
+        body {
+            background: radial-gradient(circle at top, var(--bg-primary) 0%, #030712 60%, #010409 100%);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- 知识图谱容器 -->
+        <div id="chart"></div>
+        
+        <!-- 标题栏 -->
+        <div class="title-bar">
+            <h1>文本生成技术知识图谱</h1>
+            <p>从解码策略到提示工程，再到流式生成，全面掌握文本生成核心技术。</p>
+            <div class="legend">
+                <span><i style="background:#fbbf24"></i>解码策略</span>
+            <span><i style="background:#38bdf8"></i>提示工程</span>
+            <span><i style="background:#22c55e"></i>流式生成</span>
+            </div>
+        </div>
+        
+        <!-- 控制栏 -->
+        <div class="control-bar">
+            <button class="control-btn" onclick="resetView()">重新布局</button>
+            <button class="control-btn" onclick="toggleAnimation()">暂停/继续动画</button>
+        </div>
+        
+        <!-- 侧边栏 -->
+        <div class="sidebar" id="sidebar">
+            <button class="close-btn" onclick="closeSidebar()">×</button>
+            <div class="sidebar-header">
+                <h2 class="sidebar-title" id="sidebar-title">文本生成技术知识图谱</h2>
+                <div class="sidebar-tag" id="sidebar-tag">指南</div>
+            </div>
+            <div class="sidebar-body" id="sidebar-content">
+                <div class="sidebar-placeholder">
+                    <p>👇 在左侧图谱中选择一个节点即可查看详情。</p>
+                    <p>• 点击分类节点查看概览说明<br>• 点击具体技术节点，会在此侧边栏加载对应的 HTML 讲解页</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 公共脚本 -->
+    <script src="../common/knowledge-graph.js"></script>
+    
+    <!-- 页面特定数据 -->
+    <script>
+        // 页面配置
+        const pageConfig = {
+          "containerId": "chart",
+          "data": {
+                    "name": "文本生成技术地图",
+                    "value": "根节点",
+                    "symbolSize": 70,
+                    "itemStyle": {
+                              "color": "#06b6d4",
+                              "borderColor": "#f8fafc",
+                              "borderWidth": 4
+                    },
+                    "children": [
+                              {
+                                        "name": "解码策略",
+                                        "value": "控制生成文本的质量、多样性和可控性。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Decoding",
+                                        "children": [
+                                                  {
+                                                            "name": "解码策略",
+                                                            "value": "贪心搜索、束搜索、核采样、温度采样等解码策略。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Strategies"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "提示工程",
+                                        "value": "设计和优化提示以获得更好生成结果。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Prompt",
+                                        "children": [
+                                                  {
+                                                            "name": "提示工程",
+                                                            "value": "零样本提示、少样本提示、思维链提示等提示工程技术。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Engineering"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "流式生成",
+                                        "value": "实时逐token生成和返回文本，提升用户体验。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Streaming",
+                                        "children": [
+                                                  {
+                                                            "name": "流式生成",
+                                                            "value": "SSE、WebSocket、生成器模式等流式生成实现方式。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Generation"
+                                                  }
+                                        ]
+                              }
+                    ]
+          },
+          "techPages": {
+                    "解码策略": "../tech-docs/解码策略.html",
+                    "提示工程": "../tech-docs/提示工程.html",
+                    "流式生成": "../tech-docs/流式生成.html"
+          },
+          "categoryDescriptions": {
+                    "解码策略": "控制生成文本的质量、多样性和可控性的解码策略，包括贪心搜索、束搜索、核采样、温度采样等。",
+                    "提示工程": "设计和优化提示以获得更好生成结果的技术，包括零样本提示、少样本提示、思维链提示等。",
+                    "流式生成": "实时逐token生成和返回文本的技术，包括SSE、WebSocket、生成器模式等实现方式。"
+          },
+          "force": {
+                    "repulsion": 1800,
+                    "gravity": 0.15,
+                    "edgeLength": [
+                              80,
+                              240
+                    ],
+                    "friction": 0.2
+          }
+};
+        
+        // 初始化页面
+        initKnowledgeGraph(pageConfig);
+        
+        // 窗口大小改变时重新调整
+        window.addEventListener('resize', function() {
+            if (typeof chart !== 'undefined' && chart) {
+                chart.resize();
+            }
+        });
+    </script>
+</body>
+</html>

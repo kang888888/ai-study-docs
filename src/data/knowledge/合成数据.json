@@ -1,0 +1,61 @@
+{
+  "title": "合成数据",
+  "subtitle": "通过数据生成、增强、模拟等技术创建高质量合成训练数据。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "合成数据生成流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "合成数据生成流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "合成数据方法",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "合成数据方法",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用LLM生成合成数据",
+          "language": "python",
+          "code": "from transformers import pipeline\n\n# 初始化文本生成管道\ngenerator = pipeline(\"text-generation\", model=\"gpt2\")\n\ndef generate_synthetic_data(prompt, num_samples=10):\n    \"\"\"生成合成训练数据\"\"\"\n    synthetic_data = []\n    \n    for _ in range(num_samples):\n        result = generator(\n            prompt,\n            max_length=200,\n            num_return_sequences=1,\n            temperature=0.7,\n            do_sample=True\n        )\n        synthetic_data.append({\n            'text': result[0]['generated_text'],\n            'source': 'synthetic',\n            'prompt': prompt\n        })\n    \n    return synthetic_data"
+        },
+        {
+          "type": "code-box",
+          "title": "数据增强与混合",
+          "language": "python",
+          "code": "import random\n\ndef augment_text(text, methods=['synonym', 'back_translation', 'paraphrase']):\n    \"\"\"文本数据增强\"\"\"\n    augmented = []\n    \n    if 'synonym' in methods:\n        # 同义词替换\n        augmented.append(replace_synonyms(text))\n    \n    if 'back_translation' in methods:\n        # 回译\n        augmented.append(back_translate(text))\n    \n    if 'paraphrase' in methods:\n        # 改写\n        augmented.append(paraphrase(text))\n    \n    return augmented\n\ndef mix_real_and_synthetic(real_data, synthetic_data, ratio=0.7):\n    \"\"\"混合真实数据和合成数据\"\"\"\n    num_real = int(len(real_data) * ratio)\n    num_synthetic = len(real_data) - num_real\n    \n    mixed = random.sample(real_data, num_real) + random.sample(synthetic_data, num_synthetic)\n    random.shuffle(mixed)\n    \n    return mixed"
+        }
+      ]
+    }
+  ]
+}

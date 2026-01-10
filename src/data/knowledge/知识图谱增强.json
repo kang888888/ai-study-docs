@@ -1,0 +1,58 @@
+{
+  "title": "知识图谱增强（Knowledge Graph Enhancement）",
+  "subtitle": "通过将知识图谱集成到语言模型中，显著提升模型在特定领域的准确性和深度。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "知识图谱增强架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "知识图谱增强架构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "知识图谱增强流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "知识图谱增强流程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "知识增强：利用结构化知识提升回答质量",
+            "领域特化：针对特定领域优化知识检索",
+            "关系推理：基于实体关系进行推理",
+            "事实验证：提供可验证的事实信息"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "title": "GQA (Grouped Query Attention) 分组查询注意力",
+  "subtitle": "通过分组查询减少KV缓存，提升推理效率的注意力机制",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "GQA是Multi-Head Attention的变体，通过将多个查询头共享同一组键值对，显著减少KV缓存的内存占用。在保持模型性能的同时，大幅降低推理时的显存需求和计算开销。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "减少KV缓存：多个Q头共享KV，显存占用大幅降低",
+            "性能保持：在大多数任务上性能接近标准MHA",
+            "推理加速：减少内存访问，提升推理速度",
+            "灵活配置：可根据需求调整G和KV头数比例",
+            "广泛应用：Llama-2、Llama-3等模型采用GQA"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "查询分组、KV共享、注意力计算优化、内存效率提升"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "长文本推理、批量推理、资源受限环境、移动端部署等需要减少显存占用的场景"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "GQA计算",
+          "formulas": [
+            {
+              "text": "标准MHA：每个Q头对应一个K和V头"
+            },
+            {
+              "text": "GQA：G个Q头共享一个K和V头，其中G是分组大小"
+            },
+            {
+              "text": "KV缓存减少比例 = 1 - (KV头数 / Q头数)"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

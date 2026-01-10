@@ -1,0 +1,97 @@
+{
+  "title": "TensorRT-LLM：GPU 推理极致优化",
+  "subtitle": "基于 TensorRT 的深度图优化、算子融合与并行调度，配合 KV Cache/量化实现企业级吞吐。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "架构"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "构建流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "构建流程"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "性能曲线",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "性能曲线"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学/性能",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "算子融合收益",
+          "formulas": [
+            {
+              "display": "T_{fusion} \\approx T_{gemm} + T_{ln} - \\Delta_{mem}"
+            },
+            {
+              "text": "$\\Delta_{mem}$ 表示减少的内存访问时间，是 TRT 优势所在。",
+              "inline": "\\Delta_{mem}"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "吞吐估算",
+          "formulas": [
+            {
+              "display": "TPS = \\frac{N_{streams} \\times tokens_{per\\_stream}}{latency_{per\\_graph}}"
+            },
+            {
+              "text": "CUDA Graph 复用可显著降低 $latency_{per\\_graph}$。",
+              "inline": "latency_{per\\_graph}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 命令示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "1. 构建 Engine",
+          "language": "bash",
+          "code": "trtllm-build --model-dir ./Llama-3-8B \\\n  --quantization smoothquant --int8 \\\n  --workers 2 --max-input-len 4096 --max-output-len 1024 \\\n  --output-dir ./engine_llama3_int8"
+        }
+      ]
+    }
+  ]
+}

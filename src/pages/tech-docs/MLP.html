@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLP (Multilayer Perceptron) 多层感知机 - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>MLP (Multilayer Perceptron) 多层感知机</h1>
+            <p>最基础的前馈神经网络</p>
+        </div>
+        <div class="content">
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>最基础的前馈神经网络，由输入层、多个隐藏层和输出层组成。层与层之间全连接（Fully Connected），每个神经元与下一层的所有神经元相连。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>结构简单：易于理解和实现，是深度学习入门的第一步</li>
+                    <li>全连接：每层神经元与下一层所有神经元连接</li>
+                    <li>非线性激活：通过激活函数（如ReLU、Sigmoid）引入非线性</li>
+                    <li>参数量大：对于高维输入（如图像），参数量会爆炸式增长</li>
+                    <li>无空间结构：不考虑输入数据的空间关系（如图像的像素邻近性）</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box"><p><strong>反向传播算法（Backpropagation）、梯度下降优化、激活函数（ReLU/Sigmoid/Tanh）</strong></p></div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box"><p>分类任务、回归预测、特征学习、简单的表格数据处理</p></div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>前向传播</h3>
+                    <div class="math-formula">
+                        <p>对于第 $l$ 层，前向传播公式为：</p>
+                        <p>$$z^{(l)} = W^{(l)} a^{(l-1)} + b^{(l)}$$</p>
+                        <p>$$a^{(l)} = \sigma(z^{(l)})$$</p>
+                        <p>其中：</p>
+                        <ul style="list-style: none; padding-left: 20px;">
+                            <li>$W^{(l)}$ 是第 $l$ 层的权重矩阵</li>
+                            <li>$b^{(l)}$ 是第 $l$ 层的偏置向量</li>
+                            <li>$a^{(l-1)}$ 是第 $l-1$ 层的激活值</li>
+                            <li>$\sigma$ 是激活函数（如 ReLU、Sigmoid）</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>反向传播</h3>
+                    <div class="math-formula">
+                        <p>输出层误差：</p>
+                        <p>$$\delta^{(L)} = \nabla_a J \odot \sigma'(z^{(L)})$$</p>
+                        <p>隐藏层误差（从后向前传播）：</p>
+                        <p>$$\delta^{(l)} = ((W^{(l+1)})^T \delta^{(l+1)}) \odot \sigma'(z^{(l)})$$</p>
+                        <p>梯度计算：</p>
+                        <p>$$\frac{\partial J}{\partial W^{(l)}} = \delta^{(l)} (a^{(l-1)})^T$$</p>
+                        <p>$$\frac{\partial J}{\partial b^{(l)}} = \delta^{(l)}$$</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>激活函数</h3>
+                    <div class="math-formula">
+                        <p><strong>ReLU:</strong> $f(x) = \max(0, x)$</p>
+                        <p><strong>Sigmoid:</strong> $f(x) = \frac{1}{1 + e^{-x}}$</p>
+                        <p><strong>Tanh:</strong> $f(x) = \tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}$</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 PyTorch 实现 MLP</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class MLP(nn.Module):
+    """多层感知机实现"""
+    def __init__(self, input_size, hidden_sizes, output_size, activation='relu'):
+        super(MLP, self).__init__()
+        
+        # 构建层
+        layers = []
+        prev_size = input_size
+        
+        for hidden_size in hidden_sizes:
+            layers.append(nn.Linear(prev_size, hidden_size))
+            if activation == 'relu':
+                layers.append(nn.ReLU())
+            elif activation == 'sigmoid':
+                layers.append(nn.Sigmoid())
+            elif activation == 'tanh':
+                layers.append(nn.Tanh())
+            layers.append(nn.Dropout(0.2))  # 防止过拟合
+            prev_size = hidden_size
+        
+        # 输出层
+        layers.append(nn.Linear(prev_size, output_size))
+        
+        self.network = nn.Sequential(*layers)
+    
+    def forward(self, x):
+        return self.network(x)
+
+# 使用示例
+if __name__ == "__main__":
+    # 创建模型：输入784维，两个隐藏层[128, 64]，输出10类
+    model = MLP(input_size=784, hidden_sizes=[128, 64], output_size=10)
+    
+    # 前向传播
+    x = torch.randn(32, 784)  # batch_size=32
+    output = model(x)
+    print(f"输出形状: {output.shape}")  # [32, 10]
+    
+    # 计算损失
+    criterion = nn.CrossEntropyLoss()
+    target = torch.randint(0, 10, (32,))
+    loss = criterion(output, target)
+    print(f"损失值: {loss.item():.4f}")
+    
+    # 反向传播
+    loss.backward()
+    print("梯度已计算完成")</code></pre>
+                </div>
+                <div class="code-box">
+                    <h3>使用 NumPy 手动实现前向和反向传播</h3>
+                    <pre><code class="language-python">import numpy as np
+
+class MLP_Numpy:
+    """使用NumPy手动实现MLP"""
+    def __init__(self, layer_sizes, learning_rate=0.01):
+        self.layer_sizes = layer_sizes
+        self.learning_rate = learning_rate
+        self.weights = []
+        self.biases = []
+        
+        # 初始化权重和偏置
+        for i in range(len(layer_sizes) - 1):
+            w = np.random.randn(layer_sizes[i], layer_sizes[i+1]) * 0.1
+            b = np.zeros((1, layer_sizes[i+1]))
+            self.weights.append(w)
+            self.biases.append(b)
+    
+    def relu(self, x):
+        """ReLU激活函数"""
+        return np.maximum(0, x)
+    
+    def relu_derivative(self, x):
+        """ReLU的导数"""
+        return (x > 0).astype(float)
+    
+    def sigmoid(self, x):
+        """Sigmoid激活函数"""
+        return 1 / (1 + np.exp(-np.clip(x, -250, 250)))
+    
+    def forward(self, X):
+        """前向传播"""
+        self.activations = [X]
+        self.z_values = []
+        
+        for i in range(len(self.weights)):
+            z = np.dot(self.activations[-1], self.weights[i]) + self.biases[i]
+            self.z_values.append(z)
+            if i < len(self.weights) - 1:  # 隐藏层使用ReLU
+                a = self.relu(z)
+            else:  # 输出层使用Sigmoid
+                a = self.sigmoid(z)
+            self.activations.append(a)
+        
+        return self.activations[-1]
+    
+    def backward(self, X, y, output):
+        """反向传播"""
+        m = X.shape[0]
+        
+        # 输出层误差
+        delta = output - y
+        
+        # 从后向前更新权重和偏置
+        for i in range(len(self.weights) - 1, -1, -1):
+            # 计算梯度
+            dW = np.dot(self.activations[i].T, delta) / m
+            db = np.sum(delta, axis=0, keepdims=True) / m
+            
+            # 更新权重和偏置
+            self.weights[i] -= self.learning_rate * dW
+            self.biases[i] -= self.learning_rate * db
+            
+            # 计算前一层误差（如果不是第一层）
+            if i > 0:
+                delta = np.dot(delta, self.weights[i].T) * self.relu_derivative(self.z_values[i-1])
+    
+    def train(self, X, y, epochs=1000):
+        """训练模型"""
+        for epoch in range(epochs):
+            output = self.forward(X)
+            self.backward(X, y, output)
+            
+            if epoch % 100 == 0:
+                loss = np.mean((output - y) ** 2)
+                print(f"Epoch {epoch}, Loss: {loss:.4f}")
+
+# 使用示例
+if __name__ == "__main__":
+    # 创建简单的数据集（XOR问题）
+    X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+    y = np.array([[0], [1], [1], [0]])
+    
+    # 创建模型：2输入 -> 4隐藏 -> 1输出
+    model = MLP_Numpy([2, 4, 1], learning_rate=0.1)
+    
+    # 训练
+    model.train(X, y, epochs=1000)
+    
+    # 测试
+    predictions = model.forward(X)
+    print("\n预测结果:")
+    print(predictions)</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,150 @@
+{
+  "title": "MSE损失 (Mean Squared Error)",
+  "subtitle": "回归任务的标准损失函数",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "均方误差（MSE，Mean Squared Error）是回归任务中最常用的损失函数。它衡量模型预测值与真实值之间差异的平方的平均值，对大误差给予更大的惩罚。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学表达",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "MSE损失定义",
+          "formulas": [
+            {
+              "text": "MSE损失定义为："
+            },
+            {
+              "display": "L_{\\text{MSE}} = \\frac{1}{n}\\sum_{i=1}^{n}(y_i - \\hat{y}_i)^2"
+            },
+            {
+              "text": "其中："
+            },
+            {
+              "text": "- $n$ 是样本数量"
+            },
+            {
+              "text": "- $y_i$ 是真实值"
+            },
+            {
+              "text": "- $\\hat{y}_i$ 是模型预测值"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "梯度",
+          "formulas": [
+            {
+              "text": "MSE损失的梯度："
+            },
+            {
+              "display": "\\frac{\\partial L}{\\partial \\hat{y}_i} = -\\frac{2}{n}(y_i - \\hat{y}_i)"
+            },
+            {
+              "text": "梯度与误差成正比，误差越大，梯度越大"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "RMSE (均方根误差)",
+          "formulas": [
+            {
+              "text": "RMSE是MSE的平方根："
+            },
+            {
+              "display": "\\text{RMSE} = \\sqrt{\\frac{1}{n}\\sum_{i=1}^{n}(y_i - \\hat{y}_i)^2} = \\sqrt{L_{\\text{MSE}}}"
+            },
+            {
+              "text": "RMSE与目标值具有相同的量纲，更易解释"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "对大误差敏感：平方项使得大误差被放大",
+            "可微性：处处可导，适合梯度下降",
+            "计算简单：只需平方和平均操作",
+            "对异常值敏感：异常值会产生很大的损失",
+            "回归标准：回归任务的标准损失函数"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 损失函数图像",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "MathFunctionDiagram",
+              "caption": "MSE损失函数图像",
+              "width": 1000,
+              "height": 600,
+              "interactive": true,
+              "props": {
+                "type": "loss",
+                "title": "MSE损失函数图像",
+                "function": "mse"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 变体",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "MAE (Mean Absolute Error): L = (1/n)Σ|y_i - ŷ_i|，对异常值更鲁棒\nHuber Loss: 结合MSE和MAE的优点，对异常值不敏感\nSmooth L1 Loss: 在0附近平滑的L1损失，用于目标检测"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "回归任务、价格预测、数值预测、时间序列预测、需要连续值输出的场景"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "MSE损失实现与使用",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# 1. 基础实现\ndef mse_loss(y_true, y_pred):\n    return np.mean((y_true - y_pred)**2)\n\n# 测试\n y_true = np.array([1.0, 2.0, 3.0, 4.0])\ny_pred = np.array([1.1, 1.9, 3.2, 3.8])\nloss = mse_loss(y_true, y_pred)\nprint(f\"MSE Loss: {loss:.4f}\")\n\n# 2. PyTorch实现\ny_true_tensor = torch.tensor([1.0, 2.0, 3.0, 4.0])\ny_pred_tensor = torch.tensor([1.1, 1.9, 3.2, 3.8])\nloss_torch = F.mse_loss(y_pred_tensor, y_true_tensor)\nprint(f\"PyTorch MSE: {loss_torch.item():.4f}\")\n\n# 3. 在回归网络中使用\nclass RegressionNet(nn.Module):\n    def __init__(self, input_size):\n        super(RegressionNet, self).__init__()\n        self.fc1 = nn.Linear(input_size, 64)\n        self.relu = nn.ReLU()\n        self.fc2 = nn.Linear(64, 1)  # 回归输出单个值\n        self.criterion = nn.MSELoss()\n    \n    def forward(self, x):\n        x = self.fc1(x)\n        x = self.relu(x)\n        x = self.fc2(x)\n        return x\n    \n    def compute_loss(self, predictions, targets):\n        return self.criterion(predictions, targets)\n\n# 4. 对比MSE和MAE\n# MSE对大误差更敏感\nerrors = np.linspace(0, 5, 100)\nmse = errors**2\nmae = np.abs(errors)\n\nplt.figure(figsize=(10, 6))\nplt.plot(errors, mse, linewidth=2, label='MSE (平方)')\nplt.plot(errors, mae, linewidth=2, label='MAE (绝对值)', linestyle='--')\nplt.xlabel('Error')\nplt.ylabel('Loss')\nplt.title('MSE vs MAE')\nplt.grid(True, alpha=0.3)\nplt.legend()\nplt.savefig('mse_vs_mae.png')\n\n# 5. Huber Loss（对异常值更鲁棒）\ndef huber_loss(y_true, y_pred, delta=1.0):\n    error = y_true - y_pred\n    is_small = np.abs(error) <= delta\n    squared_loss = 0.5 * error**2\n    linear_loss = delta * np.abs(error) - 0.5 * delta**2\n    return np.where(is_small, squared_loss, linear_loss).mean()\n\n# 6. 实际训练示例\nmodel = RegressionNet(input_size=10)\noptimizer = torch.optim.Adam(model.parameters(), lr=0.001)\n\n# 模拟训练数据\nfor epoch in range(10):\n    x = torch.randn(32, 10)\n    # 模拟真实值（简单的线性关系）\n    y_true = x.sum(dim=1, keepdim=True) + torch.randn(32, 1) * 0.1\n    \n    # 前向传播\n    y_pred = model(x)\n    loss = model.compute_loss(y_pred, y_true)\n    \n    # 反向传播\n    optimizer.zero_grad()\n    loss.backward()\n    optimizer.step()\n    \n    print(f\"Epoch {epoch+1}, MSE Loss: {loss.item():.4f}\")\n\n# 7. 计算RMSE\npredictions = torch.tensor([1.1, 1.9, 3.2, 3.8])\ntargets = torch.tensor([1.0, 2.0, 3.0, 4.0])\nmse = F.mse_loss(predictions, targets)\nrmse = torch.sqrt(mse)\nprint(f\"MSE: {mse.item():.4f}\")\nprint(f\"RMSE: {rmse.item():.4f}\")\n\n# 8. 带权重的MSE（对不同样本给予不同权重）\nweights = torch.tensor([1.0, 2.0, 1.0, 0.5])  # 样本权重\nweighted_mse = (weights * (predictions - targets)**2).mean()\nprint(f\"Weighted MSE: {weighted_mse.item():.4f}\")"
+        }
+      ]
+    }
+  ]
+}

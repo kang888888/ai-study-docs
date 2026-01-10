@@ -1,0 +1,107 @@
+{
+  "title": "LoRA（Low-Rank Adaptation）低秩适应微调",
+  "subtitle": "通过低秩矩阵分解在冻结大模型主干的情况下注入少量可训练参数，实现极具性价比的参数高效微调。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "LoRA 插入注意力矩阵",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "LoRA 插入注意力矩阵",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "训练与推理流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "训练与推理流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "参数效率对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "参数效率对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "低秩分解",
+          "formulas": [
+            {
+              "text": "LoRA 将权重更新表示为："
+            },
+            {
+              "display": "W = W_0 + \\Delta W, \\quad \\Delta W = B A, \\; rank(A) = rank(B) = r \\ll \\min(d,k)"
+            },
+            {
+              "text": "训练时仅更新 $A,B$，推理阶段可将其合并回 $W$ 或以模块形式注入。",
+              "inline": "A,B"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "缩放因子",
+          "formulas": [
+            {
+              "text": "为保持梯度稳定，LoRA 引入缩放 $\\alpha/r$：",
+              "inline": "\\alpha/r"
+            },
+            {
+              "display": "y = W_0 x + \\frac{\\alpha}{r} B A x"
+            },
+            {
+              "text": "其中 $\\alpha$ 控制更新幅度，常与 rank 同量级。",
+              "inline": "\\alpha"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 PEFT 构建 LoRA 适配器",
+          "language": "python",
+          "code": "from transformers import AutoModelForCausalLM, AutoTokenizer\nfrom peft import LoraConfig, get_peft_model\n\nbase_model = \"meta-llama/Llama-2-13b-hf\"\ntokenizer = AutoTokenizer.from_pretrained(base_model)\nmodel = AutoModelForCausalLM.from_pretrained(\n    base_model,\n    load_in_4bit=True,\n    device_map=\"auto\"\n)\n\nlora_config = LoraConfig(\n    r=16,\n    lora_alpha=32,\n    target_modules=[\"q_proj\", \"v_proj\"],\n    lora_dropout=0.05,\n    bias=\"none\",\n    task_type=\"CAUSAL_LM\"\n)\n\nmodel = get_peft_model(model, lora_config)\nmodel.print_trainable_parameters()\n\n# 之后即可像普通 SFT 一样使用 Trainer/Accelerate 进行训练"
+        }
+      ]
+    }
+  ]
+}

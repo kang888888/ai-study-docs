@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOLO (You Only Look Once) 单阶段目标检测 - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>YOLO (You Only Look Once) 单阶段目标检测</h1>
+            <p>实时目标检测算法</p>
+        </div>
+        <div class="content">
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>将目标检测视为回归问题，只需一次前向传播即可同时预测所有边界框的位置和类别。相比两阶段检测器（如Faster R-CNN），速度极快，适合实时应用。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>单阶段检测：一次前向传播完成检测，无需Region Proposal</li>
+                    <li>速度极快：YOLOv5可达140+ FPS，适合实时场景</li>
+                    <li>端到端训练：直接优化检测损失，无需多阶段训练</li>
+                    <li>全局信息：看到整张图像，背景误检率低</li>
+                    <li>版本迭代：从v1到v8/v9，持续优化精度和速度</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box"><p><strong>Anchor Box、非极大值抑制（NMS）、多尺度预测、损失函数（IoU Loss）</strong></p></div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box"><p>实时目标检测、自动驾驶、智能监控、无人机视觉、工业质检</p></div>
+            </div>
+            <div class="section">
+                <h2>📊 架构图解</h2>
+                <div class="diagram-gallery">
+                    <div class="diagram-item"><img src="YOLO架构图.png" alt="YOLO架构图" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">YOLO架构图</div></div>
+                    <div class="diagram-item"><img src="YOLO检测流程.png" alt="YOLO检测流程" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">YOLO检测流程</div></div>
+                    <div class="diagram-item"><img src="YOLO版本演进.png" alt="YOLO版本演进" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">YOLO版本演进</div></div>
+                    <div class="diagram-item"><img src="IoU计算.png" alt="IoU计算" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">IoU计算</div></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>IoU (Intersection over Union)</h3>
+                    <div class="math-formula">
+                        <p>IoU用于衡量预测框和真实框的重叠程度：</p>
+                        <p>$$\text{IoU} = \frac{\text{Area of Intersection}}{\text{Area of Union}} = \frac{A \cap B}{A \cup B}$$</p>
+                        <p>IoU值范围在 $[0, 1]$，值越大表示重叠度越高</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>YOLO 损失函数</h3>
+                    <div class="math-formula">
+                        <p>YOLO的损失函数包含多个部分：</p>
+                        <p>$$L = \lambda_{coord} \sum_{i=0}^{S^2} \sum_{j=0}^{B} \mathbb{1}_{ij}^{obj} [(x_i - \hat{x}_i)^2 + (y_i - \hat{y}_i)^2]$$</p>
+                        <p>$$+ \lambda_{coord} \sum_{i=0}^{S^2} \sum_{j=0}^{B} \mathbb{1}_{ij}^{obj} [(\sqrt{w_i} - \sqrt{\hat{w}_i})^2 + (\sqrt{h_i} - \sqrt{\hat{h}_i})^2]$$</p>
+                        <p>$$+ \sum_{i=0}^{S^2} \sum_{j=0}^{B} \mathbb{1}_{ij}^{obj} (C_i - \hat{C}_i)^2 + \lambda_{noobj} \sum_{i=0}^{S^2} \sum_{j=0}^{B} \mathbb{1}_{ij}^{noobj} (C_i - \hat{C}_i)^2$$</p>
+                        <p>$$+ \sum_{i=0}^{S^2} \mathbb{1}_{i}^{obj} \sum_{c \in classes} (p_i(c) - \hat{p}_i(c))^2$$</p>
+                        <p>其中 $S$ 是网格大小，$B$ 是每个网格的边界框数量</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>边界框坐标转换</h3>
+                    <div class="math-formula">
+                        <p>从相对坐标转换为绝对坐标：</p>
+                        <p>$$b_x = \sigma(t_x) + c_x$$</p>
+                        <p>$$b_y = \sigma(t_y) + c_y$$</p>
+                        <p>$$b_w = p_w e^{t_w}$$</p>
+                        <p>$$b_h = p_h e^{t_h}$$</p>
+                        <p>其中 $(c_x, c_y)$ 是网格左上角坐标，$(p_w, p_h)$ 是anchor尺寸</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 PyTorch 实现 YOLO 核心组件</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import numpy as np
+
+def calculate_iou(box1, box2):
+    """计算两个边界框的IoU"""
+    # box格式: [x1, y1, x2, y2]
+    x1 = max(box1[0], box2[0])
+    y1 = max(box1[1], box2[1])
+    x2 = min(box1[2], box2[2])
+    y2 = min(box1[3], box2[3])
+    
+    if x2 < x1 or y2 < y1:
+        return 0.0
+    
+    intersection = (x2 - x1) * (y2 - y1)
+    area1 = (box1[2] - box1[0]) * (box1[3] - box1[1])
+    area2 = (box2[2] - box2[0]) * (box2[3] - box2[1])
+    union = area1 + area2 - intersection
+    
+    return intersection / union if union > 0 else 0.0
+
+def non_max_suppression(boxes, scores, iou_threshold=0.5):
+    """非极大值抑制（NMS）"""
+    if len(boxes) == 0:
+        return []
+    
+    # 按分数排序
+    indices = np.argsort(scores)[::-1]
+    keep = []
+    
+    while len(indices) > 0:
+        current = indices[0]
+        keep.append(current)
+        
+        if len(indices) == 1:
+            break
+        
+        # 计算当前框与其他框的IoU
+        current_box = boxes[current]
+        other_boxes = boxes[indices[1:]]
+        
+        ious = [calculate_iou(current_box, box) for box in other_boxes]
+        
+        # 移除IoU大于阈值的框
+        indices = indices[1:][np.array(ious) < iou_threshold]
+    
+    return keep
+
+class YOLOLoss(nn.Module):
+    """YOLO损失函数"""
+    def __init__(self, S=7, B=2, C=20, lambda_coord=5.0, lambda_noobj=0.5):
+        super(YOLOLoss, self).__init__()
+        self.S = S  # 网格大小
+        self.B = B  # 每个网格的边界框数量
+        self.C = C  # 类别数
+        self.lambda_coord = lambda_coord
+        self.lambda_noobj = lambda_noobj
+    
+    def forward(self, predictions, targets):
+        """
+        predictions: [batch_size, S*S*(B*5+C)]
+        targets: [batch_size, S, S, B*5+C]
+        """
+        batch_size = predictions.size(0)
+        predictions = predictions.view(batch_size, self.S, self.S, self.B * 5 + self.C)
+        
+        # 分离预测值
+        pred_boxes = predictions[..., :self.B * 5].view(batch_size, self.S, self.S, self.B, 5)
+        pred_classes = predictions[..., self.B * 5:]
+        
+        # 分离目标值
+        target_boxes = targets[..., :self.B * 5].view(batch_size, self.S, self.S, self.B, 5)
+        target_classes = targets[..., self.B * 5:]
+        
+        # 计算坐标损失
+        coord_mask = target_boxes[..., 4:5] > 0  # 有目标的框
+        coord_loss = self.lambda_coord * torch.sum(
+            coord_mask * ((pred_boxes[..., :2] - target_boxes[..., :2]) ** 2 +
+                         (torch.sqrt(pred_boxes[..., 2:4]) - torch.sqrt(target_boxes[..., 2:4])) ** 2)
+        )
+        
+        # 计算置信度损失
+        obj_mask = target_boxes[..., 4:5] > 0
+        noobj_mask = target_boxes[..., 4:5] == 0
+        
+        obj_loss = torch.sum(obj_mask * (pred_boxes[..., 4:5] - target_boxes[..., 4:5]) ** 2)
+        noobj_loss = self.lambda_noobj * torch.sum(
+            noobj_mask * (pred_boxes[..., 4:5] - target_boxes[..., 4:5]) ** 2
+        )
+        
+        # 计算类别损失
+        class_loss = torch.sum(
+            obj_mask.squeeze(-1) * (pred_classes - target_classes) ** 2
+        )
+        
+        total_loss = coord_loss + obj_loss + noobj_loss + class_loss
+        return total_loss / batch_size
+
+# 使用示例
+if __name__ == "__main__":
+    # 测试IoU计算
+    box1 = [10, 10, 50, 50]
+    box2 = [30, 30, 70, 70]
+    iou = calculate_iou(box1, box2)
+    print(f"IoU: {iou:.4f}")
+    
+    # 测试YOLO损失
+    S, B, C = 7, 2, 20
+    predictions = torch.randn(4, S * S * (B * 5 + C))
+    targets = torch.randn(4, S, S, B * 5 + C)
+    
+    criterion = YOLOLoss(S, B, C)
+    loss = criterion(predictions, targets)
+    print(f"YOLO Loss: {loss.item():.4f}")</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 图片放大弹窗 -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal()">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+            modalImg.onclick = function(e) { e.stopPropagation(); };
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

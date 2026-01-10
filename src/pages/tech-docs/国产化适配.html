@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>国产化适配</title>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+<header>
+    <h1>国产化适配</h1>
+    <p class="lead">覆盖昇腾、飞桨及海光/天数智芯等芯片生态，从模型迁移到性能基准的“全栈国产”方法论。</p>
+</header>
+<main>
+    <section>
+        <h2>昇腾平台全景</h2>
+        <table>
+            <thead><tr><th>型号</th><th>FP16 算力</th><th>HBM</th><th>场景</th></tr></thead>
+            <tbody>
+                <tr><td>昇腾 910</td><td>256 TFLOPS</td><td>32 GB</td><td>训练 + 推理</td></tr>
+                <tr><td>昇腾 910B</td><td>320 TFLOPS</td><td>64 GB</td><td>大模型训练</td></tr>
+                <tr><td>Atlas 800/900</td><td>多卡</td><td>-</td><td>集群训练/推理</td></tr>
+            </tbody>
+        </table>
+        <ul>
+            <li>软件栈：MindSpore、MindFormers、MindIE、ModelArts、CANN。</li>
+            <li>工具：ModelLink、Auto Kernel Generator、MindInsight、A-Tune。</li>
+        </ul>
+        <h3>ChatGLM-6B 推理</h3>
+        <ol>
+            <li>ModelLink 转换权重。</li>
+            <li>MindFormers + MindIE 加载，开启 KV Cache。</li>
+            <li>调优：算子融合、INT8/INT4 量化、多 Stream 并发。</li>
+        </ol>
+        <h3>ChatGLM-6B 训练</h3>
+        <ul>
+            <li>8×910B，DP+TP，FP16+LossScale，MindRecord 数据。</li>
+            <li>配置 `chatglm_6b_finetune.yaml`，支持 recompute/offload。</li>
+            <li>MindInsight 监控 Step 时间/显存/Loss。</li>
+        </ul>
+        <h3>LLaMA-13B 多机训练</h3>
+        <ul>
+            <li>4 台 Atlas 800（8×910B），200G RoCE/IB。</li>
+            <li>并行：DP=8, TP=2, PP=2, ZeRO Stage1。</li>
+            <li>`mpirun -n 64 run_mindformers.py --config llama_13b_dp8_tp2_pp2.yaml`。</li>
+        </ul>
+        <h3>MindIE 推理</h3>
+        <pre><code>mindie_convert → mindie_quant (可选) → mindie_infer
+- 动态批次、KV Cache、INT8/INT4、准确性校验
+- 支持自定义 kernel 与性能统计面板</code></pre>
+        <h3>迁移 Checklist</h3>
+        <ul>
+            <li>评估框架/算子/精度目标，安装 CANN/MindSpore/ModelLink。</li>
+            <li>转换权重、自定义算子、精度对比（误差 < 1e-3）。</li>
+            <li>启用 recompute、MindIE、量化、KV Cache；搭建监控与告警。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>飞桨平台（PaddlePaddle / PaddleNLP）</h2>
+        <table>
+            <thead><tr><th>模块</th><th>能力</th></tr></thead>
+            <tbody>
+                <tr><td>数据处理</td><td>清洗、增强、数据集构建</td></tr>
+                <tr><td>模型库</td><td>ERNIE、Qianfan、LLaMA、GLM 等</td></tr>
+                <tr><td>训练工具</td><td>分布式、LoRA、PEFT、混合并行</td></tr>
+                <tr><td>评估</td><td>BLEU、ROUGE、SQuAD、CEval</td></tr>
+                <tr><td>部署</td><td>FasterGeneration、Paddle Serving、PaddleLite</td></tr>
+            </tbody>
+        </table>
+        <pre><code>from paddlenlp.datasets import load_dataset
+from paddlenlp.transformers import AutoModelForCausalLM
+from paddlenlp.peft import LoRAConfig, get_peft_model</code></pre>
+        <ul>
+            <li>优化：混合并行、ZeRO、重计算、自适应混合精度、QAT/PTQ。</li>
+            <li>案例：ERNIE Bot 行业问答、企业 RAG、CodeGeeX2 代码助手。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>其他国产芯片</h2>
+        <h3>海光 DCU</h3>
+        <ul>
+            <li>DCU200 (120 TFLOPS)、DCU300 (200 TFLOPS)。</li>
+            <li>CUDA 兼容层 + Hygon Compiler + TVM/XLA 适配。</li>
+            <li>建议：TVM/ONNX Runtime 算子适配，关注算子库更新。</li>
+        </ul>
+        <h3>天数智芯 TIANGAI / SPU</h3>
+        <ul>
+            <li>高带宽互联、可编程计算单元、低功耗设计。</li>
+            <li>流程：Tiangai SDK 导入 → 图优化 → 编译 → Profiler 调优。</li>
+            <li>场景：金融风控、搜索广告、政企推理。</li>
+        </ul>
+        <h3>芯片对比</h3>
+        <table>
+            <thead><tr><th>厂商</th><th>产品</th><th>FP16 算力</th><th>HBM</th><th>生态</th></tr></thead>
+            <tbody>
+                <tr><td>昇腾</td><td>910B</td><td>320 TFLOPS</td><td>64 GB</td><td>MindSpore/MindIE</td></tr>
+                <tr><td>海光</td><td>DCU300</td><td>200 TFLOPS</td><td>48 GB</td><td>CUDA 兼容、TVM</td></tr>
+                <tr><td>天数智芯</td><td>TIANGAI</td><td>220 TFLOPS</td><td>64 GB</td><td>Tiangai SDK</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>性能基准</h2>
+        <h3>推理</h3>
+        <table>
+            <thead><tr><th>平台 (Batch=4, FP16)</th><th>Tokens/s</th><th>P99 延迟</th></tr></thead>
+            <tbody>
+                <tr><td>昇腾910B + MindIE</td><td>520</td><td>950 ms</td></tr>
+                <tr><td>昇腾910B + MindIE INT8</td><td>820</td><td>640 ms</td></tr>
+                <tr><td>海光 DCU300</td><td>410</td><td>1100 ms</td></tr>
+                <tr><td>天数智芯 TIANGAI</td><td>460</td><td>1050 ms</td></tr>
+            </tbody>
+        </table>
+        <p>MindIE INT8 在昇腾平台吞吐/延迟最佳；海光兼容 CUDA，迁移成本低。</p>
+        <h3>训练</h3>
+        <table>
+            <thead><tr><th>平台 (8 台 × 8 卡)</th><th>Tokens/s</th><th>Scale Eff.</th><th>备注</th></tr></thead>
+            <tbody>
+                <tr><td>昇腾910B</td><td>25K</td><td>0.82</td><td>MindFormers dp8/tp2/pp2</td></tr>
+                <tr><td>海光 DCU300</td><td>18K</td><td>0.74</td><td>Megatron 改造</td></tr>
+                <tr><td>天数智芯 TIANGAI</td><td>19K</td><td>0.78</td><td>SDK 1.3</td></tr>
+            </tbody>
+        </table>
+        <ul>
+            <li>调优：RoCE/IB 多通道、通信融合、recompute、offload。</li>
+            <li>工具：MindInsight、HCCL Profiler、厂商自带 Profiling。</li>
+        </ul>
+    </section>
+</main>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

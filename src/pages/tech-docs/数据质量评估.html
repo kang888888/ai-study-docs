@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据质量评估</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>数据质量评估</h1>
+        <p class="tagline">通过多维度评估数据质量，确保训练数据的高质量。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card"><h3>评估维度</h3><p>准确性、相关性、多样性、平衡性、一致性。</p></div>
+            <div class="meta-card"><h3>评估方法</h3><p>人工审核、自动检查、统计分析。</p></div>
+            <div class="meta-card"><h3>应用场景</h3><p>数据准备、持续监控、质量改进。</p></div>
+            <div class="meta-card"><h3>工具</h3><p>质量评分工具、统计分析工具。</p></div>
+        </div>
+
+        <div class="section">
+            <h2>⚙️ 评估维度</h2>
+            <ul>
+                <li><strong>准确性</strong>：内容正确性、语法正确性、逻辑一致性</li>
+                <li><strong>相关性</strong>：与任务的相关性、内容主题匹配</li>
+                <li><strong>多样性</strong>：内容多样性、表达多样性、主题多样性</li>
+                <li><strong>平衡性</strong>：类别平衡、长度分布、难度分布</li>
+                <li><strong>一致性</strong>：格式一致性、标注一致性</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>💻 代码示例</h2>
+            <div class="code-box">
+                <h3>质量评分</h3>
+                <pre><code class="language-python">def evaluate_quality(example):
+    scores = {
+        "length": len(example["text"].split()),
+        "diversity": calculate_diversity(example["text"]),
+        "relevance": calculate_relevance(example["text"]),
+    }
+    return scores
+
+def calculate_diversity(text):
+    words = text.split()
+    unique_words = set(words)
+    return len(unique_words) / len(words) if words else 0</code></pre>
+            </div>
+        </div>
+    </div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,57 @@
+{
+  "title": "推理基础",
+  "subtitle": "理解大语言模型推理的核心概念，掌握推理与训练的区别，了解关键性能指标。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "推理基础",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "推理基础",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "推理流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "推理流程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "首字延迟（TTFT）：生成第一个token的时间",
+            "每字延迟（TPT）：生成每个token的平均时间",
+            "总延迟：完整响应的时间"
+          ]
+        }
+      ]
+    }
+  ]
+}

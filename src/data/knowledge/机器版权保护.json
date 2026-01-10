@@ -1,0 +1,54 @@
+{
+  "title": "机器版权保护 (Machine Copyright Protection)",
+  "subtitle": "AI生成内容的版权保护与归属识别",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "机器版权保护是一种合规与伦理技术，用于保护AI生成内容的版权和归属。通过水印、数字签名、溯源等技术，标识AI生成内容的来源，保护创作者权益，同时确保内容的可追溯性和责任归属。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "版权标识：标识AI生成内容的版权归属",
+            "溯源能力：追踪内容的生成来源",
+            "权益保护：保护创作者和用户的权益",
+            "法律合规：符合版权法规要求",
+            "技术实现：通过技术手段实现版权保护"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "数字水印、数字签名、内容溯源、版权标识、区块链"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "内容生成、版权管理、法律合规、权益保护、内容溯源"
+        }
+      ]
+    }
+  ]
+}

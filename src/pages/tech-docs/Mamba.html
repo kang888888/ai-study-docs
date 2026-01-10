@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mamba (State Space Models) 状态空间模型 - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Mamba (State Space Models) 状态空间模型</h1>
+            <p>线性复杂度的长序列建模架构</p>
+        </div>
+        <div class="content">
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>基于结构化状态空间模型（SSM）的新型架构，旨在解决Transformer在长序列上的O(L²)复杂度和KV Cache显存占用问题。通过选择性扫描机制实现线性复杂度。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>线性复杂度：时间和空间复杂度均为O(L)，远优于Transformer的O(L²)</li>
+                    <li>无KV Cache：推理时显存占用恒定，不随序列长度增长</li>
+                    <li>选择性机制：参数根据输入动态变化，类似Attention的内容选择能力</li>
+                    <li>并行训练：通过并行扫描算法支持高效并行训练</li>
+                    <li>RNN推理：推理时可以递归计算，速度极快</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box"><p><strong>选择性状态空间模型（Selective SSM）、并行扫描算法、硬件感知优化</strong></p></div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box"><p>长文本生成、基因组序列分析、时间序列建模、代码生成（Codestral Mamba）</p></div>
+            </div>
+            <div class="section">
+                <h2>📊 架构图解</h2>
+                <div class="diagram-gallery">
+                    <div class="diagram-item"><img src="Mamba_vs_Transformer.png" alt="Mamba vs Transformer" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">Mamba vs Transformer</div></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>状态空间模型（SSM）</h3>
+                    <div class="math-formula">
+                        <p>连续时间SSM：</p>
+                        <p>$$h'(t) = Ah(t) + Bx(t)$$</p>
+                        <p>$$y(t) = Ch(t)$$</p>
+                        <p>离散化后：</p>
+                        <p>$$h_k = \bar{A}h_{k-1} + \bar{B}x_k$$</p>
+                        <p>$$y_k = Ch_k$$</p>
+                        <p>其中 $\bar{A} = e^{\Delta A}$，$\bar{B} = (\Delta A)^{-1}(e^{\Delta A} - I)\Delta B$</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>选择性机制</h3>
+                    <div class="math-formula">
+                        <p>Mamba的关键创新是让参数依赖于输入：</p>
+                        <p>$$B_k = s_B(x_k), \quad C_k = s_C(x_k), \quad \Delta_k = \tau_\Delta(x_k)$$</p>
+                        <p>这使得模型能够根据输入内容动态调整状态转移，实现类似Attention的选择能力</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 mamba-ssm 库实现 Mamba</h3>
+                    <pre><code class="language-python">import torch
+from mamba_ssm import Mamba
+
+# 创建 Mamba 模型
+model = Mamba(
+    d_model=512,        # 模型维度
+    d_state=16,         # 状态维度
+    d_conv=4,           # 卷积核大小
+    expand=2,           # 扩展因子
+)
+
+# 输入 (batch_size, seq_length, d_model)
+x = torch.randn(2, 1024, 512)
+
+# 前向传播
+output = model(x)
+print(f"输出形状: {output.shape}")  # [2, 1024, 512]
+
+# 与 Transformer 对比
+# Transformer: O(L²) 复杂度，需要 KV Cache
+# Mamba: O(L) 复杂度，无需 KV Cache</code></pre>
+                </div>
+                <div class="code-box">
+                    <h3>手动实现简化版 SSM</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+
+class SimpleSSM(nn.Module):
+    """简化的状态空间模型"""
+    def __init__(self, d_model, d_state):
+        super(SimpleSSM, self).__init__()
+        self.d_model = d_model
+        self.d_state = d_state
+        
+        # 状态转移矩阵
+        self.A = nn.Parameter(torch.randn(d_state, d_state))
+        # 输入矩阵
+        self.B = nn.Linear(d_model, d_state)
+        # 输出矩阵
+        self.C = nn.Linear(d_state, d_model)
+    
+    def forward(self, x):
+        """
+        参数:
+            x: [batch_size, seq_length, d_model]
+        返回:
+            output: [batch_size, seq_length, d_model]
+        """
+        batch_size, seq_length, _ = x.shape
+        h = torch.zeros(batch_size, self.d_state, device=x.device)
+        outputs = []
+        
+        # 递归计算（类似RNN）
+        for t in range(seq_length):
+            # 状态更新
+            h = torch.matmul(h, self.A) + self.B(x[:, t, :])
+            # 输出
+            y_t = self.C(h)
+            outputs.append(y_t)
+        
+        output = torch.stack(outputs, dim=1)
+        return output
+
+# 使用示例
+if __name__ == "__main__":
+    model = SimpleSSM(d_model=512, d_state=16)
+    x = torch.randn(2, 100, 512)
+    output = model(x)
+    print(f"输出形状: {output.shape}")  # [2, 100, 512]</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 图片放大弹窗 -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal()">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+            modalImg.onclick = function(e) { e.stopPropagation(); };
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

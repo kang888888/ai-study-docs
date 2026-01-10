@@ -1,0 +1,183 @@
+{
+  "title": "梯度 (Gradient)",
+  "subtitle": "损失函数对参数的偏导数，指示参数更新的方向",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "梯度是多元函数在某一点处的偏导数向量，在深度学习中表示损失函数对模型参数的偏导数。梯度指示了损失函数增长最快的方向，负梯度方向则是损失函数下降最快的方向，因此梯度下降法通过沿着负梯度方向更新参数来最小化损失函数。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "方向性：梯度指向函数值增长最快的方向",
+            "大小：梯度的模长表示变化率的大小",
+            "链式法则：通过反向传播计算深层网络的梯度",
+            "梯度消失：深层网络中梯度可能变得极小",
+            "梯度爆炸：梯度可能变得极大，导致训练不稳定"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "梯度计算、链式法则、梯度裁剪、梯度累积、梯度检查"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "参数更新、优化算法、梯度下降、反向传播、模型训练"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "梯度示意图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "梯度示意图",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "梯度下降",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "梯度下降",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "梯度流动",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "梯度流动",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "梯度定义",
+          "formulas": [
+            {
+              "text": "对于损失函数 $L(\\theta)$，梯度定义为："
+            },
+            {
+              "display": "\\nabla_\\theta L = \\left(\\frac{\\partial L}{\\partial \\theta_1}, \\frac{\\partial L}{\\partial \\theta_2}, \\ldots, \\frac{\\partial L}{\\partial \\theta_n}\\right)^T"
+            },
+            {
+              "text": "其中 $\\theta$ 是参数向量，$n$ 是参数数量"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "梯度下降",
+          "formulas": [
+            {
+              "text": "参数更新公式："
+            },
+            {
+              "display": "\\theta_{t+1} = \\theta_t - \\eta \\nabla_\\theta L(\\theta_t)"
+            },
+            {
+              "text": "其中 $\\eta$ 是学习率，$\\nabla_\\theta L$ 是梯度",
+              "inline": "\\eta"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "链式法则",
+          "formulas": [
+            {
+              "text": "对于复合函数 $L = f(g(x))$，梯度计算："
+            },
+            {
+              "display": "\\frac{\\partial L}{\\partial x} = \\frac{\\partial L}{\\partial g} \\cdot \\frac{\\partial g}{\\partial x}"
+            },
+            {
+              "text": "在深度学习中，通过链式法则从输出层向输入层反向传播梯度"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "梯度裁剪",
+          "formulas": [
+            {
+              "text": "防止梯度爆炸，将梯度限制在阈值内："
+            },
+            {
+              "display": "\\hat{g} = \\begin{cases} g & \\text{if } ||g|| \\leq c \\\\ c \\cdot \\frac{g}{||g||} & \\text{if } ||g|| > c \\end{cases}"
+            },
+            {
+              "text": "其中 $c$ 是裁剪阈值，通常取 1.0 或 5.0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "PyTorch 中的梯度计算",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\n\n# 1. 自动梯度计算\nx = torch.tensor([2.0], requires_grad=True)\ny = x ** 2 + 3 * x + 1\ny.backward()  # 反向传播\nprint(f\"梯度值: {x.grad}\")  # 输出: tensor([7.]) 因为 dy/dx = 2x + 3 = 7\n\n# 2. 神经网络中的梯度\nmodel = nn.Linear(10, 1)\nx = torch.randn(32, 10)\ntarget = torch.randn(32, 1)\n\n# 前向传播\noutput = model(x)\nloss = nn.MSELoss()(output, target)\n\n# 反向传播\nloss.backward()\n\n# 查看梯度\nprint(f\"权重梯度形状: {model.weight.grad.shape}\")\nprint(f\"偏置梯度形状: {model.bias.grad.shape}\")\n\n# 3. 梯度裁剪\noptimizer = torch.optim.SGD(model.parameters(), lr=0.01)\n\nfor epoch in range(100):\n    output = model(x)\n    loss = nn.MSELoss()(output, target)\n    \n    optimizer.zero_grad()\n    loss.backward()\n    \n    # 梯度裁剪\n    torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)\n    \n    optimizer.step()\n\n# 4. 梯度累积（用于大batch训练）\naccumulation_steps = 4\noptimizer.zero_grad()\n\nfor i, (x_batch, y_batch) in enumerate(dataloader):\n    output = model(x_batch)\n    loss = criterion(output, y_batch) / accumulation_steps  # 缩放损失\n    loss.backward()  # 累积梯度\n    \n    if (i + 1) % accumulation_steps == 0:\n        optimizer.step()  # 更新参数\n        optimizer.zero_grad()  # 清零梯度\n\n# 5. 检查梯度（调试用）\ndef check_gradients(model):\n    \"\"\"检查梯度是否存在和是否正常\"\"\"\n    for name, param in model.named_parameters():\n        if param.grad is not None:\n            grad_norm = param.grad.norm().item()\n            if grad_norm == 0:\n                print(f\"警告: {name} 的梯度为零\")\n            elif grad_norm > 100:\n                print(f\"警告: {name} 的梯度可能爆炸: {grad_norm}\")\n            else:\n                print(f\"{name}: 梯度范数 = {grad_norm:.4f}\")\n        else:\n            print(f\"警告: {name} 没有梯度\")\n\n# 使用示例\ncheck_gradients(model)"
+        }
+      ]
+    }
+  ]
+}

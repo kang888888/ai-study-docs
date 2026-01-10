@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据增强</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>数据增强</h1>
+        <p class="tagline">通过回译、同义词替换、句子重组等方法增加数据多样性。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card"><h3>增强方法</h3><p>回译、同义词替换、句子重组、模板填充。</p></div>
+            <div class="meta-card"><h3>优势</h3><p>增加多样性、提升性能、成本低。</p></div>
+            <div class="meta-card"><h3>应用场景</h3><p>数据稀缺、提升多样性、特定任务。</p></div>
+            <div class="meta-card"><h3>注意事项</h3><p>保持语义、控制质量、避免过度增强。</p></div>
+        </div>
+
+        <div class="section">
+            <h2>⚙️ 增强方法</h2>
+            
+            <h3 style="color:#fbbf24; margin-top:20px;">1. 回译（Back Translation）</h3>
+            <ul>
+                <li><strong>原理</strong>：翻译到其他语言再翻译回来</li>
+                <li><strong>优势</strong>：保持语义，增加表达多样性</li>
+                <li><strong>劣势</strong>：需要翻译模型，可能引入错误</li>
+            </ul>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">2. 同义词替换</h3>
+            <ul>
+                <li><strong>原理</strong>：替换关键词为同义词</li>
+                <li><strong>优势</strong>：简单快速，增加词汇多样性</li>
+                <li><strong>劣势</strong>：可能改变语义</li>
+            </ul>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">3. 句子重组</h3>
+            <ul>
+                <li><strong>原理</strong>：重新组织句子结构</li>
+                <li><strong>优势</strong>：增加结构多样性</li>
+                <li><strong>劣势</strong>：实现复杂</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>💻 代码示例</h2>
+            <div class="code-box">
+                <h3>回译增强</h3>
+                <pre><code class="language-python">from googletrans import Translator
+
+translator = Translator()
+
+def back_translate(text, intermediate_lang='en'):
+    # 翻译到中间语言
+    translated = translator.translate(text, dest=intermediate_lang)
+    # 翻译回原语言
+    back_translated = translator.translate(translated.text, dest='zh')
+    return back_translated.text</code></pre>
+            </div>
+        </div>
+    </div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

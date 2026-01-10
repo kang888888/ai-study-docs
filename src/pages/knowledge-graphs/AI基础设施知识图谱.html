@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI基础设施知识图谱</title>
+    
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+    
+    <!-- 页面特定样式 -->
+    <style>
+        body {
+            background: radial-gradient(circle at top, var(--bg-primary) 0%, #030712 60%, #010409 100%);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- 知识图谱容器 -->
+        <div id="chart"></div>
+        
+        <!-- 标题栏 -->
+        <div class="title-bar">
+            <h1>AI基础设施知识图谱</h1>
+            <p>从硬件集群到AI编译器，再到国产化适配，全面掌握AI基础设施技术。</p>
+            <div class="legend">
+                <span><i style="background:#8b5cf6"></i>硬件与集群</span>
+            <span><i style="background:#ec4899"></i>AI编译器</span>
+            <span><i style="background:#10b981"></i>国产化适配</span>
+            </div>
+        </div>
+        
+        <!-- 控制栏 -->
+        <div class="control-bar">
+            <button class="control-btn" onclick="resetView()">重新布局</button>
+            <button class="control-btn" onclick="toggleAnimation()">暂停/继续动画</button>
+        </div>
+        
+        <!-- 侧边栏 -->
+        <div class="sidebar" id="sidebar">
+            <button class="close-btn" onclick="closeSidebar()">×</button>
+            <div class="sidebar-header">
+                <h2 class="sidebar-title" id="sidebar-title">AI基础设施知识图谱</h2>
+                <div class="sidebar-tag" id="sidebar-tag">指南</div>
+            </div>
+            <div class="sidebar-body" id="sidebar-content">
+                <div class="sidebar-placeholder">
+                    <p>👇 在左侧图谱中选择一个节点即可查看详情。</p>
+                    <p>• 点击分类节点查看概览说明<br>• 点击具体技术节点，会在此侧边栏加载对应的 HTML 讲解页</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 公共脚本 -->
+    <script src="../common/knowledge-graph.js"></script>
+    
+    <!-- 页面特定数据 -->
+    <script>
+        // 页面配置
+        const pageConfig = {
+          "containerId": "chart",
+          "data": {
+                    "name": "AI基础设施",
+                    "value": "支撑大模型训练与推理的底层算力与系统软件",
+                    "symbolSize": 70,
+                    "itemStyle": {
+                              "color": "#06b6d4",
+                              "borderColor": "#f8fafc",
+                              "borderWidth": 4
+                    },
+                    "children": [
+                              {
+                                        "name": "硬件与集群",
+                                        "value": "加速卡、集群拓扑、网络通信与算力规划。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Hardware",
+                                        "children": [
+                                                  {
+                                                            "name": "加速卡矩阵",
+                                                            "value": "NVIDIA GPU、Google TPU 以及多厂商加速卡的特性与调优策略。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Accelerator"
+                                                  },
+                                                  {
+                                                            "name": "集群架构",
+                                                            "value": "计算/存储/网络/管理四层设计与资源规划方法。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Cluster"
+                                                  },
+                                                  {
+                                                            "name": "网络通信与存储",
+                                                            "value": "InfiniBand、NVMe、RDMA、通信算法及网络优化。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Network"
+                                                  },
+                                                  {
+                                                            "name": "算力资源规划",
+                                                            "value": "算力需求评估、成本控制、弹性与合规策略。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Capacity"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "AI编译器",
+                                        "value": "图优化、张量调度、代码生成与自动调优的核心技术层。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Compiler",
+                                        "children": [
+                                                  {
+                                                            "name": "编译原理基础",
+                                                            "value": "前端/中端/后端三段式结构、IR、循环与常量优化。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Foundation"
+                                                  },
+                                                  {
+                                                            "name": "前端与后端技术",
+                                                            "value": "模型导入、图优化、Tensorization、Auto-Tuning、内存规划。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Tech"
+                                                  },
+                                                  {
+                                                            "name": "主流框架与案例",
+                                                            "value": "TVM、MLIR/OpenXLA、XLA、TensorRT 及国产编译器实践。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Framework"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "国产化适配",
+                                        "value": "昇腾、飞桨及其他国产芯片的迁移路线、工具链与性能评估。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Localization",
+                                        "children": [
+                                                  {
+                                                            "name": "昇腾平台",
+                                                            "value": "MindSpore/MindFormers/MindIE 生态，ChatGLM 与 LLaMA 训练/推理实践。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Ascend"
+                                                  },
+                                                  {
+                                                            "name": "飞桨平台",
+                                                            "value": "PaddlePaddle + PaddleNLP 工具链、LoRA/RAG 案例。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Paddle"
+                                                  },
+                                                  {
+                                                            "name": "国产芯片与基准",
+                                                            "value": "海光、天数智芯等芯片对比，以及推理/训练性能基准测试。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Benchmark"
+                                                  }
+                                        ]
+                              }
+                    ]
+          },
+          "techPages": {
+                    "硬件与集群": "../tech-docs/硬件与集群.html",
+                    "加速卡矩阵": "../tech-docs/硬件与集群.html",
+                    "集群架构": "../tech-docs/硬件与集群.html",
+                    "网络通信与存储": "../tech-docs/硬件与集群.html",
+                    "算力资源规划": "../tech-docs/硬件与集群.html",
+                    "AI编译器": "../tech-docs/AI编译器.html",
+                    "编译原理基础": "../tech-docs/AI编译器.html",
+                    "前端与后端技术": "../tech-docs/AI编译器.html",
+                    "主流框架与案例": "../tech-docs/AI编译器.html",
+                    "国产化适配": "../tech-docs/国产化适配.html",
+                    "昇腾平台": "../tech-docs/国产化适配.html",
+                    "飞桨平台": "../tech-docs/国产化适配.html",
+                    "国产芯片与基准": "../tech-docs/国产化适配.html"
+          },
+          "categoryDescriptions": {
+                    "硬件与集群": "聚焦加速卡矩阵、集群拓扑、网络通信与算力规划，构建稳固的底层算力地基。",
+                    "加速卡矩阵": "NVIDIA GPU、Google TPU 及国产加速卡的性能、生态与调优策略。",
+                    "集群架构": "计算/存储/网络/管理四层设计，涵盖调度、监控与容灾。",
+                    "网络通信与存储": "InfiniBand、RoCE、RDMA、NVMe-oF 与网络优化方法。",
+                    "算力资源规划": "算力需求评估、成本控制、多云/混合部署与合规策略。",
+                    "AI编译器": "梳理编译原理、图优化、张量调度、主流框架与实践案例，帮助模型适配多硬件并提效。",
+                    "编译原理基础": "前端/中端/后端三段式结构、IR、循环与常量优化等基础。",
+                    "前端与后端技术": "模型导入、图优化、Tensorization、Auto-Tuning、内存规划。",
+                    "主流框架与案例": "TVM、MLIR/OpenXLA、XLA、TensorRT 及国产编译器的实践经验。",
+                    "国产化适配": "总结昇腾、飞桨以及海光/天数智芯等平台的迁移路径、工具链与性能基准，支撑全栈国产化落地。",
+                    "昇腾平台": "MindSpore/MindFormers/MindIE 生态，支持 ChatGLM、LLaMA 等模型训练推理。",
+                    "飞桨平台": "PaddlePaddle + PaddleNLP 工具链，覆盖 LoRA、RAG、行业案例。",
+                    "国产芯片与基准": "海光、天数智芯等芯片对比，以及推理/训练性能基准测试。"
+          },
+          "force": {
+                    "repulsion": 1800,
+                    "gravity": 0.15,
+                    "edgeLength": [
+                              80,
+                              240
+                    ],
+                    "friction": 0.2
+          }
+};
+        
+        // 初始化页面
+        initKnowledgeGraph(pageConfig);
+        
+        // 窗口大小改变时重新调整
+        window.addEventListener('resize', function() {
+            if (typeof chart !== 'undefined' && chart) {
+                chart.resize();
+            }
+        });
+    </script>
+</body>
+</html>

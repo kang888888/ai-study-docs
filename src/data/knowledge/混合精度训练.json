@@ -1,0 +1,55 @@
+{
+  "title": "混合精度训练（Mixed Precision Training）",
+  "subtitle": "使用FP16/BF16进行前向和反向传播，使用FP32保存主权重和优化器状态。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "混合精度训练原理",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "混合精度训练原理",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "混合精度训练对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "混合精度训练对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "PyTorch混合精度训练",
+          "language": "python",
+          "code": "from torch.cuda.amp import autocast, GradScaler\n\nscaler = GradScaler()\n\nfor epoch in range(num_epochs):\n    for batch in dataloader:\n        optimizer.zero_grad()\n        \n        # 前向传播使用FP16\n        with autocast():\n            outputs = model(batch)\n            loss = criterion(outputs, targets)\n        \n        # 反向传播和梯度缩放\n        scaler.scale(loss).backward()\n        scaler.step(optimizer)\n        scaler.update()"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "title": "RWKV (Receptance Weighted Key Value)",
+  "subtitle": "结合Transformer和RNN优势的创新架构",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "一种创新架构，结合了Transformer的并行训练能力和RNN的高效推理特性。通过线性注意力机制，实现O(L)复杂度的同时保持接近Transformer的性能。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "线性Attention：将标准Attention改造为线性递归形式",
+            "双重模式：训练时并行（类似Transformer），推理时递归（类似RNN）",
+            "显存高效：推理时显存占用O(1)，无KV Cache",
+            "无限上下文：理论上可以处理无限长的序列",
+            "开源友好：完全开源，社区活跃"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "Time-Mixing、Channel-Mixing、指数衰减机制、并行前缀和算法"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "长文本生成、对话系统、代码生成、低资源场景部署"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "RWKVDiagram",
+              "caption": "RWKV衰减可视化",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "RWKV衰减可视化",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "RWKVDiagram",
+              "caption": "RWKV组件详解",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "RWKV组件详解",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "Time-Mixing",
+          "formulas": [
+            {
+              "text": "RWKV 的 Time-Mixing 机制："
+            },
+            {
+              "display": "r_t = W_r \\cdot x_t"
+            },
+            {
+              "display": "k_t = W_k \\cdot x_t"
+            },
+            {
+              "display": "v_t = W_v \\cdot x_t"
+            },
+            {
+              "display": "o_t = \\sigma(r_t) \\odot \\frac{\\sum_{i=1}^{t} w_{t-i} \\cdot k_i \\odot v_i}{\\sum_{i=1}^{t} w_{t-i} \\cdot k_i}"
+            },
+            {
+              "text": "其中 $w_{t-i}$ 是时间衰减权重",
+              "inline": "w_{t-i}"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "指数衰减机制",
+          "formulas": [
+            {
+              "text": "使用指数衰减模拟注意力："
+            },
+            {
+              "display": "w_{t-i} = e^{-\\alpha (t-i)}"
+            },
+            {
+              "text": "其中 $\\alpha$ 是可学习的衰减参数，使得距离越远的信息权重越小",
+              "inline": "\\alpha"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 rwkv 库加载 RWKV 模型",
+          "language": "python",
+          "code": "from rwkv.model import RWKV\nfrom rwkv.utils import PIPELINE, PIPELINE_ARGS\n\n# 加载模型\nmodel = RWKV(model='./RWKV-4-Pile-430M.pth', strategy='cuda fp32')\npipeline = PIPELINE(model, \"20B_tokenizer.json\")\n\n# 生成文本\ntext = \"The future of AI is\"\nargs = PIPELINE_ARGS(temperature=1.0, top_p=0.5)\n\noutput = pipeline.generate(text, token_count=100, args=args)\nprint(output)"
+        },
+        {
+          "type": "code-box",
+          "title": "手动实现简化版 RWKV Time-Mixing",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\nclass RWKVTimeMixing(nn.Module):\n    \"\"\"RWKV Time-Mixing 层（简化版）\"\"\"\n    def __init__(self, d_model):\n        super(RWKVTimeMixing, self).__init__()\n        self.d_model = d_model\n        \n        # Receptance, Key, Value\n        self.r = nn.Linear(d_model, d_model)\n        self.k = nn.Linear(d_model, d_model)\n        self.v = nn.Linear(d_model, d_model)\n        \n        # 衰减参数\n        self.decay = nn.Parameter(torch.ones(d_model))\n    \n    def forward(self, x):\n        \"\"\"\n        参数:\n            x: [batch_size, seq_length, d_model]\n        返回:\n            output: [batch_size, seq_length, d_model]\n        \"\"\"\n        batch_size, seq_length, d_model = x.shape\n        \n        r = torch.sigmoid(self.r(x))\n        k = self.k(x)\n        v = self.v(x)\n        \n        # 计算衰减权重\n        decay_weights = torch.exp(-self.decay.unsqueeze(0).unsqueeze(0) * \n                                  torch.arange(seq_length, device=x.device).float().unsqueeze(-1))\n        \n        # 递归计算（简化版）\n        output = torch.zeros_like(x)\n        for t in range(seq_length):\n            # 加权聚合历史信息\n            weights = decay_weights[:t+1].flip(0)  # 反转，最近的权重最大\n            weighted_kv = (weights.unsqueeze(-1) * k[:, :t+1, :] * v[:, :t+1, :]).sum(dim=1)\n            weighted_k = (weights.unsqueeze(-1) * k[:, :t+1, :]).sum(dim=1)\n            \n            output[:, t, :] = r[:, t, :] * (weighted_kv / (weighted_k + 1e-8))\n        \n        return output\n\n# 使用示例\nif __name__ == \"__main__\":\n    model = RWKVTimeMixing(d_model=512)\n    x = torch.randn(2, 100, 512)\n    output = model(x)\n    print(f\"输出形状: {output.shape}\")  # [2, 100, 512]"
+        }
+      ]
+    }
+  ]
+}

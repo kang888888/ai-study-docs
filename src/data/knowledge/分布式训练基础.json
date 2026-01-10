@@ -1,0 +1,55 @@
+{
+  "title": "分布式训练基础",
+  "subtitle": "理解大模型分布式训练的核心概念和方法。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "分布式训练基础",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "分布式训练基础",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "分布式训练对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "分布式训练对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "数据并行训练示例",
+          "language": "python",
+          "code": "import torch\nimport torch.distributed as dist\nfrom torch.nn.parallel import DistributedDataParallel as DDP\n\n# 初始化分布式环境\ndist.init_process_group(backend='nccl')\n\n# 创建模型\nmodel = MyModel()\nmodel = model.to(device)\nmodel = DDP(model, device_ids=[rank])\n\n# 训练循环\nfor epoch in range(num_epochs):\n    for batch in dataloader:\n        outputs = model(batch)\n        loss = criterion(outputs, targets)\n        loss.backward()\n        optimizer.step()"
+        }
+      ]
+    }
+  ]
+}

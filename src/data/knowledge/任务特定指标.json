@@ -1,0 +1,61 @@
+{
+  "title": "任务特定指标",
+  "subtitle": "问答、代码生成、RAG、数学推理等任务特定的评估指标。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "任务特定指标分类",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "任务特定指标分类",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "任务指标应用场景",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "任务指标应用场景",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "问答任务指标（EM和Token F1）",
+          "language": "python",
+          "code": "def exact_match(prediction, ground_truth):\n    \"\"\"精确匹配（Exact Match）\"\"\"\n    return prediction.strip().lower() == ground_truth.strip().lower()\n\ndef token_f1(prediction, ground_truth):\n    \"\"\"Token级别的F1分数\"\"\"\n    pred_tokens = set(prediction.lower().split())\n    truth_tokens = set(ground_truth.lower().split())\n    \n    if len(truth_tokens) == 0:\n        return 1.0 if len(pred_tokens) == 0 else 0.0\n    \n    common = pred_tokens & truth_tokens\n    precision = len(common) / len(pred_tokens) if len(pred_tokens) > 0 else 0\n    recall = len(common) / len(truth_tokens)\n    \n    if precision + recall == 0:\n        return 0.0\n    \n    return 2 * precision * recall / (precision + recall)\n\n# 使用示例\npred = \"the cat is on the mat\"\nground_truth = \"the cat is on the mat\"\nprint(f\"EM: {exact_match(pred, ground_truth)}\")\nprint(f\"Token F1: {token_f1(pred, ground_truth):.4f}\")"
+        },
+        {
+          "type": "code-box",
+          "title": "代码生成指标（Pass@k）",
+          "language": "python",
+          "code": "def pass_at_k(n, c, k):\n    \"\"\"计算Pass@k指标\n    n: 总样本数\n    c: 通过的样本数\n    k: 每个问题生成的代码数量\n    \"\"\"\n    if n - c < k:\n        return 1.0\n    return 1.0 - (n - c) * (n - c - 1) * ... * (n - c - k + 1) / (n * (n - 1) * ... * (n - k + 1))\n\ndef pass_at_k_simple(n, c, k):\n    \"\"\"简化版Pass@k计算\"\"\"\n    if n - c < k:\n        return 1.0\n    \n    numerator = 1.0\n    denominator = 1.0\n    for i in range(k):\n        numerator *= (n - c - i)\n        denominator *= (n - i)\n    \n    return 1.0 - numerator / denominator\n\n# 使用示例\n# 假设100个问题，每个生成10个代码，其中30个问题至少有一个代码通过\nn, c, k = 100, 30, 10\nprint(f\"Pass@10: {pass_at_k_simple(n, c, k):.4f}\")"
+        }
+      ]
+    }
+  ]
+}

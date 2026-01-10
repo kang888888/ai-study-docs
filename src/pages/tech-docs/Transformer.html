@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformer - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Transformer</h1>
+            <p>基于Self-Attention机制的革命性架构</p>
+        </div>
+        <div class="content">
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>基于Self-Attention机制的革命性架构，完全摒弃了循环和卷积结构。通过注意力机制直接建模序列中任意两个位置的关系，是当前所有大语言模型（GPT、BERT、LLaMA）的基石。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>Self-Attention：直接计算序列中任意位置之间的关系，O(n²)复杂度</li>
+                    <li>并行计算：所有位置同时计算，训练速度远超RNN/LSTM</li>
+                    <li>位置编码：通过正弦/余弦或可学习的位置编码保留序列顺序信息</li>
+                    <li>多头注意力：从多个子空间捕捉不同的语义关系</li>
+                    <li>Encoder-Decoder结构：编码器理解输入，解码器生成输出</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box"><p><strong>Multi-Head Attention、位置编码、残差连接、Layer Normalization、Feed-Forward Network</strong></p></div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box"><p>机器翻译、文本生成、大语言模型（GPT/BERT）、图像分类（ViT）、语音识别</p></div>
+            </div>
+            <div class="section">
+                <h2>📊 架构图解</h2>
+                <div class="diagram-gallery">
+                    <div class="diagram-item"><img src="Transformer架构图.png" alt="Transformer架构图" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">Transformer架构图</div></div>
+                    <div class="diagram-item"><img src="注意力机制.png" alt="注意力机制" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">注意力机制</div></div>
+                    <div class="diagram-item"><img src="位置编码.png" alt="位置编码" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">位置编码</div></div>
+                    <div class="diagram-item"><img src="Attention_Variants_Visualization.png" alt="Attention变体可视化" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">Attention变体可视化</div></div>
+                    <div class="diagram-item"><img src="RoPE位置编码.svg" alt="RoPE位置编码" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">RoPE位置编码</div></div>
+                    <div class="diagram-item"><img src="RoPE详细作用.svg" alt="RoPE详细作用" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">RoPE对各序列位置、各维度的作用</div></div>
+                    <div class="diagram-item"><img src="注意力机制变体.svg" alt="注意力机制变体" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">MHA、GQA、MQA、MLA对比</div></div>
+                    <div class="diagram-item"><img src="RMSNorm.svg" alt="RMSNorm" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">RMSNorm归一化</div></div>
+                    <div class="diagram-item"><img src="SwiGLU.svg" alt="SwiGLU" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">SwiGLU激活函数</div></div>
+                    <div class="diagram-item"><img src="ALiBi位置编码.svg" alt="ALiBi位置编码" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">ALiBi位置编码</div></div>
+                    <div class="diagram-item"><img src="归一化方法对比.svg" alt="归一化方法对比" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">BatchNorm和LayerNorm对比</div></div>
+                    <div class="diagram-item"><img src="Pre-norm和Post-norm.svg" alt="Pre-norm和Post-norm" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">Pre-norm和Post-norm</div></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>Scaled Dot-Product Attention</h3>
+                    <div class="math-formula">
+                        <p>注意力机制的核心公式：</p>
+                        <p>$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$</p>
+                        <p>其中：</p>
+                        <ul style="list-style: none; padding-left: 20px;">
+                            <li>$Q$ 是查询矩阵 (Query)</li>
+                            <li>$K$ 是键矩阵 (Key)</li>
+                            <li>$V$ 是值矩阵 (Value)</li>
+                            <li>$d_k$ 是键的维度，用于缩放</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>Multi-Head Attention</h3>
+                    <div class="math-formula">
+                        <p>多头注意力机制：</p>
+                        <p>$$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, ..., \text{head}_h)W^O$$</p>
+                        <p>$$\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$$</p>
+                        <p>其中 $h$ 是注意力头的数量，每个头有独立的权重矩阵 $W_i^Q, W_i^K, W_i^V$</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>位置编码（Positional Encoding）</h3>
+                    <div class="math-formula">
+                        <p>正弦位置编码：</p>
+                        <p>$$PE_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d_{model}}}\right)$$</p>
+                        <p>$$PE_{(pos, 2i+1)} = \cos\left(\frac{pos}{10000^{2i/d_{model}}}\right)$$</p>
+                        <p>其中 $pos$ 是位置，$i$ 是维度索引，$d_{model}$ 是模型维度</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>Feed-Forward Network</h3>
+                    <div class="math-formula">
+                        <p>前馈网络：</p>
+                        <p>$$\text{FFN}(x) = \max(0, xW_1 + b_1)W_2 + b_2$$</p>
+                        <p>通常 $d_{ff} = 4 \times d_{model}$</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 PyTorch 实现 Transformer</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import math
+
+class MultiHeadAttention(nn.Module):
+    """多头注意力机制"""
+    def __init__(self, d_model, num_heads):
+        super(MultiHeadAttention, self).__init__()
+        assert d_model % num_heads == 0
+        
+        self.d_model = d_model
+        self.num_heads = num_heads
+        self.d_k = d_model // num_heads
+        
+        # 线性变换层
+        self.W_q = nn.Linear(d_model, d_model)
+        self.W_k = nn.Linear(d_model, d_model)
+        self.W_v = nn.Linear(d_model, d_model)
+        self.W_o = nn.Linear(d_model, d_model)
+    
+    def scaled_dot_product_attention(self, Q, K, V, mask=None):
+        """缩放点积注意力"""
+        # Q, K, V shape: (batch_size, num_heads, seq_len, d_k)
+        scores = torch.matmul(Q, K.transpose(-2, -1)) / math.sqrt(self.d_k)
+        
+        if mask is not None:
+            scores = scores.masked_fill(mask == 0, -1e9)
+        
+        attention_weights = F.softmax(scores, dim=-1)
+        output = torch.matmul(attention_weights, V)
+        
+        return output, attention_weights
+    
+    def forward(self, query, key, value, mask=None):
+        batch_size = query.size(0)
+        
+        # 线性变换并重塑为多头
+        Q = self.W_q(query).view(batch_size, -1, self.num_heads, self.d_k).transpose(1, 2)
+        K = self.W_k(key).view(batch_size, -1, self.num_heads, self.d_k).transpose(1, 2)
+        V = self.W_v(value).view(batch_size, -1, self.num_heads, self.d_k).transpose(1, 2)
+        
+        # 注意力计算
+        attention_output, attention_weights = self.scaled_dot_product_attention(Q, K, V, mask)
+        
+        # 拼接多头
+        attention_output = attention_output.transpose(1, 2).contiguous().view(
+            batch_size, -1, self.d_model
+        )
+        
+        # 输出投影
+        output = self.W_o(attention_output)
+        
+        return output
+
+class PositionalEncoding(nn.Module):
+    """位置编码"""
+    def __init__(self, d_model, max_len=5000):
+        super(PositionalEncoding, self).__init__()
+        
+        pe = torch.zeros(max_len, d_model)
+        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
+        div_term = torch.exp(torch.arange(0, d_model, 2).float() * 
+                           (-math.log(10000.0) / d_model))
+        
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+        pe = pe.unsqueeze(0).transpose(0, 1)
+        
+        self.register_buffer('pe', pe)
+    
+    def forward(self, x):
+        # x shape: (seq_len, batch_size, d_model)
+        x = x + self.pe[:x.size(0), :]
+        return x
+
+class TransformerBlock(nn.Module):
+    """Transformer 编码器块"""
+    def __init__(self, d_model, num_heads, d_ff, dropout=0.1):
+        super(TransformerBlock, self).__init__()
+        
+        self.attention = MultiHeadAttention(d_model, num_heads)
+        self.norm1 = nn.LayerNorm(d_model)
+        self.norm2 = nn.LayerNorm(d_model)
+        
+        self.feed_forward = nn.Sequential(
+            nn.Linear(d_model, d_ff),
+            nn.ReLU(),
+            nn.Linear(d_ff, d_model)
+        )
+        
+        self.dropout = nn.Dropout(dropout)
+    
+    def forward(self, x, mask=None):
+        # 自注意力 + 残差连接
+        attn_output = self.attention(x, x, x, mask)
+        x = self.norm1(x + self.dropout(attn_output))
+        
+        # 前馈网络 + 残差连接
+        ff_output = self.feed_forward(x)
+        x = self.norm2(x + self.dropout(ff_output))
+        
+        return x
+
+class Transformer(nn.Module):
+    """完整的 Transformer 模型"""
+    def __init__(self, vocab_size, d_model, num_heads, num_layers, d_ff, max_len=5000, dropout=0.1):
+        super(Transformer, self).__init__()
+        
+        self.embedding = nn.Embedding(vocab_size, d_model)
+        self.pos_encoding = PositionalEncoding(d_model, max_len)
+        
+        self.layers = nn.ModuleList([
+            TransformerBlock(d_model, num_heads, d_ff, dropout)
+            for _ in range(num_layers)
+        ])
+        
+        self.dropout = nn.Dropout(dropout)
+        self.fc_out = nn.Linear(d_model, vocab_size)
+    
+    def forward(self, x, mask=None):
+        # 词嵌入
+        x = self.embedding(x) * math.sqrt(self.embedding.embedding_dim)
+        x = x.transpose(0, 1)  # (seq_len, batch_size, d_model)
+        
+        # 位置编码
+        x = self.pos_encoding(x)
+        x = self.dropout(x)
+        
+        # Transformer 层
+        for layer in self.layers:
+            x = layer(x, mask)
+        
+        # 转回 (batch_size, seq_len, d_model)
+        x = x.transpose(0, 1)
+        
+        # 输出层
+        output = self.fc_out(x)
+        
+        return output
+
+# 使用示例
+if __name__ == "__main__":
+    # 创建模型
+    model = Transformer(
+        vocab_size=10000,
+        d_model=512,
+        num_heads=8,
+        num_layers=6,
+        d_ff=2048
+    )
+    
+    # 模拟输入 (batch_size=32, seq_len=50)
+    x = torch.randint(0, 10000, (32, 50))
+    
+    # 前向传播
+    output = model(x)
+    print(f"输出形状: {output.shape}")  # [32, 50, 10000]</code></pre>
+                </div>
+                <div class="code-box">
+                    <h3>使用 NumPy 手动实现注意力机制</h3>
+                    <pre><code class="language-python">import numpy as np
+
+def scaled_dot_product_attention(Q, K, V, mask=None):
+    """
+    缩放点积注意力
+    
+    参数:
+        Q: 查询矩阵 (..., seq_len_q, d_k)
+        K: 键矩阵 (..., seq_len_k, d_k)
+        V: 值矩阵 (..., seq_len_v, d_v)
+        mask: 掩码矩阵
+    """
+    d_k = Q.shape[-1]
+    
+    # 计算注意力分数
+    scores = np.matmul(Q, K.transpose(-2, -1)) / np.sqrt(d_k)
+    
+    # 应用掩码
+    if mask is not None:
+        scores = np.where(mask == 0, -1e9, scores)
+    
+    # Softmax
+    attention_weights = np.exp(scores - np.max(scores, axis=-1, keepdims=True))
+    attention_weights = attention_weights / np.sum(attention_weights, axis=-1, keepdims=True)
+    
+    # 加权求和
+    output = np.matmul(attention_weights, V)
+    
+    return output, attention_weights
+
+def positional_encoding(max_len, d_model):
+    """生成位置编码"""
+    pe = np.zeros((max_len, d_model))
+    
+    for pos in range(max_len):
+        for i in range(0, d_model, 2):
+            pe[pos, i] = np.sin(pos / (10000 ** (2 * i / d_model)))
+            if i + 1 < d_model:
+                pe[pos, i + 1] = np.cos(pos / (10000 ** (2 * i / d_model)))
+    
+    return pe
+
+# 使用示例
+if __name__ == "__main__":
+    # 创建 Q, K, V
+    batch_size, seq_len, d_k = 2, 10, 64
+    Q = np.random.randn(batch_size, seq_len, d_k)
+    K = np.random.randn(batch_size, seq_len, d_k)
+    V = np.random.randn(batch_size, seq_len, d_k)
+    
+    # 计算注意力
+    output, attention_weights = scaled_dot_product_attention(Q, K, V)
+    print(f"注意力输出形状: {output.shape}")  # (2, 10, 64)
+    print(f"注意力权重形状: {attention_weights.shape}")  # (2, 10, 10)
+    
+    # 生成位置编码
+    pe = positional_encoding(max_len=100, d_model=512)
+    print(f"位置编码形状: {pe.shape}")  # (100, 512)</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 图片放大弹窗 -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal()">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+            modalImg.onclick = function(e) { e.stopPropagation(); };
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

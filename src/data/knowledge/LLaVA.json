@@ -1,0 +1,54 @@
+{
+  "title": "LLaVA (Large Language and Vision Assistant)",
+  "subtitle": "大型语言和视觉助手，结合视觉编码器与LLM",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "LLaVA是一个大型语言和视觉助手，将视觉编码器（如CLIP）与大型语言模型（如LLaMA）结合，实现了强大的视觉理解和对话能力。通过将图像特征投影到语言模型的嵌入空间，LLaVA能够理解图像内容并进行自然语言对话。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "视觉理解：强大的图像理解和分析能力",
+            "自然对话：支持自然语言对话和问答",
+            "多模态融合：有效融合视觉和语言信息",
+            "易于训练：使用简单的投影层连接视觉和语言",
+            "性能优秀：在多个视觉理解任务上表现优异"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "视觉编码器、投影层、多模态融合、指令微调"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "图像问答、视觉对话、图像描述、视觉推理、多模态助手"
+        }
+      ]
+    }
+  ]
+}

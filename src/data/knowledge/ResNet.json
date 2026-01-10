@@ -1,0 +1,157 @@
+{
+  "title": "ResNet (Residual Network) 残差网络",
+  "subtitle": "解决梯度消失问题的深度网络架构",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "通过引入残差连接（Skip Connection / Shortcut），允许梯度直接流向浅层，解决了深层网络（100+层）难以训练的梯度消失/爆炸问题。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "残差学习：学习 F(x) = H(x) - x，而非直接学习 H(x)",
+            "恒等映射：通过跳跃连接实现梯度的无损传播",
+            "极深网络：可以训练152层甚至更深的网络",
+            "瓶颈结构：使用1×1卷积降维，减少计算量",
+            "广泛应用：成为现代视觉模型的标准Backbone"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "残差块（Residual Block）、批量归一化、恒等映射、瓶颈设计"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "图像分类、目标检测的Backbone、特征提取、迁移学习"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "ResNetDiagram",
+              "caption": "ResNet残差块",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "ResNet残差块",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "ResNetDiagram",
+              "caption": "ResNet架构图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "ResNet架构图",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "ResNetDiagram",
+              "caption": "ResNet梯度流动",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "ResNet梯度流动",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "残差学习",
+          "formulas": [
+            {
+              "text": "ResNet的核心思想是学习残差而非直接映射："
+            },
+            {
+              "display": "H(x) = F(x) + x"
+            },
+            {
+              "text": "其中："
+            },
+            {
+              "text": "如果最优映射接近恒等映射，学习残差 $F(x) \\approx 0$ 比学习 $H(x) \\approx x$ 更容易",
+              "inline": "F(x) \\approx 0"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "梯度流动",
+          "formulas": [
+            {
+              "text": "残差连接使得梯度可以直接传播："
+            },
+            {
+              "display": "\\frac{\\partial L}{\\partial x} = \\frac{\\partial L}{\\partial H(x)} \\cdot \\left(1 + \\frac{\\partial F(x)}{\\partial x}\\right)"
+            },
+            {
+              "text": "即使 $\\frac{\\partial F(x)}{\\partial x} \\approx 0$，梯度仍可以通过恒等项 $1$ 传播，避免了梯度消失",
+              "inline": "\\frac{\\partial F(x)}{\\partial x} \\approx 0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 PyTorch 实现 ResNet 残差块",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\nclass ResidualBlock(nn.Module):\n    \"\"\"ResNet 残差块\"\"\"\n    def __init__(self, in_channels, out_channels, stride=1, downsample=None):\n        super(ResidualBlock, self).__init__()\n        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, \n                              stride=stride, padding=1, bias=False)\n        self.bn1 = nn.BatchNorm2d(out_channels)\n        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3,\n                              stride=1, padding=1, bias=False)\n        self.bn2 = nn.BatchNorm2d(out_channels)\n        self.downsample = downsample\n    \n    def forward(self, x):\n        identity = x\n        \n        out = self.conv1(x)\n        out = self.bn1(out)\n        out = F.relu(out)\n        \n        out = self.conv2(out)\n        out = self.bn2(out)\n        \n        if self.downsample is not None:\n            identity = self.downsample(x)\n        \n        out += identity  # 残差连接\n        out = F.relu(out)\n        \n        return out\n\nclass BottleneckBlock(nn.Module):\n    \"\"\"ResNet 瓶颈块（用于更深的网络）\"\"\"\n    def __init__(self, in_channels, out_channels, stride=1, downsample=None):\n        super(BottleneckBlock, self).__init__()\n        expansion = 4\n        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=1, bias=False)\n        self.bn1 = nn.BatchNorm2d(out_channels)\n        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3,\n                              stride=stride, padding=1, bias=False)\n        self.bn2 = nn.BatchNorm2d(out_channels)\n        self.conv3 = nn.Conv2d(out_channels, out_channels * expansion,\n                              kernel_size=1, bias=False)\n        self.bn3 = nn.BatchNorm2d(out_channels * expansion)\n        self.downsample = downsample\n    \n    def forward(self, x):\n        identity = x\n        \n        out = self.conv1(x)\n        out = self.bn1(out)\n        out = F.relu(out)\n        \n        out = self.conv2(out)\n        out = self.bn2(out)\n        out = F.relu(out)\n        \n        out = self.conv3(out)\n        out = self.bn3(out)\n        \n        if self.downsample is not None:\n            identity = self.downsample(x)\n        \n        out += identity\n        out = F.relu(out)\n        \n        return out\n\nclass ResNet(nn.Module):\n    \"\"\"简单的 ResNet 实现\"\"\"\n    def __init__(self, block, layers, num_classes=1000):\n        super(ResNet, self).__init__()\n        self.in_channels = 64\n        \n        self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)\n        self.bn1 = nn.BatchNorm2d(64)\n        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)\n        \n        self.layer1 = self._make_layer(block, 64, layers[0])\n        self.layer2 = self._make_layer(block, 128, layers[1], stride=2)\n        self.layer3 = self._make_layer(block, 256, layers[2], stride=2)\n        self.layer4 = self._make_layer(block, 512, layers[3], stride=2)\n        \n        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))\n        self.fc = nn.Linear(512, num_classes)\n    \n    def _make_layer(self, block, out_channels, blocks, stride=1):\n        downsample = None\n        if stride != 1 or self.in_channels != out_channels:\n            downsample = nn.Sequential(\n                nn.Conv2d(self.in_channels, out_channels, kernel_size=1,\n                         stride=stride, bias=False),\n                nn.BatchNorm2d(out_channels)\n            )\n        \n        layers = []\n        layers.append(block(self.in_channels, out_channels, stride, downsample))\n        self.in_channels = out_channels\n        \n        for _ in range(1, blocks):\n            layers.append(block(self.in_channels, out_channels))\n        \n        return nn.Sequential(*layers)\n    \n    def forward(self, x):\n        x = self.conv1(x)\n        x = self.bn1(x)\n        x = F.relu(x)\n        x = self.maxpool(x)\n        \n        x = self.layer1(x)\n        x = self.layer2(x)\n        x = self.layer3(x)\n        x = self.layer4(x)\n        \n        x = self.avgpool(x)\n        x = torch.flatten(x, 1)\n        x = self.fc(x)\n        \n        return x\n\n# 使用示例\nif __name__ == \"__main__\":\n    # ResNet-18: [2, 2, 2, 2] 表示每个layer有2个残差块\n    model = ResNet(ResidualBlock, [2, 2, 2, 2], num_classes=1000)\n    \n    # 模拟输入\n    x = torch.randn(4, 3, 224, 224)\n    output = model(x)\n    print(f\"输出形状: {output.shape}\")  # [4, 1000]"
+        }
+      ]
+    }
+  ]
+}

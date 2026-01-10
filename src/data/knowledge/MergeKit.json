@@ -1,0 +1,178 @@
+{
+  "title": "MergeKit：模型合并工具",
+  "subtitle": "一个强大的模型合并工具，支持多种合并策略，简化模型合并流程，支持多种模型格式。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "MergeKit是一个专门用于模型合并的工具库，支持多种合并策略（线性合并、任务向量合并、分层合并等），可以处理多种模型格式（HuggingFace、Safetensors等），并提供了丰富的配置选项。MergeKit简化了模型合并的流程，使得用户可以轻松地进行模型合并实验。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "MergeKit工作流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "MergeKit工作流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "支持的合并策略",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "支持的合并策略",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "工具特性",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "工具特性",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "多种策略：支持线性合并、任务向量合并、分层合并等多种策略",
+            "格式支持：支持HuggingFace、Safetensors等多种模型格式",
+            "配置灵活：提供丰富的配置选项，支持精细控制",
+            "易于使用：简单的API设计，易于上手",
+            "性能优化：优化的实现，支持大规模模型合并",
+            "社区支持：活跃的社区和丰富的文档"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 主要功能",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "MergeKit提供了以下主要功能："
+          ]
+        },
+        {
+          "type": "features",
+          "items": [
+            "线性合并：支持加权平均的线性合并",
+            "任务向量合并：支持基于任务向量的合并",
+            "分层合并：支持对不同层使用不同策略",
+            "模型加载：自动处理不同格式的模型加载",
+            "参数对齐：自动处理参数对齐问题",
+            "配置管理：支持YAML配置文件",
+            "批量处理：支持批量合并多个模型",
+            "验证测试：提供合并后的验证功能"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "安装MergeKit",
+          "language": "bash",
+          "code": "# 安装MergeKit\npip install mergekit\n\n# 或从源码安装\npip install git+https://github.com/arcee-ai/mergekit.git"
+        },
+        {
+          "type": "code-box",
+          "title": "基础使用：线性合并",
+          "language": "python",
+          "code": "from mergekit import MergeKit\n\n# 创建MergeKit实例\nmerger = MergeKit()\n\n# 配置合并参数\nmerge_config = {\n    \"models\": [\n        {\n            \"model\": \"microsoft/DialoGPT-medium\",\n            \"weight\": 0.5\n        },\n        {\n            \"model\": \"microsoft/DialoGPT-large\", \n            \"weight\": 0.5\n        }\n    ],\n    \"merge_method\": \"linear\",\n    \"output_path\": \"./merged_model\"\n}\n\n# 执行合并\nmerged_model = merger.merge(merge_config)\nprint(\"模型合并完成！\")"
+        },
+        {
+          "type": "code-box",
+          "title": "任务向量合并",
+          "language": "python",
+          "code": "from mergekit import MergeKit\n\nmerger = MergeKit()\n\n# 配置任务向量合并\nmerge_config = {\n    \"base_model\": \"base-model-path\",\n    \"task_vectors\": [\n        {\n            \"model\": \"fine-tuned-model-1-path\",\n            \"alpha\": 0.4\n        },\n        {\n            \"model\": \"fine-tuned-model-2-path\",\n            \"alpha\": 0.3\n        }\n    ],\n    \"merge_method\": \"task_vector\",\n    \"output_path\": \"./merged_model\"\n}\n\n# 执行合并\nmerged_model = merger.merge(merge_config)"
+        },
+        {
+          "type": "code-box",
+          "title": "使用YAML配置文件",
+          "language": "yaml",
+          "code": "# merge_config.yaml\nmodels:\n  - model: microsoft/DialoGPT-medium\n    weight: 0.5\n  - model: microsoft/DialoGPT-large\n    weight: 0.5\nmerge_method: linear\noutput_path: ./merged_model"
+        },
+        {
+          "type": "code-box",
+          "title": "从配置文件合并",
+          "language": "python",
+          "code": "from mergekit import MergeKit\n\nmerger = MergeKit()\n\n# 从YAML配置文件加载\nmerged_model = merger.merge_from_config(\"merge_config.yaml\")\nprint(\"模型合并完成！\")"
+        },
+        {
+          "type": "code-box",
+          "title": "分层合并配置",
+          "language": "python",
+          "code": "from mergekit import MergeKit\n\nmerger = MergeKit()\n\n# 配置分层合并\nmerge_config = {\n    \"models\": [\n        {\"model\": \"model1-path\", \"weight\": 0.5},\n        {\"model\": \"model2-path\", \"weight\": 0.5}\n    ],\n    \"merge_method\": \"layer_wise\",\n    \"layer_strategy\": {\n        \"embeddings\": \"weighted_average\",\n        \"attention\": \"max\",\n        \"feedforward\": \"weighted_average\",\n        \"output\": \"weighted_average\"\n    },\n    \"output_path\": \"./merged_model\"\n}\n\n# 执行合并\nmerged_model = merger.merge(merge_config)"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "快速实验：使用MergeKit快速尝试不同的模型组合。模型集成：将多个模型合并为一个统一的模型。多任务学习：合并多个任务特化模型。模型压缩：通过合并减少模型数量。研究开发：在研究和开发中使用MergeKit进行模型合并实验。"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚠️ 注意事项",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "模型兼容性：确保合并的模型具有兼容的架构",
+            "配置正确性：仔细检查配置文件，确保参数正确",
+            "资源需求：大规模模型合并需要足够的存储空间",
+            "验证测试：合并后需要进行充分的验证测试",
+            "版本兼容：注意MergeKit版本与模型格式的兼容性"
+          ]
+        }
+      ]
+    }
+  ]
+}

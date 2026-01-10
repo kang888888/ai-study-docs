@@ -1,0 +1,59 @@
+{
+  "title": "模型评估全景指南",
+  "subtitle": "",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "模型评估方法",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "模型评估方法",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "模型评估指标",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "模型评估指标",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "Accuracy = (TP + TN) / (TP + TN + FP + FN)",
+            "Precision = TP / (TP + FP)",
+            "Recall = TP / (TP + FN)",
+            "F1 Score = 2 × (P × R)/(P + R)",
+            "AUC-ROC、混淆矩阵用于多阈值分析"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "title": "Mamba (State Space Models) 状态空间模型",
+  "subtitle": "线性复杂度的长序列建模架构",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "基于结构化状态空间模型（SSM）的新型架构，旨在解决Transformer在长序列上的O(L²)复杂度和KV Cache显存占用问题。通过选择性扫描机制实现线性复杂度。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "线性复杂度：时间和空间复杂度均为O(L)，远优于Transformer的O(L²)",
+            "无KV Cache：推理时显存占用恒定，不随序列长度增长",
+            "选择性机制：参数根据输入动态变化，类似Attention的内容选择能力",
+            "并行训练：通过并行扫描算法支持高效并行训练",
+            "RNN推理：推理时可以递归计算，速度极快"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "选择性状态空间模型（Selective SSM）、并行扫描算法、硬件感知优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "长文本生成、基因组序列分析、时间序列建模、代码生成（Codestral Mamba）"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "MambaDiagram",
+              "caption": "Mamba vs Transformer",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Mamba vs Transformer",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "MambaDiagram",
+              "caption": "Mamba组件详解",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Mamba组件详解",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "状态空间模型（SSM）",
+          "formulas": [
+            {
+              "text": "连续时间SSM："
+            },
+            {
+              "display": "h'(t) = Ah(t) + Bx(t)"
+            },
+            {
+              "display": "y(t) = Ch(t)"
+            },
+            {
+              "text": "离散化后："
+            },
+            {
+              "display": "h_k = \\bar{A}h_{k-1} + \\bar{B}x_k"
+            },
+            {
+              "display": "y_k = Ch_k"
+            },
+            {
+              "text": "其中 $\\bar{A} = e^{\\Delta A}$，$\\bar{B} = (\\Delta A)^{-1}(e^{\\Delta A} - I)\\Delta B$",
+              "inline": "\\bar{A} = e^{\\Delta A}"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "选择性机制",
+          "formulas": [
+            {
+              "text": "Mamba的关键创新是让参数依赖于输入："
+            },
+            {
+              "display": "B_k = s_B(x_k), \\quad C_k = s_C(x_k), \\quad \\Delta_k = \\tau_\\Delta(x_k)"
+            },
+            {
+              "text": "这使得模型能够根据输入内容动态调整状态转移，实现类似Attention的选择能力"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 mamba-ssm 库实现 Mamba",
+          "language": "python",
+          "code": "import torch\nfrom mamba_ssm import Mamba\n\n# 创建 Mamba 模型\nmodel = Mamba(\n    d_model=512,        # 模型维度\n    d_state=16,         # 状态维度\n    d_conv=4,           # 卷积核大小\n    expand=2,           # 扩展因子\n)\n\n# 输入 (batch_size, seq_length, d_model)\nx = torch.randn(2, 1024, 512)\n\n# 前向传播\noutput = model(x)\nprint(f\"输出形状: {output.shape}\")  # [2, 1024, 512]\n\n# 与 Transformer 对比\n# Transformer: O(L²) 复杂度，需要 KV Cache\n# Mamba: O(L) 复杂度，无需 KV Cache"
+        },
+        {
+          "type": "code-box",
+          "title": "手动实现简化版 SSM",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\n\nclass SimpleSSM(nn.Module):\n    \"\"\"简化的状态空间模型\"\"\"\n    def __init__(self, d_model, d_state):\n        super(SimpleSSM, self).__init__()\n        self.d_model = d_model\n        self.d_state = d_state\n        \n        # 状态转移矩阵\n        self.A = nn.Parameter(torch.randn(d_state, d_state))\n        # 输入矩阵\n        self.B = nn.Linear(d_model, d_state)\n        # 输出矩阵\n        self.C = nn.Linear(d_state, d_model)\n    \n    def forward(self, x):\n        \"\"\"\n        参数:\n            x: [batch_size, seq_length, d_model]\n        返回:\n            output: [batch_size, seq_length, d_model]\n        \"\"\"\n        batch_size, seq_length, _ = x.shape\n        h = torch.zeros(batch_size, self.d_state, device=x.device)\n        outputs = []\n        \n        # 递归计算（类似RNN）\n        for t in range(seq_length):\n            # 状态更新\n            h = torch.matmul(h, self.A) + self.B(x[:, t, :])\n            # 输出\n            y_t = self.C(h)\n            outputs.append(y_t)\n        \n        output = torch.stack(outputs, dim=1)\n        return output\n\n# 使用示例\nif __name__ == \"__main__\":\n    model = SimpleSSM(d_model=512, d_state=16)\n    x = torch.randn(2, 100, 512)\n    output = model(x)\n    print(f\"输出形状: {output.shape}\")  # [2, 100, 512]"
+        }
+      ]
+    }
+  ]
+}

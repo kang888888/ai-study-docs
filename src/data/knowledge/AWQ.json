@@ -1,0 +1,98 @@
+{
+  "title": "AWQ：Activation-aware Weight Quantization",
+  "subtitle": "通过激活感知的缩放因子与 outlier 处理，使 4bit 量化在保持高精度的同时无需复杂的再训练。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "流程"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "缩放因子",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "缩放因子"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "精度/速度对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "精度/速度对比"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "显著性指标",
+          "formulas": [
+            {
+              "display": "s_i = \\| W_i A_i \\|_2"
+            },
+            {
+              "text": "其中 $A_i$ 为激活样本，$W_i$ 为对应列。",
+              "inline": "A_i"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "重缩放量化",
+          "formulas": [
+            {
+              "text": "量化前：$W' = D W$，量化后：$\\hat{W} = D^{-1} \\text{Quant}(W')$",
+              "inline": "W' = D W"
+            },
+            {
+              "text": "选择 $D$ 使得被放大的通道在 4bit 下仍保持细节。",
+              "inline": "D"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 awq 库量化 LLaMA",
+          "language": "python",
+          "code": "from awq import AutoAWQForCausalLM\nfrom transformers import AutoTokenizer\n\nmodel_path = \"meta-llama/Llama-2-7b-hf\"\nquant_path = \"./llama2-awq\"\n\nmodel = AutoAWQForCausalLM.from_pretrained(\n    model_path,\n    low_bit=\"w4a16\",\n    fuse_layers=True\n)\n\ntokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)\nmodel.quantize(tokenizer=tokenizer, calib_data=\"./calib.jsonl\")\nmodel.save_quantized(quant_path)"
+        }
+      ]
+    }
+  ]
+}

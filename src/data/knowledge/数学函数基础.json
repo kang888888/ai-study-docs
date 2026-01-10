@@ -1,0 +1,438 @@
+{
+  "title": "数学函数基础",
+  "subtitle": "深度学习中常用的数学函数及其数学表达",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "数学函数是深度学习的基础。理解各种函数的数学表达式、性质和图像，有助于深入理解神经网络的工作原理。本部分详细介绍激活函数、损失函数、优化函数等常用数学函数。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 函数分类",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "激活函数：ReLU、Sigmoid、Tanh、GELU、Swish等",
+            "损失函数：交叉熵、MSE、MAE、Huber Loss等",
+            "优化函数：SGD、Adam、AdamW等优化器的更新规则",
+            "归一化函数：Softmax、LayerNorm、BatchNorm等",
+            "距离函数：欧氏距离、余弦相似度、曼哈顿距离等"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 函数可视化",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "MathFunctionDiagram",
+              "caption": "激活函数图像对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "activation",
+                "title": "激活函数图像对比"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "MathFunctionDiagram",
+              "caption": "损失函数图像对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "loss",
+                "title": "损失函数图像对比"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 激活函数数学表达",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "ReLU (Rectified Linear Unit)",
+          "formulas": [
+            {
+              "text": "ReLU是最常用的激活函数，定义为："
+            },
+            {
+              "display": "\\text{ReLU}(x) = \\max(0, x) = \\begin{cases} x & \\text{if } x > 0 \\\\ 0 & \\text{if } x \\leq 0 \\end{cases}"
+            },
+            {
+              "text": "导数："
+            },
+            {
+              "display": "\\frac{d}{dx}\\text{ReLU}(x) = \\begin{cases} 1 & \\text{if } x > 0 \\\\ 0 & \\text{if } x \\leq 0 \\end{cases}"
+            },
+            {
+              "text": "特点：计算简单、非饱和、缓解梯度消失，但可能导致死神经元"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Leaky ReLU",
+          "formulas": [
+            {
+              "text": "Leaky ReLU解决ReLU的死神经元问题："
+            },
+            {
+              "display": "\\text{LeakyReLU}(x) = \\begin{cases} x & \\text{if } x > 0 \\\\ \\alpha x & \\text{if } x \\leq 0 \\end{cases}"
+            },
+            {
+              "text": "其中 $\\alpha$ 是小的正数（通常为0.01），导数："
+            },
+            {
+              "display": "\\frac{d}{dx}\\text{LeakyReLU}(x) = \\begin{cases} 1 & \\text{if } x > 0 \\\\ \\alpha & \\text{if } x \\leq 0 \\end{cases}"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Sigmoid",
+          "formulas": [
+            {
+              "text": "Sigmoid将输出压缩到(0,1)区间："
+            },
+            {
+              "display": "\\sigma(x) = \\frac{1}{1 + e^{-x}} = \\frac{e^x}{e^x + 1}"
+            },
+            {
+              "text": "导数："
+            },
+            {
+              "display": "\\frac{d}{dx}\\sigma(x) = \\sigma(x)(1 - \\sigma(x)) = \\sigma(x) \\cdot \\sigma(-x)"
+            },
+            {
+              "text": "特点：输出有界、平滑，但容易饱和、梯度消失"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Tanh (双曲正切)",
+          "formulas": [
+            {
+              "text": "Tanh将输出压缩到(-1,1)区间："
+            },
+            {
+              "display": "\\tanh(x) = \\frac{e^x - e^{-x}}{e^x + e^{-x}} = \\frac{\\sinh(x)}{\\cosh(x)}"
+            },
+            {
+              "text": "导数："
+            },
+            {
+              "display": "\\frac{d}{dx}\\tanh(x) = 1 - \\tanh^2(x) = \\text{sech}^2(x)"
+            },
+            {
+              "text": "特点：零中心化、收敛更快，但仍存在饱和问题"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "GELU (Gaussian Error Linear Unit)",
+          "formulas": [
+            {
+              "text": "GELU是Transformer中常用的激活函数："
+            },
+            {
+              "display": "\\text{GELU}(x) = x \\cdot \\Phi(x)"
+            },
+            {
+              "text": "其中 $\\Phi(x)$ 是标准正态分布的累积分布函数："
+            },
+            {
+              "display": "\\Phi(x) = \\frac{1}{2}\\left[1 + \\text{erf}\\left(\\frac{x}{\\sqrt{2}}\\right)\\right]"
+            },
+            {
+              "text": "近似计算（常用）："
+            },
+            {
+              "display": "\\text{GELU}(x) \\approx 0.5x\\left(1 + \\tanh\\left[\\sqrt{\\frac{2}{\\pi}}\\left(x + 0.044715x^3\\right)\\right]\\right)"
+            },
+            {
+              "text": "导数："
+            },
+            {
+              "display": "\\frac{d}{dx}\\text{GELU}(x) = \\Phi(x) + x \\cdot \\phi(x)"
+            },
+            {
+              "text": "其中 $\\phi(x) = \\frac{1}{\\sqrt{2\\pi}}e^{-x^2/2}$ 是标准正态分布的概率密度函数"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Swish/SiLU (Sigmoid Linear Unit)",
+          "formulas": [
+            {
+              "text": "Swish是自门控激活函数："
+            },
+            {
+              "display": "\\text{Swish}(x) = x \\cdot \\sigma(x) = \\frac{x}{1 + e^{-x}}"
+            },
+            {
+              "text": "导数："
+            },
+            {
+              "display": "\\frac{d}{dx}\\text{Swish}(x) = \\sigma(x) + x \\cdot \\sigma(x)(1 - \\sigma(x)) = \\sigma(x)(1 + x(1 - \\sigma(x)))"
+            },
+            {
+              "text": "特点：平滑、非单调、性能优于ReLU"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "ELU (Exponential Linear Unit)",
+          "formulas": [
+            {
+              "text": "ELU在负值部分平滑："
+            },
+            {
+              "display": "\\text{ELU}(x) = \\begin{cases} x & \\text{if } x > 0 \\\\ \\alpha(e^x - 1) & \\text{if } x \\leq 0 \\end{cases}"
+            },
+            {
+              "text": "导数："
+            },
+            {
+              "display": "\\frac{d}{dx}\\text{ELU}(x) = \\begin{cases} 1 & \\text{if } x > 0 \\\\ \\alpha e^x & \\text{if } x \\leq 0 \\end{cases}"
+            },
+            {
+              "text": "特点：负值部分平滑，有助于梯度传播"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Mish",
+          "formulas": [
+            {
+              "text": "Mish是自正则化的激活函数："
+            },
+            {
+              "display": "\\text{Mish}(x) = x \\cdot \\tanh(\\text{softplus}(x)) = x \\cdot \\tanh(\\ln(1 + e^x))"
+            },
+            {
+              "text": "其中 $\\text{softplus}(x) = \\ln(1 + e^x)$"
+            },
+            {
+              "text": "特点：平滑、无上界、自正则化"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 损失函数数学表达",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "均方误差 (MSE)",
+          "formulas": [
+            {
+              "text": "MSE用于回归任务："
+            },
+            {
+              "display": "L_{\\text{MSE}} = \\frac{1}{n}\\sum_{i=1}^{n}(y_i - \\hat{y}_i)^2"
+            },
+            {
+              "text": "梯度："
+            },
+            {
+              "display": "\\frac{\\partial L}{\\partial \\hat{y}_i} = -\\frac{2}{n}(y_i - \\hat{y}_i)"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "交叉熵损失 (Cross-Entropy)",
+          "formulas": [
+            {
+              "text": "交叉熵用于分类任务："
+            },
+            {
+              "display": "L_{\\text{CE}} = -\\sum_{i=1}^{n}\\sum_{c=1}^{C}y_{i,c} \\log(\\hat{y}_{i,c})"
+            },
+            {
+              "text": "对于二分类（二元交叉熵）："
+            },
+            {
+              "display": "L_{\\text{BCE}} = -\\frac{1}{n}\\sum_{i=1}^{n}[y_i \\log(\\hat{y}_i) + (1-y_i) \\log(1-\\hat{y}_i)]"
+            },
+            {
+              "text": "梯度："
+            },
+            {
+              "display": "\\frac{\\partial L}{\\partial \\hat{y}_i} = -\\frac{y_i}{\\hat{y}_i} + \\frac{1-y_i}{1-\\hat{y}_i}"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Huber Loss",
+          "formulas": [
+            {
+              "text": "Huber Loss对异常值更鲁棒："
+            },
+            {
+              "display": "L_{\\delta}(y, \\hat{y}) = \\begin{cases} \\frac{1}{2}(y - \\hat{y})^2 & \\text{if } |y - \\hat{y}| \\leq \\delta \\\\ \\delta|y - \\hat{y}| - \\frac{1}{2}\\delta^2 & \\text{otherwise} \\end{cases}"
+            },
+            {
+              "text": "特点：结合MSE和MAE的优点，对异常值不敏感"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 归一化函数数学表达",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "Softmax",
+          "formulas": [
+            {
+              "text": "Softmax将logits转换为概率分布："
+            },
+            {
+              "display": "\\text{softmax}(x_i) = \\frac{e^{x_i}}{\\sum_{j=1}^{n}e^{x_j}}"
+            },
+            {
+              "text": "性质："
+            },
+            {
+              "text": "- 输出在(0,1)区间，且和为1：$\\sum_{i=1}^{n}\\text{softmax}(x_i) = 1$"
+            },
+            {
+              "text": "- 单调递增：$x_i > x_j \\Rightarrow \\text{softmax}(x_i) > \\text{softmax}(x_j)$"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "LayerNorm",
+          "formulas": [
+            {
+              "text": "LayerNorm对每个样本的特征进行归一化："
+            },
+            {
+              "display": "\\text{LayerNorm}(x) = \\gamma \\frac{x - \\mu}{\\sqrt{\\sigma^2 + \\epsilon}} + \\beta"
+            },
+            {
+              "text": "其中："
+            },
+            {
+              "display": "\\mu = \\frac{1}{d}\\sum_{i=1}^{d}x_i, \\quad \\sigma^2 = \\frac{1}{d}\\sum_{i=1}^{d}(x_i - \\mu)^2"
+            },
+            {
+              "text": "$\\gamma$ 和 $\\beta$ 是可学习的缩放和偏移参数"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "BatchNorm",
+          "formulas": [
+            {
+              "text": "BatchNorm对批次维度进行归一化："
+            },
+            {
+              "display": "\\text{BatchNorm}(x) = \\gamma \\frac{x - \\mu_B}{\\sqrt{\\sigma_B^2 + \\epsilon}} + \\beta"
+            },
+            {
+              "text": "其中："
+            },
+            {
+              "display": "\\mu_B = \\frac{1}{m}\\sum_{i=1}^{m}x_i, \\quad \\sigma_B^2 = \\frac{1}{m}\\sum_{i=1}^{m}(x_i - \\mu_B)^2"
+            },
+            {
+              "text": "$m$ 是批次大小"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 距离与相似度函数",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "欧氏距离 (Euclidean Distance)",
+          "formulas": [
+            {
+              "text": "欧氏距离衡量向量间的直线距离："
+            },
+            {
+              "display": "d(\\mathbf{x}, \\mathbf{y}) = \\sqrt{\\sum_{i=1}^{n}(x_i - y_i)^2} = ||\\mathbf{x} - \\mathbf{y}||_2"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "余弦相似度 (Cosine Similarity)",
+          "formulas": [
+            {
+              "text": "余弦相似度衡量向量间的夹角："
+            },
+            {
+              "display": "\\text{cos}(\\mathbf{x}, \\mathbf{y}) = \\frac{\\mathbf{x} \\cdot \\mathbf{y}}{||\\mathbf{x}|| \\cdot ||\\mathbf{y}||} = \\frac{\\sum_{i=1}^{n}x_i y_i}{\\sqrt{\\sum_{i=1}^{n}x_i^2} \\cdot \\sqrt{\\sum_{i=1}^{n}y_i^2}}"
+            },
+            {
+              "text": "取值范围：$[-1, 1]$，值越大表示越相似"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "曼哈顿距离 (Manhattan Distance)",
+          "formulas": [
+            {
+              "text": "曼哈顿距离（L1距离）："
+            },
+            {
+              "display": "d(\\mathbf{x}, \\mathbf{y}) = \\sum_{i=1}^{n}|x_i - y_i| = ||\\mathbf{x} - \\mathbf{y}||_1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "数学函数实现与可视化",
+          "language": "python",
+          "code": "import numpy as np\nimport matplotlib.pyplot as plt\nimport torch\nimport torch.nn.functional as F\n\n# 1. 激活函数实现\ndef relu(x):\n    return np.maximum(0, x)\n\ndef sigmoid(x):\n    return 1 / (1 + np.exp(-x))\n\ndef tanh(x):\n    return np.tanh(x)\n\ndef gelu(x):\n    return 0.5 * x * (1 + np.tanh(np.sqrt(2/np.pi) * (x + 0.044715 * x**3)))\n\ndef swish(x):\n    return x * sigmoid(x)\n\ndef leaky_relu(x, alpha=0.01):\n    return np.where(x > 0, x, alpha * x)\n\n# 2. 损失函数实现\ndef mse_loss(y_true, y_pred):\n    return np.mean((y_true - y_pred)**2)\n\ndef cross_entropy_loss(y_true, y_pred):\n    return -np.mean(y_true * np.log(y_pred + 1e-8))\n\ndef huber_loss(y_true, y_pred, delta=1.0):\n    error = y_true - y_pred\n    is_small = np.abs(error) <= delta\n    squared_loss = 0.5 * error**2\n    linear_loss = delta * np.abs(error) - 0.5 * delta**2\n    return np.where(is_small, squared_loss, linear_loss)\n\n# 3. 归一化函数实现\ndef softmax(x):\n    exp_x = np.exp(x - np.max(x, axis=-1, keepdims=True))\n    return exp_x / np.sum(exp_x, axis=-1, keepdims=True)\n\ndef layer_norm(x, eps=1e-8):\n    mean = np.mean(x, axis=-1, keepdims=True)\n    var = np.var(x, axis=-1, keepdims=True)\n    return (x - mean) / np.sqrt(var + eps)\n\n# 4. 距离函数实现\ndef euclidean_distance(x, y):\n    return np.sqrt(np.sum((x - y)**2))\n\ndef cosine_similarity(x, y):\n    return np.dot(x, y) / (np.linalg.norm(x) * np.linalg.norm(y))\n\ndef manhattan_distance(x, y):\n    return np.sum(np.abs(x - y))\n\n# 5. 可视化激活函数\ndef plot_activation_functions():\n    x = np.linspace(-5, 5, 100)\n    \n    functions = {\n        'ReLU': relu(x),\n        'Sigmoid': sigmoid(x),\n        'Tanh': tanh(x),\n        'GELU': gelu(x),\n        'Swish': swish(x),\n        'Leaky ReLU': leaky_relu(x)\n    }\n    \n    fig, axes = plt.subplots(2, 3, figsize=(15, 10))\n    axes = axes.flatten()\n    \n    for i, (name, y) in enumerate(functions.items()):\n        axes[i].plot(x, y, linewidth=2)\n        axes[i].set_title(name, fontsize=14, fontweight='bold')\n        axes[i].grid(True, alpha=0.3)\n        axes[i].axhline(y=0, color='k', linestyle='--', alpha=0.3)\n        axes[i].axvline(x=0, color='k', linestyle='--', alpha=0.3)\n        axes[i].set_xlabel('x')\n        axes[i].set_ylabel('f(x)')\n    \n    plt.tight_layout()\n    plt.savefig('activation_functions.png', dpi=300)\n    print('激活函数图像已保存')\n\n# 6. 可视化损失函数\ndef plot_loss_functions():\n    y_true = 0.5\n    y_pred = np.linspace(0, 1, 100)\n    \n    mse = (y_true - y_pred)**2\n    bce = -(y_true * np.log(y_pred + 1e-8) + (1-y_true) * np.log(1-y_pred + 1e-8))\n    \n    plt.figure(figsize=(10, 6))\n    plt.plot(y_pred, mse, label='MSE', linewidth=2)\n    plt.plot(y_pred, bce, label='BCE', linewidth=2)\n    plt.axvline(x=y_true, color='r', linestyle='--', alpha=0.5, label=f'True value: {y_true}')\n    plt.xlabel('Predicted value')\n    plt.ylabel('Loss')\n    plt.title('Loss Functions Comparison')\n    plt.legend()\n    plt.grid(True, alpha=0.3)\n    plt.savefig('loss_functions.png', dpi=300)\n    print('损失函数图像已保存')\n\n# 7. 使用PyTorch实现\nx = torch.linspace(-5, 5, 100)\n\n# 激活函数\nrelu_torch = F.relu(x)\nsigmoid_torch = torch.sigmoid(x)\ntanh_torch = torch.tanh(x)\ngelu_torch = F.gelu(x)\nsilu_torch = F.silu(x)\n\n# 损失函数\ny_true = torch.tensor([1.0, 0.0, 1.0])\ny_pred = torch.tensor([0.9, 0.1, 0.8])\nmse_loss_torch = F.mse_loss(y_pred, y_true)\nbce_loss_torch = F.binary_cross_entropy(y_pred, y_true)\n\nprint(f'MSE Loss: {mse_loss_torch.item():.4f}')\nprint(f'BCE Loss: {bce_loss_torch.item():.4f}')\n\n# 8. Softmax示例\nlogits = torch.randn(3, 5)  # [batch_size, num_classes]\nprobs = F.softmax(logits, dim=1)\nprint(f'Softmax输出形状: {probs.shape}')\nprint(f'每行和为1: {probs.sum(dim=1)}')\n\n# 9. 距离计算示例\nx = torch.tensor([1.0, 2.0, 3.0])\ny = torch.tensor([4.0, 5.0, 6.0])\n\neuclidean = torch.norm(x - y)\ncosine = F.cosine_similarity(x.unsqueeze(0), y.unsqueeze(0))\nmanhattan = torch.sum(torch.abs(x - y))\n\nprint(f'欧氏距离: {euclidean.item():.4f}')\nprint(f'余弦相似度: {cosine.item():.4f}')\nprint(f'曼哈顿距离: {manhattan.item():.4f}')"
+        }
+      ]
+    }
+  ]
+}

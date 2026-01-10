@@ -1,0 +1,75 @@
+{
+  "title": "二阶优化算法 (Second-Order Optimization)",
+  "subtitle": "利用二阶导数信息加速优化的高级优化方法",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "二阶优化算法利用损失函数的二阶导数（Hessian矩阵）信息来指导参数更新，相比一阶方法（如SGD）能够更准确地找到最优解，收敛速度更快。主要包括牛顿法、拟牛顿法、自然梯度等方法。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "收敛快速：利用二阶信息，收敛速度显著快于一阶方法",
+            "精度更高：能够更准确地找到最优解",
+            "计算复杂：需要计算和存储Hessian矩阵，计算开销大",
+            "内存需求：Hessian矩阵存储需要大量内存",
+            "适用场景：适合小规模模型和凸优化问题"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "牛顿法、拟牛顿法（BFGS、L-BFGS）、自然梯度、Hessian近似、K-FAC"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "小规模模型训练、凸优化问题、需要快速收敛的场景、强化学习中的策略优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "牛顿法更新规则",
+          "formulas": [
+            {
+              "text": "牛顿法更新：w_{t+1} = w_t - H^{-1}∇L(w_t)"
+            },
+            {
+              "text": "其中H是Hessian矩阵，∇L是梯度"
+            },
+            {
+              "text": "拟牛顿法通过近似Hessian矩阵避免直接计算，如BFGS使用秩2更新"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

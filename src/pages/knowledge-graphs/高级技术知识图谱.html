@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大模型高级技术知识图谱</title>
+    
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+    
+    <!-- 页面特定样式 -->
+    <style>
+        body {
+            background: radial-gradient(circle at top, var(--bg-primary) 0%, #030712 60%, #010409 100%);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- 知识图谱容器 -->
+        <div id="chart"></div>
+        
+        <!-- 标题栏 -->
+        <div class="title-bar">
+            <h1>大模型高级技术知识图谱</h1>
+            <p>从模型操作到知识增强，再到文本生成，全面掌握大模型高级技术。</p>
+            <div class="legend">
+                <span><i style="background:#3b82f6"></i>模型操作</span>
+            <span><i style="background:#10b981"></i>知识增强</span>
+            <span><i style="background:#f59e0b"></i>文本生成</span>
+            </div>
+        </div>
+        
+        <!-- 控制栏 -->
+        <div class="control-bar">
+            <button class="control-btn" onclick="resetView()">重新布局</button>
+            <button class="control-btn" onclick="toggleAnimation()">暂停/继续动画</button>
+        </div>
+        
+        <!-- 侧边栏 -->
+        <div class="sidebar" id="sidebar">
+            <button class="close-btn" onclick="closeSidebar()">×</button>
+            <div class="sidebar-header">
+                <h2 class="sidebar-title" id="sidebar-title">大模型高级技术知识图谱</h2>
+                <div class="sidebar-tag" id="sidebar-tag">指南</div>
+            </div>
+            <div class="sidebar-body" id="sidebar-content">
+                <div class="sidebar-placeholder">
+                    <p>👇 在左侧图谱中选择一个节点即可查看详情。</p>
+                    <p>• 点击分类节点查看概览说明<br>• 点击具体技术节点，会在此侧边栏加载对应的 HTML 讲解页</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 公共脚本 -->
+    <script src="../common/knowledge-graph.js"></script>
+    
+    <!-- 页面特定数据 -->
+    <script>
+        // 页面配置
+        const pageConfig = {
+          "containerId": "chart",
+          "data": {
+                    "name": "大模型高级技术地图",
+                    "value": "根节点",
+                    "symbolSize": 70,
+                    "itemStyle": {
+                              "color": "#06b6d4",
+                              "borderColor": "#f8fafc",
+                              "borderWidth": 4
+                    },
+                    "children": [
+                              {
+                                        "name": "模型操作技术",
+                                        "value": "模型合并、专家混合、去审查化等模型操作技术。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Model Operations",
+                                        "children": [
+                                                  {
+                                                            "name": "模型合并",
+                                                            "value": "无需重新训练即可组合多个模型的优势。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Merging"
+                                                  },
+                                                  {
+                                                            "name": "专家混合",
+                                                            "value": "将多个专家模型组合，在保持效率的同时提升性能。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "MoE"
+                                                  },
+                                                  {
+                                                            "name": "去审查化",
+                                                            "value": "移除模型的内容审查机制，让模型更加开放和自由。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Uncensoring"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "知识增强技术",
+                                        "value": "通过知识图谱等结构化知识增强模型能力。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Knowledge Enhancement",
+                                        "children": [
+                                                  {
+                                                            "name": "知识图谱增强",
+                                                            "value": "使用知识图谱增强模型回答能力，提升准确性和可验证性。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "KG"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "文本生成技术",
+                                        "value": "解码策略、提示工程、流式生成等文本生成技术，控制生成质量。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Text Generation",
+                                        "children": [
+                                                  {
+                                                            "name": "解码策略",
+                                                            "value": "控制生成文本的质量、多样性和可控性的解码策略。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Decoding"
+                                                  },
+                                                  {
+                                                            "name": "提示工程",
+                                                            "value": "设计和优化提示以获得更好生成结果的技术。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Prompt"
+                                                  },
+                                                  {
+                                                            "name": "流式生成",
+                                                            "value": "实时逐token生成和返回文本的技术，提升用户体验。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Streaming"
+                                                  }
+                                        ]
+                              }
+                    ]
+          },
+          "techPages": {
+                    "模型合并": "../tech-docs/模型合并.html",
+                    "专家混合": "../tech-docs/专家混合.html",
+                    "去审查化": "../tech-docs/去审查化.html",
+                    "知识图谱增强": "../tech-docs/知识图谱增强.html",
+                    "解码策略": "../tech-docs/解码策略.html",
+                    "提示工程": "../tech-docs/提示工程.html",
+                    "流式生成": "../tech-docs/流式生成.html"
+          },
+          "categoryDescriptions": {
+                    "模型操作技术": "模型合并、专家混合、去审查化等模型操作技术，无需重新训练即可优化和定制模型。",
+                    "知识增强技术": "通过知识图谱等结构化知识增强模型能力，提升准确性和可验证性。",
+                    "文本生成技术": "解码策略等文本生成技术，控制生成文本的质量、多样性和可控性。"
+          },
+          "force": {
+                    "repulsion": 1800,
+                    "gravity": 0.15,
+                    "edgeLength": [
+                              80,
+                              240
+                    ],
+                    "friction": 0.2
+          }
+};
+        
+        // 初始化页面
+        initKnowledgeGraph(pageConfig);
+        
+        // 窗口大小改变时重新调整
+        window.addEventListener('resize', function() {
+            if (typeof chart !== 'undefined' && chart) {
+                chart.resize();
+            }
+        });
+    </script>
+</body>
+</html>

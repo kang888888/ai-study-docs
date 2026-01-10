@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yaad - 基于Miras框架的优化注意力偏差模型</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Yaad</h1>
+            <p>基于Miras框架的优化注意力偏差模型</p>
+        </div>
+        <div class="content">
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p><strong>Yaad</strong> 是基于 Miras 框架提出的优化注意力偏差模型，专注于更好的信息选择和精确检索。Yaad 通过学习最优的注意力偏差模式，能够精确过滤噪声，提高检索精度，适用于需要精确检索的任务。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li><strong>优化的注意力偏差</strong>：学习最优的偏差模式，精确控制信息关注</li>
+                    <li><strong>更好的信息选择</strong>：智能过滤不相关信息，提高检索质量</li>
+                    <li><strong>精确检索</strong>：通过优化的偏差实现高精度信息检索</li>
+                    <li><strong>减少噪声干扰</strong>：有效降低不相关记忆的权重，提高检索精度</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 技术架构</h2>
+                <div class="tech-box">
+                    <p><strong>注意力偏差学习</strong>：通过训练学习最优的注意力偏差模式，最大化相关性，最小化冗余</p>
+                </div>
+                <div class="tech-box">
+                    <p><strong>自适应偏差调整</strong>：根据任务和输入内容动态调整注意力偏差，实现精确检索</p>
+                </div>
+                <div class="tech-box">
+                    <p><strong>噪声过滤机制</strong>：通过优化的偏差降低不相关记忆的权重，减少噪声干扰</p>
+                </div>
+            </div>
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>优化的注意力偏差</h3>
+                    <div class="math-formula">
+                        <p>Yaad 的注意力权重计算：</p>
+                        <p>$$\alpha_i = \text{softmax}(\text{score}(q, k_i) + \text{bias}_i(\theta))$$</p>
+                        <p>其中 $\text{bias}_i(\theta)$ 是可学习的偏差函数，通过训练优化：</p>
+                        <p>$$\theta^* = \arg\min_\theta \mathcal{L}(\text{retrieval}, \text{ground\_truth})$$</p>
+                        <p>优化的目标是：</p>
+                        <ul style="list-style: none; padding-left: 0;">
+                            <li>• <strong>最大化相关性</strong>：提高相关记忆的权重</li>
+                            <li>• <strong>最小化冗余</strong>：减少重复关注</li>
+                            <li>• <strong>过滤噪声</strong>：降低不相关记忆的权重</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box">
+                    <p><strong>精确检索任务</strong>：需要高精度信息检索的场景</p>
+                    <p><strong>信息检索系统</strong>：搜索引擎、推荐系统等需要精确匹配的应用</p>
+                    <p><strong>知识问答</strong>：需要从大量知识中精确检索答案的任务</p>
+                    <p><strong>高召回率任务</strong>：需要精确检索且减少误检的任务</p>
+                </div>
+            </div>
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>Yaad 优化注意力偏差模块</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class YaadAttentionBias(nn.Module):
+    """Yaad 优化的注意力偏差模块"""
+    def __init__(self, d_model, memory_size):
+        super(YaadAttentionBias, self).__init__()
+        self.d_model = d_model
+        self.memory_size = memory_size
+        
+        # 记忆存储
+        self.memory = nn.Parameter(torch.randn(memory_size, d_model))
+        
+        # 可学习的偏差网络
+        self.bias_network = nn.Sequential(
+            nn.Linear(d_model, d_model // 2),
+            nn.ReLU(),
+            nn.Linear(d_model // 2, memory_size)
+        )
+        
+        # 查询和键值投影
+        self.query_proj = nn.Linear(d_model, d_model)
+        self.key_proj = nn.Linear(d_model, d_model)
+        self.value_proj = nn.Linear(d_model, d_model)
+    
+    def forward(self, query):
+        """
+        使用优化的注意力偏差进行检索
+        参数:
+            query: [batch_size, d_model] 查询向量
+        返回:
+            output: [batch_size, d_model] 检索结果
+            attention: [batch_size, memory_size] 注意力权重
+        """
+        batch_size = query.shape[0]
+        
+        # 计算查询、键、值
+        q = self.query_proj(query)
+        k = self.key_proj(self.memory)
+        v = self.value_proj(self.memory)
+        
+        # 计算基础相似度
+        scores = torch.matmul(q, k.t()) / (self.d_model ** 0.5)
+        
+        # 学习最优的注意力偏差
+        learned_bias = self.bias_network(query)  # [batch_size, memory_size]
+        
+        # 应用优化的偏差
+        scores = scores + learned_bias
+        
+        # 计算注意力权重
+        attention = F.softmax(scores, dim=-1)
+        
+        # 加权求和
+        output = torch.matmul(attention, v)
+        
+        return output, attention
+
+# 使用示例
+if __name__ == "__main__":
+    yaad = YaadAttentionBias(d_model=512, memory_size=1000)
+    query = torch.randn(2, 512)
+    
+    output, attention = yaad(query)
+    print(f"输出形状: {output.shape}")  # [2, 512]
+    print(f"注意力权重形状: {attention.shape}")  # [2, 1000]
+    print(f"注意力权重和: {attention.sum(dim=-1)}")  # 应该接近1.0</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

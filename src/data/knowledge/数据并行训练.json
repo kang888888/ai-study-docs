@@ -1,0 +1,70 @@
+{
+  "title": "数据并行训练（Data Parallelism）",
+  "subtitle": "每个设备保存完整的模型副本，不同设备处理不同的数据批次。",
+  "content": [
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "PyTorch数据并行训练",
+          "language": "python",
+          "code": "import torch\nimport torch.distributed as dist\nfrom torch.nn.parallel import DistributedDataParallel as DDP\n\n# 初始化分布式环境\ndist.init_process_group(backend='nccl')\n\n# 创建模型\nmodel = MyModel()\nmodel = model.to(device)\nmodel = DDP(model, device_ids=[rank])\n\n# 训练循环\nfor epoch in range(num_epochs):\n    for batch in dataloader:\n        outputs = model(batch)\n        loss = criterion(outputs, targets)\n        loss.backward()\n        optimizer.step()\n        optimizer.zero_grad()"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据并行训练原理",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "数据并行训练原理",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据并行训练对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "数据并行训练对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 性能特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "**通信开销**：每个训练步骤需要同步梯度，通信量 = 模型参数量",
+            "**内存占用**：每个设备需要存储完整模型和优化器状态",
+            "**扩展性**：适合模型能放入单卡内存的情况",
+            "**适用场景**：中小规模模型（&lt; 10B参数）"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>强化学习基础</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>强化学习基础</h1>
+        <p class="tagline">强化学习在大语言模型中的应用基础，理解MDP、价值函数、策略等核心概念。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card"><h3>核心特点</h3><p>交互式学习、延迟奖励、探索与利用、序列决策。</p></div>
+            <div class="meta-card"><h3>核心概念</h3><p>MDP、策略、价值函数、贝尔曼方程。</p></div>
+            <div class="meta-card"><h3>主要方法</h3><p>价值函数方法、策略梯度方法、模型学习方法。</p></div>
+            <div class="meta-card"><h3>LLM应用</h3><p>RLHF、对齐训练、推理优化、代码生成。</p></div>
+        </div>
+
+        <div class="section">
+            <h2>📖 什么是强化学习？</h2>
+            <p><strong>强化学习（Reinforcement Learning, RL）</strong>是机器学习的一个分支，智能体通过与环境交互，根据获得的奖励信号学习最优策略。</p>
+        </div>
+
+        <div class="section">
+            <h2>🎯 核心概念</h2>
+            
+            <h3 style="color:#a78bfa; margin-top:20px;">1. 马尔可夫决策过程（MDP）</h3>
+            <p><strong>定义</strong>：</p>
+            <ul>
+                <li><strong>状态空间（S）</strong>：所有可能的状态</li>
+                <li><strong>动作空间（A）</strong>：所有可能的动作</li>
+                <li><strong>转移概率（P）</strong>：状态转移的概率</li>
+                <li><strong>奖励函数（R）</strong>：状态-动作对的奖励</li>
+                <li><strong>折扣因子（γ）</strong>：未来奖励的折扣</li>
+            </ul>
+            <p><strong>马尔可夫性质</strong>：未来只依赖于当前状态，与历史无关。</p>
+
+            <h3 style="color:#a78bfa; margin-top:20px;">2. 策略（Policy）</h3>
+            <p><strong>定义</strong>：从状态到动作的映射。</p>
+            <p><strong>类型</strong>：</p>
+            <ul>
+                <li><strong>确定性策略</strong>：π(s) = a</li>
+                <li><strong>随机性策略</strong>：π(a|s) = P(A=a|S=s)</li>
+            </ul>
+
+            <h3 style="color:#a78bfa; margin-top:20px;">3. 价值函数</h3>
+            <p><strong>状态价值函数 V(s)</strong>：从状态s开始，遵循策略π的期望累积奖励。</p>
+            <p><strong>动作价值函数 Q(s,a)</strong>：在状态s执行动作a，然后遵循策略π的期望累积奖励。</p>
+        </div>
+
+        <div class="section">
+            <h2>📐 数学原理</h2>
+            <div class="math-box">
+                <h3>价值函数关系</h3>
+                <div class="math-formula">
+                    <p>$$V^\pi(s) = \sum_a \pi(a|s) Q^\pi(s,a)$$</p>
+                    <p>$$Q^\pi(s,a) = R(s,a) + \gamma \sum_{s'} P(s'|s,a) V^\pi(s')$$</p>
+                </div>
+            </div>
+            <div class="math-box">
+                <h3>状态价值贝尔曼方程</h3>
+                <div class="math-formula">
+                    <p>$$V^\pi(s) = \sum_a \pi(a|s) \left[R(s,a) + \gamma \sum_{s'} P(s'|s,a) V^\pi(s')\right]$$</p>
+                </div>
+            </div>
+            <div class="math-box">
+                <h3>动作价值贝尔曼方程</h3>
+                <div class="math-formula">
+                    <p>$$Q^\pi(s,a) = R(s,a) + \gamma \sum_{s'} P(s'|s,a) \sum_{a'} \pi(a'|s') Q^\pi(s',a')$$</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔧 主要方法</h2>
+            
+            <h3 style="color:#a78bfa; margin-top:20px;">1. 价值函数方法</h3>
+            <ul>
+                <li><strong>特点</strong>：学习价值函数，通过价值函数推导策略</li>
+                <li><strong>算法</strong>：Q-Learning、SARSA、DQN</li>
+            </ul>
+
+            <h3 style="color:#a78bfa; margin-top:20px;">2. 策略梯度方法</h3>
+            <ul>
+                <li><strong>特点</strong>：直接优化策略，适合连续动作空间</li>
+                <li><strong>算法</strong>：REINFORCE、Actor-Critic、PPO、TRPO</li>
+            </ul>
+
+            <h3 style="color:#a78bfa; margin-top:20px;">3. 模型学习方法</h3>
+            <ul>
+                <li><strong>特点</strong>：学习环境模型，基于模型规划</li>
+                <li><strong>算法</strong>：Dyna-Q、Model-Based RL</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>📊 在大语言模型中的应用</h2>
+            
+            <h3 style="color:#a78bfa; margin-top:20px;">应用场景</h3>
+            <ul>
+                <li><strong>RLHF</strong>：基于人类反馈的强化学习</li>
+                <li><strong>对齐训练</strong>：使模型符合人类偏好</li>
+                <li><strong>推理优化</strong>：提升模型推理能力</li>
+                <li><strong>代码生成</strong>：优化代码生成质量</li>
+            </ul>
+
+            <h3 style="color:#a78bfa; margin-top:20px;">建模方式</h3>
+            <ul>
+                <li><strong>状态</strong>：当前生成的文本序列</li>
+                <li><strong>动作</strong>：生成下一个token</li>
+                <li><strong>奖励</strong>：人类反馈或奖励模型评分</li>
+                <li><strong>策略</strong>：语言模型的生成策略</li>
+            </ul>
+        </div>
+    </div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

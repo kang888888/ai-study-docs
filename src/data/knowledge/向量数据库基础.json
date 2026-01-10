@@ -1,0 +1,127 @@
+{
+  "title": "向量数据库",
+  "subtitle": "向量数据库的核心概念、主流产品与选择指南。专门用于存储和检索高维向量的数据库系统，是RAG系统和语义搜索的基础。",
+  "content": [
+    {
+      "type": "section",
+      "title": "⚙️ 核心概念",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "# 文本向量化示例\ntext = \"人工智能是未来\"\nembedding = model.encode(text)  # [0.1, 0.2, ..., 0.9] (768维)"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "文本向量化",
+          "language": "python",
+          "code": "from sentence_transformers import SentenceTransformer\n\n# 加载嵌入模型\nmodel = SentenceTransformer('all-MiniLM-L6-v2')\n\n# 文本向量化\ntext = \"人工智能是未来\"\nembedding = model.encode(text)\n# 输出: [0.1, 0.2, ..., 0.9] (384维)"
+        },
+        {
+          "type": "code-box",
+          "title": "向量相似度检索",
+          "language": "python",
+          "code": "import numpy as np\nfrom sklearn.metrics.pairwise import cosine_similarity\n\n# 计算余弦相似度\nquery_vector = model.encode(\"机器学习\")\ndoc_vectors = model.encode([\"深度学习\", \"神经网络\", \"自然语言处理\"])\n\nsimilarities = cosine_similarity([query_vector], doc_vectors)\n# 返回相似度分数"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🔧 工作流程",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "from sentence_transformers import SentenceTransformer\n\nmodel = SentenceTransformer('all-MiniLM-L6-v2')\nembeddings = model.encode(texts)"
+        },
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "# 存储到向量数据库\nvector_db.insert(\n    vectors=embeddings,\n    ids=document_ids,\n    metadata=metadata\n)"
+        },
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "# 查询向量化\nquery_embedding = model.encode(query)\n\n# 检索相似向量\nresults = vector_db.search(\n    query_vector=query_embedding,\n    top_k=10\n)"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "向量数据库基础",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "向量数据库基础",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "向量数据库原理",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "向量数据库原理",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🏢 主流产品",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "Milvus快速开始",
+          "language": "python",
+          "code": "from pymilvus import connections, Collection\n\n# 连接Milvus\nconnections.connect(\"default\", host=\"localhost\", port=\"19530\")\n\n# 创建集合和检索\ncollection = Collection(\"documents\", schema)\ncollection.insert(data)\nresults = collection.search(data=query_vectors, anns_field=\"vector\", limit=10)"
+        },
+        {
+          "type": "code-box",
+          "title": "Pinecone快速开始",
+          "language": "python",
+          "code": "import pinecone\n\n# 初始化和创建索引\npinecone.init(api_key=\"your-api-key\", environment=\"us-west1-gcp\")\npinecone.create_index(name=\"documents\", dimension=768, metric=\"cosine\")\n\n# 操作\nindex = pinecone.Index(\"documents\")\nindex.upsert(vectors=[(\"id1\", [0.1, 0.2, ...])])\nresults = index.query(vector=[0.1, 0.2, ...], top_k=10)"
+        },
+        {
+          "type": "code-box",
+          "title": "Weaviate快速开始",
+          "language": "python",
+          "code": "import weaviate\n\nclient = weaviate.Client(\"http://localhost:8080\")\nclient.schema.create_class(schema)\nclient.data_object.create(data_object={\"text\": \"文档内容\"}, class_name=\"Document\", vector=embedding)\nresult = client.query.get(\"Document\", [\"text\"]).with_near_vector({\"vector\": query_vector}).do()"
+        },
+        {
+          "type": "code-box",
+          "title": "Qdrant快速开始",
+          "language": "python",
+          "code": "from qdrant_client import QdrantClient\nfrom qdrant_client.models import Distance, VectorParams, PointStruct\n\nclient = QdrantClient(host=\"localhost\", port=6333)\nclient.create_collection(collection_name=\"documents\", vectors_config=VectorParams(size=768, distance=Distance.COSINE))\nclient.upsert(collection_name=\"documents\", points=points)\nresults = client.search(collection_name=\"documents\", query_vector=[0.1, 0.2, ...], limit=10)"
+        }
+      ]
+    }
+  ]
+}

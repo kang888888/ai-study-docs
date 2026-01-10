@@ -1,0 +1,97 @@
+{
+  "title": "PagedAttention：分页式注意力缓存调度",
+  "subtitle": "通过虚拟内存思想管理 KV Cache，用页表映射替代复制，解决多会话、长上下文带来的内存碎片问题。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "概览",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "概览"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "页表结构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "页表结构"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "分配器",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "分配器"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学/复杂度",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "内存利用率",
+          "formulas": [
+            {
+              "display": "U = 1 - \\frac{P_{free}}{P_{total}}"
+            },
+            {
+              "text": "PagedAttention 通过快速回收使 $P_{free}$ 持续保持在低水平。",
+              "inline": "P_{free}"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "page fault 开销",
+          "formulas": [
+            {
+              "display": "T = T_{hit} + p_{fault} (T_{alloc} + T_{init})"
+            },
+            {
+              "text": "算法目标是降低 $p_{fault}$ 并优化 $T_{alloc}$。",
+              "inline": "p_{fault}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 伪代码",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "def allocate_pages(request_id, needed_pages):\n    pages = []\n    for _ in range(needed_pages):\n        page = free_list.pop() if free_list else cuda_malloc(page_size)\n        pages.append(page)\n    page_table[request_id].extend(pages)\n    return pages\n\n# 解码阶段访问\nfor token in batch:\n    pages = page_table[token.req]\n    kv_ptrs = gather_kv(pages, token.position)\n    attention_step(kv_ptrs, token)"
+        }
+      ]
+    }
+  ]
+}

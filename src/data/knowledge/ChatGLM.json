@@ -1,0 +1,153 @@
+{
+  "title": "ChatGLM (智谱AI)",
+  "subtitle": "智谱AI开源的中英双语对话模型",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "智谱AI开源的中英双语对话模型，基于GLM（General Language Model）架构。采用混合注意力机制，在中文理解和生成上表现优异。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "中文优化：在大规模中文语料上训练，中文能力突出",
+            "GLM架构：混合自回归和自编码的预训练目标",
+            "工具调用：ChatGLM3支持Function Calling",
+            "多模态：GLM-4支持图像理解",
+            "开源可商用：6B参数，可在消费级GPU上运行"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "GLM架构、双向注意力、旋转位置编码、Flash Attention"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "中文对话、知识问答、代码生成、工具调用、多模态理解"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "ChatGLM整体架构图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "ChatGLM整体架构图",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "ChatGLM关键组件详解（GLM架构、双向注意力）",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "ChatGLM关键组件详解（GLM架构、双向注意力）",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "ChatGLM与其他模型对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "ChatGLM与其他模型对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "GLM 预训练目标",
+          "formulas": [
+            {
+              "text": "GLM 结合自回归和自编码："
+            },
+            {
+              "display": "L = -\\sum_{i \\in M} \\log P(x_i | x_{\\backslash M}, M)"
+            },
+            {
+              "text": "其中 $M$ 是被掩码的连续span，模型需要自回归地预测这些span",
+              "inline": "M"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "双向注意力",
+          "formulas": [
+            {
+              "text": "ChatGLM使用双向注意力，可以同时利用前后文信息："
+            },
+            {
+              "display": "\\text{Attention}(Q, K, V) = \\text{softmax}\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V"
+            },
+            {
+              "text": "与GPT的单向注意力不同，ChatGLM可以双向理解上下文"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 Transformers 库加载 ChatGLM",
+          "language": "python",
+          "code": "from transformers import AutoTokenizer, AutoModel\nimport torch\n\n# 加载模型和分词器\nmodel_path = \"THUDM/chatglm-6b\"  # 需要HuggingFace访问权限\ntokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)\nmodel = AutoModel.from_pretrained(model_path, trust_remote_code=True).half().cuda()\n\n# 对话\nquery = \"你好\"\nresponse, history = model.chat(tokenizer, query, history=[])\nprint(response)\n\n# 继续对话\nquery = \"介绍一下深度学习\"\nresponse, history = model.chat(tokenizer, query, history=history)\nprint(response)"
+        }
+      ]
+    }
+  ]
+}

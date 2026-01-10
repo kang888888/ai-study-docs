@@ -1,0 +1,54 @@
+{
+  "title": "SimPO (Simple Preference Optimization) 简单偏好优化",
+  "subtitle": "简化DPO无需参考模型的偏好优化方法",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "SimPO是DPO的简化版本，去除了DPO中需要的参考模型，进一步简化了偏好优化的流程。通过直接优化偏好数据，SimPO在保持性能的同时，降低了计算和存储开销。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "无需参考模型：相比DPO，不需要额外的参考模型",
+            "计算高效：减少模型前向传播次数，降低计算开销",
+            "存储友好：不需要存储参考模型，节省存储空间",
+            "性能保持：在多个任务上性能接近或超过DPO",
+            "实现简单：算法实现更加简洁"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "偏好优化、直接优化、无参考模型、简化DPO"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "模型对齐、偏好学习、资源受限环境、需要高效偏好优化的场景"
+        }
+      ]
+    }
+  ]
+}

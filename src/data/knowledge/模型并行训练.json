@@ -1,0 +1,55 @@
+{
+  "title": "模型并行训练（Model Parallelism）",
+  "subtitle": "将模型的不同部分放在不同的设备上，突破单卡内存限制。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "模型并行训练原理",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "模型并行训练原理",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "模型并行训练对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "模型并行训练对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "张量并行示例",
+          "language": "python",
+          "code": "# 将线性层按列拆分\nclass ColumnParallelLinear(nn.Module):\n    def __init__(self, in_features, out_features, world_size):\n        super().__init__()\n        self.world_size = world_size\n        self.out_features = out_features // world_size\n        self.weight = nn.Parameter(torch.randn(self.out_features, in_features))\n    \n    def forward(self, x):\n        # 每个设备计算部分输出\n        output = F.linear(x, self.weight)\n        # AllReduce同步结果\n        dist.all_reduce(output, op=dist.ReduceOp.SUM)\n        return output"
+        }
+      ]
+    }
+  ]
+}

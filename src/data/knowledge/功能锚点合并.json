@@ -1,0 +1,177 @@
+{
+  "title": "功能锚点合并（Functional Anchor Merge）",
+  "subtitle": "通过在输入-表示空间中建模，利用功能锚点来捕捉任务特定的功能变化，实现更精确的模型合并。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "功能锚点合并是一种基于功能空间的模型合并方法。它通过在输入-表示空间中识别功能锚点（functional anchors）来捕捉任务特定的功能变化，然后基于这些锚点进行模型合并。这种方法能够更精确地捕捉模型的功能变化，减少任务之间的干扰。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "功能锚点识别",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "功能锚点识别",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "功能空间映射",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "功能空间映射",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "基于锚点的合并",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "基于锚点的合并",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "功能感知：在功能空间而非参数空间进行操作",
+            "精确捕捉：能够精确捕捉任务特定的功能变化",
+            "减少干扰：通过功能锚点减少不同任务之间的干扰",
+            "理论基础：基于输入-表示空间的理论基础",
+            "适应性强：能够适应不同任务的特点",
+            "性能提升：通常能获得比简单参数合并更好的性能"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "功能锚点定义",
+          "formulas": [
+            {
+              "text": "功能锚点是在输入-表示空间中能够代表模型功能的关键点。对于输入 $x$ 和模型 $M$，功能锚点定义为："
+            },
+            {
+              "display": "a_i = f_M(x_i)"
+            },
+            {
+              "text": "其中 $f_M$ 是模型 $M$ 的表示函数，$x_i$ 是锚点输入。",
+              "inline": "f_M"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "功能变化捕捉",
+          "formulas": [
+            {
+              "display": "\\Delta f_i = f_{M_2}(x_i) - f_{M_1}(x_i)"
+            },
+            {
+              "text": "通过比较不同模型在功能锚点上的表示差异来捕捉功能变化。",
+              "inline": "\\Delta f_i"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "基于锚点的合并",
+          "formulas": [
+            {
+              "display": "f_{merged}(x) = f_{base}(x) + \\sum_{i=1}^{n} \\alpha_i \\Delta f_i \\cdot \\text{sim}(x, x_i)"
+            },
+            {
+              "text": "基于功能锚点的相似度来合并不同模型的功能，其中 $\\text{sim}(x, x_i)$ 是输入与锚点的相似度。",
+              "inline": "\\text{sim}(x, x_i)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "功能锚点识别",
+          "language": "python",
+          "code": "import torch\nimport torch.nn.functional as F\nfrom transformers import AutoModel, AutoTokenizer\n\n# 加载模型\ntokenizer = AutoTokenizer.from_pretrained(\"model-path\")\nmodel = AutoModel.from_pretrained(\"model-path\")\n\n# 定义锚点输入（代表性样本）\nanchor_inputs = [\n    \"What is machine learning?\",\n    \"How does neural network work?\",\n    \"Explain transformer architecture.\"\n]\n\n# 提取功能锚点\nfunctional_anchors = []\nfor text in anchor_inputs:\n    inputs = tokenizer(text, return_tensors=\"pt\")\n    with torch.no_grad():\n        outputs = model(**inputs)\n        # 使用最后一层的隐藏状态作为功能锚点\n        anchor = outputs.last_hidden_state.mean(dim=1)\n        functional_anchors.append(anchor)\n\nprint(f\"识别到 {len(functional_anchors)} 个功能锚点\")"
+        },
+        {
+          "type": "code-box",
+          "title": "基于功能锚点的合并",
+          "language": "python",
+          "code": "import torch\nfrom transformers import AutoModelForCausalLM\n\n# 加载基础模型和任务模型\nbase_model = AutoModelForCausalLM.from_pretrained(\"base-model-path\")\ntask_model = AutoModelForCausalLM.from_pretrained(\"task-model-path\")\n\n# 计算功能变化\nfunctional_deltas = {}\nfor key in base_model.state_dict():\n    if key in task_model.state_dict():\n        functional_deltas[key] = task_model.state_dict()[key] - base_model.state_dict()[key]\n\n# 基于功能锚点相似度进行合并\ndef compute_similarity(x, anchor):\n    # 计算输入与锚点的相似度\n    return F.cosine_similarity(x, anchor, dim=-1)\n\n# 合并参数（简化示例）\nmerged_state_dict = base_model.state_dict().copy()\nalpha = 0.5  # 合并权重\n\nfor key in merged_state_dict:\n    if key in functional_deltas:\n        # 基于功能锚点相似度调整合并权重\n        similarity = compute_similarity(\n            base_model.state_dict()[key],\n            functional_deltas[key]\n        )\n        adjusted_alpha = alpha * similarity\n        merged_state_dict[key] += adjusted_alpha * functional_deltas[key]\n\n# 创建合并后的模型\nmerged_model = AutoModelForCausalLM.from_pretrained(\"base-model-path\")\nmerged_model.load_state_dict(merged_state_dict)\nmerged_model.save_pretrained(\"./merged_model\")"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "任务特化合并：需要精确捕捉任务特定功能变化的场景。减少任务干扰：通过功能锚点减少不同任务之间的干扰。多任务学习：合并多个任务特化模型，实现多任务能力。功能空间建模：需要在功能空间而非参数空间操作的场景。"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚠️ 注意事项",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "锚点选择：需要选择具有代表性的锚点输入",
+            "相似度计算：相似度计算方法影响合并效果",
+            "计算复杂度：功能锚点合并的计算复杂度相对较高",
+            "理论基础：需要理解功能空间的理论基础",
+            "实验验证：需要通过实验验证锚点选择和合并策略"
+          ]
+        }
+      ]
+    }
+  ]
+}

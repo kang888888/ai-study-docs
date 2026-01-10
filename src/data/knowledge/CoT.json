@@ -1,0 +1,61 @@
+{
+  "title": "CoT：思维链推理",
+  "subtitle": "引导模型逐步推理，展示推理过程，提高复杂推理任务的准确性。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "CoT流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "CoT流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "CoT效果",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "CoT效果",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💡 应用示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "数学问题",
+          "language": "python",
+          "code": "问题：小明有5个苹果，吃了2个，又买了3个，现在有多少个？\n推理：5 - 2 = 3，3 + 3 = 6\n答案：6个"
+        },
+        {
+          "type": "code-box",
+          "title": "逻辑推理",
+          "language": "python",
+          "code": "前提：所有鸟都会飞。企鹅是鸟。\n推理：如果所有鸟都会飞，企鹅是鸟，那么企鹅应该会飞。\n但实际情况是企鹅不会飞，所以前提有误。"
+        }
+      ]
+    }
+  ]
+}

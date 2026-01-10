@@ -1,0 +1,54 @@
+{
+  "title": "昇腾CANN (Compute Architecture for Neural Networks)",
+  "subtitle": "华为昇腾CANN架构，NPU加速与模型适配",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "昇腾CANN是华为昇腾AI计算架构，为昇腾NPU（Neural Processing Unit）提供统一的编程接口和运行时环境。CANN支持多种深度学习框架，提供高性能的模型推理和训练能力，是国产AI芯片生态的重要组成部分。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "NPU加速：充分利用昇腾NPU的计算能力",
+            "框架支持：支持PyTorch、TensorFlow等主流框架",
+            "高性能：提供高性能的模型推理和训练",
+            "国产化：支持国产AI芯片生态",
+            "工具链完善：提供完整的开发和部署工具链"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "NPU编程、模型转换、算子优化、内存管理、性能调优"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "国产AI芯片应用、NPU加速、模型部署、高性能推理"
+        }
+      ]
+    }
+  ]
+}

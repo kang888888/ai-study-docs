@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{页面标题} - 知识图谱</title>
+    
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+    
+    <!-- 页面特定样式（可选） -->
+    <style>
+        body {
+            background: radial-gradient(circle at top, var(--bg-primary) 0%, #000 70%);
+            overflow: hidden;
+        }
+        /* 可以在这里添加页面特定的样式覆盖 */
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- 知识图谱容器 -->
+        <div id="chart"></div>
+        
+        <!-- 标题栏 -->
+        <div class="title-bar">
+            <h1>{页面标题}</h1>
+            <p>{页面描述}</p>
+            <div class="legend">
+                <!-- 图例项 -->
+                {图例内容}
+            </div>
+        </div>
+        
+        <!-- 控制栏 -->
+        <div class="control-bar">
+            <button class="control-btn" onclick="resetView()">重新布局</button>
+            <button class="control-btn" onclick="toggleAnimation()">暂停/继续动画</button>
+        </div>
+        
+        <!-- 侧边栏 -->
+        <div class="sidebar" id="sidebar">
+            <button class="close-btn" onclick="closeSidebar()">×</button>
+            <div class="sidebar-header">
+                <h2 class="sidebar-title" id="sidebar-title">{节点名称}</h2>
+                <div class="sidebar-tag" id="sidebar-tag">{标签}</div>
+            </div>
+            <div class="sidebar-body" id="sidebar-content">
+                <div class="sidebar-placeholder">
+                    <p>请在左侧图谱中点击任意节点，查看详细信息。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 公共脚本 -->
+    <script src="../common/knowledge-graph.js"></script>
+    
+    <!-- 页面特定数据 -->
+    <script>
+        // 页面配置
+        const pageConfig = {
+            containerId: 'chart',
+            data: {
+                // 知识图谱层级数据
+                name: "{根节点名称}",
+                symbolSize: 55,
+                itemStyle: { 
+                    color: '#5470c6', 
+                    borderColor: '#ffd700',
+                    borderWidth: 4,
+                    shadowBlur: 20,
+                    shadowColor: 'rgba(255, 215, 0, 0.8)'
+                },
+                children: [
+                    // 子节点数据
+                ]
+            },
+            techPages: {
+                // 技术页面映射
+                // '节点名称': '页面路径'
+            },
+            categoryDescriptions: {
+                // 分类描述
+                // '分类名称': '描述内容'
+            }
+        };
+        
+        // 初始化页面
+        initKnowledgeGraph(pageConfig);
+    </script>
+</body>
+</html>

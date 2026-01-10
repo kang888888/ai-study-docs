@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWQ（Activation-aware Weight Quantization）详解</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>AWQ：Activation-aware Weight Quantization</h1>
+        <p class="tagline">通过激活感知的缩放因子与 outlier 处理，使 4bit 量化在保持高精度的同时无需复杂的再训练。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card"><h3>亮点</h3><p>专注权重量化但参考激活分布，支持高达 8K 序列长度。</p></div>
+            <div class="meta-card"><h3>核心技术</h3><p>激活校准、通道重要性评分、重缩放矩阵、权重剪枝。</p></div>
+            <div class="meta-card"><h3>兼容性</h3><p>支持 LLaMA/Mistral/Qwen/RWKV 等多种架构，可与 TensorRT-LLM 集成。</p></div>
+            <div class="meta-card"><h3>应用</h3><p>比 GPTQ 更快的生成、图像多模态模型、边缘设备部署。</p></div>
+        </div>
+
+        <div class="section">
+            <h2>🌸 技术要点</h2>
+            <ul>
+                <li><strong>激活采样：</strong>利用校准集统计激活的最大响应，确定最需要高精度的通道。</li>
+                <li><strong>显著性评分：</strong>根据 $||W_i A_i||$ 排序，决定哪些通道使用更大的缩放。</li>
+                <li><strong>重缩放因子：</strong>引入对角矩阵 $D$，在量化前进行 $W' = D W$，量化后再乘 $D^{-1}$ 还原。</li>
+                <li><strong>推理友好：</strong>可导出到 TensorRT/ONNX，速度优于传统 GPTQ。</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>📊 图解</h2>
+            <div class="diagram-gallery">
+                <div class="diagram-item"><img src="./assets/AWQ流程.png" alt="AWQ 流程" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">流程</div></div>
+                <div class="diagram-item"><img src="./assets/AWQ缩放.png" alt="缩放因子" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">缩放因子</div></div>
+                <div class="diagram-item"><img src="./assets/AWQ对比.png" alt="与 GPTQ 对比" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">精度/速度对比</div></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📐 数学原理</h2>
+            <div class="math-box">
+                <h3>显著性指标</h3>
+                <div class="math-formula">
+                    <p>通道重要性：$$s_i = \| W_i A_i \|_2$$</p>
+                    <p>其中 $A_i$ 为激活样本，$W_i$ 为对应列。</p>
+                </div>
+            </div>
+            <div class="math-box">
+                <h3>重缩放量化</h3>
+                <div class="math-formula">
+                    <p>量化前：$W' = D W$，量化后：$\hat{W} = D^{-1} \text{Quant}(W')$</p>
+                    <p>选择 $D$ 使得被放大的通道在 4bit 下仍保持细节。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💻 Python 代码示例</h2>
+            <div class="code-box">
+                <h3>使用 awq 库量化 LLaMA</h3>
+                <pre><code class="language-python">from awq import AutoAWQForCausalLM
+from transformers import AutoTokenizer
+
+model_path = "meta-llama/Llama-2-7b-hf"
+quant_path = "./llama2-awq"
+
+model = AutoAWQForCausalLM.from_pretrained(
+    model_path,
+    low_bit="w4a16",
+    fuse_layers=True
+)
+
+tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
+model.quantize(tokenizer=tokenizer, calib_data="./calib.jsonl")
+model.save_quantized(quant_path)
+</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal();">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+
+    <script>
+        function openImageModal(img){const modal=document.getElementById('imageModal');modal.classList.add('active');document.getElementById('modalImage').src=img.src;document.getElementById('modalCaption').textContent=img.alt||'';}
+        function closeImageModal(){document.getElementById('imageModal').classList.remove('active');}
+        document.addEventListener('keydown',e=>{if(e.key==='Escape')closeImageModal();});
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

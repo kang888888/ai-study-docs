@@ -1,0 +1,179 @@
+{
+  "title": "线性合并（Linear Merge）",
+  "subtitle": "通过简单的加权平均将多个模型的参数合并，是最基础且广泛使用的模型合并方法，适合相似架构的模型。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "线性合并是最简单直接的模型合并方法，通过对多个模型的参数进行加权平均来实现合并。这种方法计算简单、速度快，适合合并具有相似架构和训练目标的模型。线性合并不需要额外的训练数据，可以在CPU上快速完成。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "线性合并流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "线性合并流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "权重分配",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "权重分配",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "合并效果对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "合并效果对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "计算简单：只需对参数进行加权平均，计算复杂度低",
+            "速度快：无需GPU，在CPU上即可快速完成合并",
+            "适用性广：适合合并相似架构和训练目标的模型",
+            "无需数据：不需要额外的训练数据或验证集",
+            "权重可调：可以灵活调整各模型的权重比例",
+            "保持性能：合并后的模型通常能保持原始模型的平均性能"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "线性合并公式",
+          "formulas": [
+            {
+              "display": "\\theta_{merged} = \\sum_{i=1}^{n} w_i \\theta_i"
+            },
+            {
+              "text": "其中 $\\theta_i$ 是第 $i$ 个模型的参数，$w_i$ 是第 $i$ 个模型的权重，通常满足 $\\sum_{i=1}^{n} w_i = 1$。",
+              "inline": "w_i"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "逐层合并",
+          "formulas": [
+            {
+              "display": "\\theta_{merged}^{(l)} = \\sum_{i=1}^{n} w_i \\theta_i^{(l)}"
+            },
+            {
+              "text": "对每一层 $l$ 的参数分别进行加权平均，可以针对不同层使用不同的权重策略。",
+              "inline": "l"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "权重选择",
+          "formulas": [
+            {
+              "text": "常见权重分配策略："
+            },
+            {
+              "display": "w_i = \\frac{1}{n} \\quad \\text{（均匀权重）}"
+            },
+            {
+              "display": "w_i = \\frac{\\text{性能}_i}{\\sum_{j=1}^{n} \\text{性能}_j} \\quad \\text{（性能加权）}"
+            },
+            {
+              "text": "可以根据各模型的性能或重要性来分配权重。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "基础线性合并实现",
+          "language": "python",
+          "code": "import torch\nfrom transformers import AutoModelForCausalLM\n\n# 加载多个模型\nmodel1 = AutoModelForCausalLM.from_pretrained(\"model1-path\")\nmodel2 = AutoModelForCausalLM.from_pretrained(\"model2-path\")\nmodel3 = AutoModelForCausalLM.from_pretrained(\"model3-path\")\n\n# 定义权重（总和应为1）\nweights = [0.4, 0.4, 0.2]  # 模型1、2、3的权重\n\n# 执行线性合并\nmerged_state_dict = {}\nfor key in model1.state_dict():\n    merged_state_dict[key] = (\n        weights[0] * model1.state_dict()[key] +\n        weights[1] * model2.state_dict()[key] +\n        weights[2] * model3.state_dict()[key]\n    )\n\n# 创建合并后的模型\nmerged_model = AutoModelForCausalLM.from_pretrained(\"model1-path\")\nmerged_model.load_state_dict(merged_state_dict)\nmerged_model.save_pretrained(\"./merged_model\")"
+        },
+        {
+          "type": "code-box",
+          "title": "使用MergeKit进行线性合并",
+          "language": "python",
+          "code": "from mergekit import MergeKit\n\n# 配置合并参数\nmerge_config = {\n    \"models\": [\n        {\n            \"model\": \"microsoft/DialoGPT-medium\",\n            \"weight\": 0.5\n        },\n        {\n            \"model\": \"microsoft/DialoGPT-large\", \n            \"weight\": 0.5\n        }\n    ],\n    \"merge_method\": \"linear\",\n    \"output_path\": \"./merged_model\"\n}\n\n# 执行合并\nmerger = MergeKit()\nmerged_model = merger.merge(merge_config)\nprint(\"模型合并完成！\")"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "多模型集成：将多个训练好的模型合并，获得更稳定的性能。模型平均：通过平均多个检查点或不同随机初始化的模型来提升泛化能力。知识融合：合并在不同数据集上训练的模型，融合不同领域的知识。快速实验：无需重新训练，快速尝试不同模型的组合。"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚠️ 注意事项",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "架构兼容性：合并的模型必须具有相同的架构或兼容的架构",
+            "权重选择：需要仔细选择权重，不同权重可能导致性能差异",
+            "性能权衡：合并后的模型性能通常介于各模型之间，可能不会超过最佳模型",
+            "参数对齐：确保各模型的参数名称和形状完全一致",
+            "验证测试：合并后需要进行充分的验证测试，确保性能符合预期"
+          ]
+        }
+      ]
+    }
+  ]
+}

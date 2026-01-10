@@ -1,0 +1,181 @@
+{
+  "title": "CNN (Convolutional Neural Network) 卷积神经网络",
+  "subtitle": "专门用于处理图像数据的神经网络",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "专门用于处理具有网格结构的数据（如图像、视频）。通过卷积层提取局部特征，池化层降低维度，是计算机视觉领域的基石。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "局部连接：每个神经元只与局部区域连接，大幅减少参数",
+            "权值共享：同一卷积核在整个输入上共享参数",
+            "平移不变性：对图像的平移具有鲁棒性",
+            "层次化特征提取：浅层提取边缘，深层提取语义特征",
+            "池化降维：通过Max Pooling或Average Pooling降低特征图尺寸"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "卷积操作、池化操作、批量归一化（Batch Normalization）、Dropout正则化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "图像分类（ImageNet）、目标检测、图像分割、人脸识别、医学影像分析"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "CNNDiagram",
+              "caption": "CNN架构图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "CNN架构图"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "CNNDiagram",
+              "caption": "卷积操作",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "convolution",
+                "title": "卷积操作"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "CNNDiagram",
+              "caption": "池化操作",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "pooling",
+                "title": "池化操作"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "卷积操作",
+          "formulas": [
+            {
+              "text": "二维离散卷积公式："
+            },
+            {
+              "display": "(I * K)(i, j) = \\sum_{m} \\sum_{n} I(i-m, j-n) \\cdot K(m, n)"
+            },
+            {
+              "text": "其中 $I$ 是输入特征图，$K$ 是卷积核（滤波器）",
+              "inline": "I"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "输出尺寸计算",
+          "formulas": [
+            {
+              "text": "卷积后输出尺寸："
+            },
+            {
+              "display": "H_{out} = \\frac{H_{in} + 2P - K}{S} + 1"
+            },
+            {
+              "display": "W_{out} = \\frac{W_{in} + 2P - K}{S} + 1"
+            },
+            {
+              "text": "其中："
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "池化操作",
+          "formulas": [
+            {
+              "text": "最大池化（Max Pooling）："
+            },
+            {
+              "display": "y_{i,j} = \\max_{(m,n) \\in R_{i,j}} x_{m,n}"
+            },
+            {
+              "text": "平均池化（Average Pooling）："
+            },
+            {
+              "display": "y_{i,j} = \\frac{1}{|R_{i,j}|} \\sum_{(m,n) \\in R_{i,j}} x_{m,n}"
+            },
+            {
+              "text": "其中 $R_{i,j}$ 是池化窗口区域",
+              "inline": "R_{i,j}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 PyTorch 实现 CNN",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\nclass SimpleCNN(nn.Module):\n    \"\"\"简单的CNN实现（用于图像分类）\"\"\"\n    def __init__(self, num_classes=10):\n        super(SimpleCNN, self).__init__()\n        \n        # 第一个卷积块\n        self.conv1 = nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, padding=1)\n        self.bn1 = nn.BatchNorm2d(32)\n        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)\n        \n        # 第二个卷积块\n        self.conv2 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1)\n        self.bn2 = nn.BatchNorm2d(64)\n        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)\n        \n        # 第三个卷积块\n        self.conv3 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1)\n        self.bn3 = nn.BatchNorm2d(128)\n        self.pool3 = nn.MaxPool2d(kernel_size=2, stride=2)\n        \n        # 全连接层\n        self.fc1 = nn.Linear(128 * 4 * 4, 512)\n        self.dropout = nn.Dropout(0.5)\n        self.fc2 = nn.Linear(512, num_classes)\n    \n    def forward(self, x):\n        # 卷积块1: 32x32 -> 16x16\n        x = F.relu(self.bn1(self.conv1(x)))\n        x = self.pool1(x)\n        \n        # 卷积块2: 16x16 -> 8x8\n        x = F.relu(self.bn2(self.conv2(x)))\n        x = self.pool2(x)\n        \n        # 卷积块3: 8x8 -> 4x4\n        x = F.relu(self.bn3(self.conv3(x)))\n        x = self.pool3(x)\n        \n        # 展平\n        x = x.view(x.size(0), -1)\n        \n        # 全连接层\n        x = F.relu(self.fc1(x))\n        x = self.dropout(x)\n        x = self.fc2(x)\n        \n        return x\n\n# 使用示例\nif __name__ == \"__main__\":\n    # 创建模型\n    model = SimpleCNN(num_classes=10)\n    \n    # 模拟输入 (batch_size=4, channels=3, height=32, width=32)\n    x = torch.randn(4, 3, 32, 32)\n    \n    # 前向传播\n    output = model(x)\n    print(f\"输出形状: {output.shape}\")  # [4, 10]\n    \n    # 计算参数量\n    total_params = sum(p.numel() for p in model.parameters())\n    print(f\"总参数量: {total_params:,}\")"
+        },
+        {
+          "type": "code-box",
+          "title": "使用 NumPy 手动实现卷积操作",
+          "language": "python",
+          "code": "import numpy as np\n\ndef conv2d(input_img, kernel, stride=1, padding=0):\n    \"\"\"\n    手动实现2D卷积操作\n    \n    参数:\n        input_img: 输入图像 (H, W) 或 (C, H, W)\n        kernel: 卷积核 (K, K) 或 (C, K, K)\n        stride: 步长\n        padding: 填充\n    \"\"\"\n    # 处理输入维度\n    if input_img.ndim == 2:\n        input_img = input_img[np.newaxis, :, :]\n    \n    if kernel.ndim == 2:\n        kernel = kernel[np.newaxis, :, :]\n    \n    C, H, W = input_img.shape\n    K = kernel.shape[-1]\n    \n    # 添加padding\n    if padding > 0:\n        input_img = np.pad(input_img, ((0, 0), (padding, padding), (padding, padding)), mode='constant')\n    \n    # 计算输出尺寸\n    out_h = (H + 2 * padding - K) // stride + 1\n    out_w = (W + 2 * padding - K) // stride + 1\n    \n    # 初始化输出\n    output = np.zeros((C, out_h, out_w))\n    \n    # 执行卷积\n    for c in range(C):\n        for i in range(0, out_h):\n            for j in range(0, out_w):\n                h_start = i * stride\n                h_end = h_start + K\n                w_start = j * stride\n                w_end = w_start + K\n                \n                output[c, i, j] = np.sum(\n                    input_img[c, h_start:h_end, w_start:w_end] * kernel[c]\n                )\n    \n    return output.squeeze() if output.shape[0] == 1 else output\n\ndef max_pooling(input_img, pool_size=2, stride=2):\n    \"\"\"最大池化操作\"\"\"\n    if input_img.ndim == 2:\n        input_img = input_img[np.newaxis, :, :]\n    \n    C, H, W = input_img.shape\n    out_h = (H - pool_size) // stride + 1\n    out_w = (W - pool_size) // stride + 1\n    \n    output = np.zeros((C, out_h, out_w))\n    \n    for c in range(C):\n        for i in range(out_h):\n            for j in range(out_w):\n                h_start = i * stride\n                h_end = h_start + pool_size\n                w_start = j * stride\n                w_end = w_start + pool_size\n                \n                output[c, i, j] = np.max(\n                    input_img[c, h_start:h_end, w_start:w_end]\n                )\n    \n    return output.squeeze() if output.shape[0] == 1 else output\n\n# 使用示例\nif __name__ == \"__main__\":\n    # 创建测试图像 (3通道, 8x8)\n    img = np.random.randn(3, 8, 8)\n    \n    # 创建卷积核 (3x3)\n    kernel = np.ones((3, 3, 3)) * 0.1\n    \n    # 执行卷积\n    conv_output = conv2d(img, kernel, stride=1, padding=1)\n    print(f\"卷积输出形状: {conv_output.shape}\")\n    \n    # 执行池化\n    pooled_output = max_pooling(conv_output, pool_size=2, stride=2)\n    print(f\"池化输出形状: {pooled_output.shape}\")"
+        }
+      ]
+    }
+  ]
+}

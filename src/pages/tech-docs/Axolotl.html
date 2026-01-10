@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axolotl 全流程微调框架 - 技术详解</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Axolotl：模块化大模型微调流水线</h1>
+        <p class="tagline">通过 YAML 配置驱动的数据处理、LoRA/QLoRA/全参数训练、分布式调度与日志监控，实现“一套配置跑遍所有模型”。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card">
+                <h3>主要特性</h3>
+                <p>高度配置化、支持多阶段训练、内置数据格式转换、无缝对接 DeepSpeed/Accelerate。</p>
+            </div>
+            <div class="meta-card">
+                <h3>支持模式</h3>
+                <p>全参、LoRA、QLoRA、Adapter、P-Tuning、DPO、ORPO、SFT、RLHF。</p>
+            </div>
+            <div class="meta-card">
+                <h3>部署生态</h3>
+                <p>Colab、SageMaker、AUTOMATIC1111、RunPod、自有 GPU 集群。</p>
+            </div>
+            <div class="meta-card">
+                <h3>适用人群</h3>
+                <p>需要批量跑实验的工程团队、竞赛选手、教育培训、开源社区维护者。</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🛠️ 技术要点</h2>
+            <ul>
+                <li><strong>配置即代码：</strong>所有模型/数据/训练/推理参数集中在 YAML，便于版本化与审计。</li>
+                <li><strong>数据自动管道：</strong>支持 JSON/ShareGPT/Parquet 等格式，一键生成对话模板。</li>
+                <li><strong>多模式训练：</strong>同一配置可通过 flag 切换 LoRA、QLoRA、全参或偏好优化。</li>
+                <li><strong>分布式后端：</strong>内置 DeepSpeed ZeRO-3、FSDP、Petals、LoRA 合并与导出。</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>📊 图解</h2>
+            <div class="diagram-gallery">
+                <div class="diagram-item">
+                    <img src="./assets/Axolotl流程.png" alt="Axolotl 工作流" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">工作流</div>
+                </div>
+                <div class="diagram-item">
+                    <img src="./assets/Axolotl配置.png" alt="配置结构" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">配置结构</div>
+                </div>
+                <div class="diagram-item">
+                    <img src="./assets/Axolotl分布式.png" alt="分布式拓扑" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">分布式拓扑</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📐 数学/资源估算</h2>
+            <div class="math-box">
+                <h3>显存预算</h3>
+                <div class="math-formula">
+                    <p>Axolotl 的内置估算器按如下近似：</p>
+                    <p>$$\text{VRAM} \approx \frac{n_{\text{params}} \times bytes_{\text{precision}}}{\text{tensor_parallel}} + \text{optimizer
+overhead} + \text{activation
+overhead}$$</p>
+                    <p>结合 ZeRO-3 可将优化器状态按节点平均，显著降低峰值显存。</p>
+                </div>
+            </div>
+            <div class="math-box">
+                <h3>吞吐与梯度同步</h3>
+                <div class="math-formula">
+                    <p>使用 FSDP/ZeRO 时的通信开销：</p>
+                    <p>$$T = T_{\text{compute}} + \frac{P-1}{P} \cdot T_{\text{allreduce}}$$</p>
+                    <p>Axolotl 通过梯度累积与 overlap reduce 优化上述项。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💻 代码示例</h2>
+            <div class="code-box">
+                <h3>最小化 YAML 配置</h3>
+                <pre><code class="language-yaml">base_model: meta-llama/Llama-3-8b-Instruct
+load_in_4bit: true
+adapter: lora
+lora_r: 64
+lora_alpha: 128
+dataset_mixer:
+  - ./data/sharegpt.json: 1.0
+val_set_size: 0.01
+sequence_len: 4096
+micro_batch_size: 2
+gradient_accumulation_steps: 8
+learning_rate: 2e-4
+epochs: 3
+device_map: auto
+</code></pre>
+                <pre><code class="language-bash">axolotl run configs/llama3_orpo.yml --wandb</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal();">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+{
+  "title": "人工标注",
+  "subtitle": "通过标注流程、质量控制、众包平台等方式进行高质量数据标注。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "人工标注流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "人工标注流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "质量控制体系",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "质量控制体系",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "标注任务管理",
+          "language": "python",
+          "code": "class AnnotationTask:\n    def __init__(self, task_id, data, instructions):\n        self.task_id = task_id\n        self.data = data\n        self.instructions = instructions\n        self.annotations = []\n    \n    def add_annotation(self, annotator_id, label, confidence):\n        annotation = {\n            'annotator_id': annotator_id,\n            'label': label,\n            'confidence': confidence,\n            'timestamp': datetime.now().isoformat()\n        }\n        self.annotations.append(annotation)\n    \n    def get_consensus(self):\n        \"\"\"获取多数投票结果\"\"\"\n        from collections import Counter\n        labels = [ann['label'] for ann in self.annotations]\n        return Counter(labels).most_common(1)[0][0]"
+        },
+        {
+          "type": "code-box",
+          "title": "标注质量评估",
+          "language": "python",
+          "code": "def calculate_inter_annotator_agreement(annotations):\n    \"\"\"计算标注者间一致性\"\"\"\n    from sklearn.metrics import cohen_kappa_score\n    \n    # 提取所有标注者的标注结果\n    annotator_labels = {}\n    for ann in annotations:\n        annotator_id = ann['annotator_id']\n        if annotator_id not in annotator_labels:\n            annotator_labels[annotator_id] = []\n        annotator_labels[annotator_id].append(ann['label'])\n    \n    # 计算两两之间的Kappa系数\n    kappa_scores = []\n    annotator_ids = list(annotator_labels.keys())\n    \n    for i in range(len(annotator_ids)):\n        for j in range(i+1, len(annotator_ids)):\n            labels_i = annotator_labels[annotator_ids[i]]\n            labels_j = annotator_labels[annotator_ids[j]]\n            kappa = cohen_kappa_score(labels_i, labels_j)\n            kappa_scores.append(kappa)\n    \n    return sum(kappa_scores) / len(kappa_scores) if kappa_scores else 0"
+        }
+      ]
+    }
+  ]
+}

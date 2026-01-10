@@ -1,0 +1,54 @@
+{
+  "title": "Mixture of Depths (MoD) 深度混合模型",
+  "subtitle": "动态分配计算资源到不同token的高效架构",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Mixture of Depths是一种动态计算分配机制，不是所有token都经过所有层，而是根据token的重要性动态决定哪些token需要经过更多层处理。通过这种方式，在保持模型性能的同时，显著减少计算量。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "动态计算：根据token重要性动态分配计算资源",
+            "计算效率：减少不必要的计算，提升推理速度",
+            "性能保持：在减少计算的同时保持模型性能",
+            "灵活配置：可根据需求调整计算分配策略",
+            "可扩展性：适用于不同规模的模型"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "动态路由、计算分配、token重要性评估、稀疏计算"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "长文本处理、资源受限环境、高效推理、大规模模型部署等需要平衡性能和效率的场景"
+        }
+      ]
+    }
+  ]
+}

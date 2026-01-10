@@ -1,0 +1,61 @@
+{
+  "title": "数据抓取",
+  "subtitle": "通过网络爬虫、API调用等方式收集训练数据，并进行清洗与去重。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据抓取流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "数据抓取流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据抓取架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "数据抓取架构",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "网络爬虫示例",
+          "language": "python",
+          "code": "import requests\nfrom bs4 import BeautifulSoup\nfrom urllib.parse import urljoin, urlparse\n\nclass WebCrawler:\n    def __init__(self, base_url):\n        self.base_url = base_url\n        self.visited = set()\n    \n    def crawl(self, url, max_depth=3):\n        if url in self.visited or max_depth == 0:\n            return []\n        \n        self.visited.add(url)\n        try:\n            response = requests.get(url, timeout=10)\n            soup = BeautifulSoup(response.content, 'html.parser')\n            \n            # 提取文本\n            text = soup.get_text(separator='\\n', strip=True)\n            \n            # 提取链接\n            links = [urljoin(url, a['href']) for a in soup.find_all('a', href=True)]\n            \n            return [text] + [self.crawl(link, max_depth-1) for link in links[:5]]\n        except Exception as e:\n            print(f\"Error crawling {url}: {e}\")\n            return []"
+        },
+        {
+          "type": "code-box",
+          "title": "API数据获取",
+          "language": "python",
+          "code": "import requests\nimport json\nfrom typing import List, Dict\n\ndef fetch_api_data(api_url: str, params: Dict = None) -> List[Dict]:\n    \"\"\"从API获取数据\"\"\"\n    all_data = []\n    page = 1\n    \n    while True:\n        params = params or {}\n        params['page'] = page\n        \n        response = requests.get(api_url, params=params)\n        data = response.json()\n        \n        if not data.get('results'):\n            break\n        \n        all_data.extend(data['results'])\n        \n        if not data.get('next'):\n            break\n        \n        page += 1\n    \n    return all_data"
+        }
+      ]
+    }
+  ]
+}

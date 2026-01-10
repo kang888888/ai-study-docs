@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RNN (Recurrent Neural Network) 循环神经网络 - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>RNN (Recurrent Neural Network) 循环神经网络</h1>
+            <p>专门处理序列数据的神经网络</p>
+        </div>
+        <div class="content">
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>专门处理序列数据的神经网络，具有记忆能力。通过隐藏状态（Hidden State）在时间步之间传递信息，捕捉序列中的时序依赖。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>时序建模：能够处理变长序列数据</li>
+                    <li>参数共享：所有时间步共享同一组参数</li>
+                    <li>记忆机制：隐藏状态 h_t 包含历史信息</li>
+                    <li>梯度消失：长序列训练时容易出现梯度消失问题</li>
+                    <li>无法并行：训练时必须按时间步顺序计算</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box"><p><strong>BPTT（反向传播穿越时间）、梯度裁剪、隐藏状态传递</strong></p></div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box"><p>时间序列预测、语音识别、文本生成、机器翻译（早期）</p></div>
+            </div>
+            <div class="section">
+                <h2>📊 架构图解</h2>
+                <div class="diagram-gallery">
+                    <div class="diagram-item"><img src="RNN架构图.png" alt="RNN架构图" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">RNN架构图</div></div>
+                    <div class="diagram-item"><img src="RNN展开形式.png" alt="RNN展开形式" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">RNN展开形式</div></div>
+                    <div class="diagram-item"><img src="RNN架构详解.svg" alt="RNN架构详解" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">RNN架构详解（SVG）</div></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>RNN 前向传播</h3>
+                    <div class="math-formula">
+                        <p>在时间步 $t$，RNN 的计算公式：</p>
+                        <p>$$h_t = \tanh(W_{xh} x_t + W_{hh} h_{t-1} + b_h)$$</p>
+                        <p>$$y_t = W_{hy} h_t + b_y$$</p>
+                        <p>其中：</p>
+                        <ul style="list-style: none; padding-left: 20px;">
+                            <li>$x_t$ 是当前时间步的输入</li>
+                            <li>$h_{t-1}$ 是前一个时间步的隐藏状态</li>
+                            <li>$h_t$ 是当前隐藏状态</li>
+                            <li>$y_t$ 是当前输出</li>
+                            <li>$W_{xh}, W_{hh}, W_{hy}$ 是权重矩阵</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>BPTT（反向传播穿越时间）</h3>
+                    <div class="math-formula">
+                        <p>梯度通过时间反向传播：</p>
+                        <p>$$\frac{\partial L}{\partial W} = \sum_{t=1}^{T} \frac{\partial L_t}{\partial W}$$</p>
+                        <p>$$\frac{\partial h_t}{\partial h_{t-1}} = W_{hh}^T \cdot \text{diag}(1 - h_t^2)$$</p>
+                        <p>长序列会导致梯度消失或爆炸问题</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 PyTorch 实现 RNN</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+
+class SimpleRNN(nn.Module):
+    """简单的 RNN 实现"""
+    def __init__(self, input_size, hidden_size, output_size):
+        super(SimpleRNN, self).__init__()
+        self.hidden_size = hidden_size
+        
+        self.rnn = nn.RNN(input_size, hidden_size, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
+    
+    def forward(self, x):
+        # x shape: (batch_size, seq_len, input_size)
+        out, h_n = self.rnn(x)
+        # 使用最后一个时间步的输出
+        out = self.fc(out[:, -1, :])
+        return out
+
+# 使用示例
+if __name__ == "__main__":
+    model = SimpleRNN(input_size=10, hidden_size=64, output_size=2)
+    x = torch.randn(32, 50, 10)  # (batch, seq_len, input_size)
+    output = model(x)
+    print(f"输出形状: {output.shape}")  # [32, 2]</code></pre>
+                </div>
+                <div class="code-box">
+                    <h3>使用 NumPy 手动实现 RNN</h3>
+                    <pre><code class="language-python">import numpy as np
+
+class RNN_Numpy:
+    """使用 NumPy 手动实现 RNN"""
+    def __init__(self, input_size, hidden_size, output_size):
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        self.output_size = output_size
+        
+        # 初始化权重
+        scale = 0.01
+        self.W_xh = np.random.randn(input_size, hidden_size) * scale
+        self.W_hh = np.random.randn(hidden_size, hidden_size) * scale
+        self.W_hy = np.random.randn(hidden_size, output_size) * scale
+        
+        self.b_h = np.zeros((1, hidden_size))
+        self.b_y = np.zeros((1, output_size))
+    
+    def tanh(self, x):
+        return np.tanh(x)
+    
+    def forward(self, X):
+        """前向传播"""
+        batch_size, seq_len, _ = X.shape
+        h = np.zeros((batch_size, self.hidden_size))
+        
+        outputs = []
+        hidden_states = [h]
+        
+        for t in range(seq_len):
+            x_t = X[:, t, :]
+            h = self.tanh(np.dot(x_t, self.W_xh) + np.dot(h, self.W_hh) + self.b_h)
+            y_t = np.dot(h, self.W_hy) + self.b_y
+            
+            hidden_states.append(h)
+            outputs.append(y_t)
+        
+        return np.array(outputs), hidden_states
+
+# 使用示例
+if __name__ == "__main__":
+    rnn = RNN_Numpy(input_size=10, hidden_size=64, output_size=2)
+    X = np.random.randn(5, 20, 10)  # (batch, seq_len, input_size)
+    outputs, hidden_states = rnn.forward(X)
+    print(f"输出形状: {outputs.shape}")  # (20, 5, 2)</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 图片放大弹窗 -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal()">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+            modalImg.onclick = function(e) { e.stopPropagation(); };
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

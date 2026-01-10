@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GGUF 格式与 llama.cpp 推理</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>GGUF：下一代 llama.cpp 量化模型格式</h1>
+        <p class="tagline">将模型权重、词表、超参数、量化元数据打包到统一文件中，支持 Q4/Q5/Q6 多种方案，方便桌面端与移动端推理。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card"><h3>特性</h3><p>可扩展元数据、跨平台、支持所有 llama.cpp backend、增量下载。</p></div>
+            <div class="meta-card"><h3>量化类型</h3><p>Q2_K、Q3_K、Q4_0、Q5_1、Q8_0、IQ3/4 等，平衡精度与体积。</p></div>
+            <div class="meta-card"><h3>部署</h3><p>llama.cpp、llama.cpp server、KoboldCpp、LM Studio、Ollama。</p></div>
+            <div class="meta-card"><h3>文件结构</h3><p>Header + Tensor Blocks + Metadata，支持分块校验。</p></div>
+        </div>
+
+        <div class="section">
+            <h2>📦 工作流</h2>
+            <ul>
+                <li>使用 `convert.py` 将 HF 权重转为 GGUF，并选择量化方案。</li>
+                <li>可指定 `--metal`/`--cuda` backend 以生成优化过的张量。</li>
+                <li>推理端通过 mmap 方式加载 GGUF，避免全部解压到内存。</li>
+                <li>可使用工具 `llama.cpp --dump-meta` 检查元数据。</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>📊 图解</h2>
+            <div class="diagram-gallery">
+                <div class="diagram-item"><img src="./assets/GGUF结构.png" alt="GGUF 文件结构" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">文件结构</div></div>
+                <div class="diagram-item"><img src="./assets/GGUF量化.png" alt="各量化精度" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">量化精度</div></div>
+                <div class="diagram-item"><img src="./assets/GGUF部署.png" alt="部署路线" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">部署路线</div></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📐 数学与编码</h2>
+            <div class="math-box">
+                <h3>块量化</h3>
+                <div class="math-formula">
+                    <p>GGUF 使用固定大小 block，如 32/64 元素：</p>
+                    <p>$$w_{block} = s \cdot q + m$$</p>
+                    <p>其中 $s$ 为缩放，$q$ 为量化整数，$m$ 可选偏置。</p>
+                </div>
+            </div>
+            <div class="math-box">
+                <h3>内存映射</h3>
+                <div class="math-formula">
+                    <p>推理时直接 mmap：</p>
+                    <p>$$\text{ptr} = \text{mmap}(\text{GGUF}, \text{PROT\_READ})$$</p>
+                    <p>避免拷贝，降低启动时间。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💻 操作示例</h2>
+            <div class="code-box">
+                <h3>转换 & 推理</h3>
+<pre><code class="language-bash"># 1. 将 HF 权重转为 GGUF 并量化
+python3 convert.py \
+  --model llama-2-13b \
+  --output llama-2-13b.q4_k.gguf \
+  --quant q4_k
+
+# 2. 使用 llama.cpp 运行
+./main -m llama-2-13b.q4_k.gguf -p "你好, 请介绍量化"
+</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal();">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+
+    <script>
+        function openImageModal(img){const modal=document.getElementById('imageModal');modal.classList.add('active');document.getElementById('modalImage').src=img.src;document.getElementById('modalCaption').textContent=img.alt||'';}
+        function closeImageModal(){document.getElementById('imageModal').classList.remove('active');}
+        document.addEventListener('keydown',e=>{if(e.key==='Escape')closeImageModal();});
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

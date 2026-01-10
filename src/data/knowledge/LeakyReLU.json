@@ -1,0 +1,132 @@
+{
+  "title": "Leaky ReLU",
+  "subtitle": "解决ReLU死神经元问题的激活函数",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Leaky ReLU是ReLU的改进版本，通过在负值区域引入小的正斜率（通常为0.01），解决了ReLU的死神经元问题。这使得负值输入也能传播梯度，有助于训练更稳定的网络。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学表达",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "Leaky ReLU函数定义",
+          "formulas": [
+            {
+              "text": "Leaky ReLU函数定义为："
+            },
+            {
+              "display": "\\text{LeakyReLU}(x) = \\begin{cases} x & \\text{if } x > 0 \\\\ \\alpha x & \\text{if } x \\leq 0 \\end{cases}"
+            },
+            {
+              "text": "其中 $\\alpha$ 是小的正数（通常为0.01），称为负斜率"
+            },
+            {
+              "text": "等价形式："
+            },
+            {
+              "display": "\\text{LeakyReLU}(x) = \\max(\\alpha x, x)"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "导数",
+          "formulas": [
+            {
+              "text": "Leaky ReLU的导数："
+            },
+            {
+              "display": "\\frac{d}{dx}\\text{LeakyReLU}(x) = \\begin{cases} 1 & \\text{if } x > 0 \\\\ \\alpha & \\text{if } x \\leq 0 \\end{cases}"
+            },
+            {
+              "text": "在 $x=0$ 处，通常定义为 $\\alpha$"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "解决死神经元：负值区域也有梯度，避免神经元永久失活",
+            "计算简单：只需比较和线性变换",
+            "非饱和：正值区域梯度恒为1",
+            "参数选择：α通常设为0.01，也可作为可学习参数（PReLU）",
+            "性能提升：在某些任务上比ReLU表现更好"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 函数图像",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "MathFunctionDiagram",
+              "caption": "Leaky ReLU函数图像",
+              "width": 1000,
+              "height": 600,
+              "interactive": true,
+              "props": {
+                "type": "activation",
+                "title": "Leaky ReLU函数图像",
+                "function": "leaky"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 变体",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "PReLU (Parametric ReLU): α作为可学习参数，在训练中自动优化\nRReLU (Randomized ReLU): 训练时α随机采样，测试时取平均，提供正则化效果"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "深度CNN、GAN生成器、需要避免死神经元的场景"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "Leaky ReLU实现与使用",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nimport numpy as np\n\n# 1. 基础实现\ndef leaky_relu(x, alpha=0.01):\n    return np.where(x > 0, x, alpha * x)\n\n# 2. PyTorch实现\nx = torch.tensor([-2.0, -1.0, 0.0, 1.0, 2.0])\nleaky_output = F.leaky_relu(x, negative_slope=0.01)\nprint(f\"Leaky ReLU输出: {leaky_output}\")\n\n# 3. 在神经网络中使用\nclass LeakyReLUNet(nn.Module):\n    def __init__(self):\n        super(LeakyReLUNet, self).__init__()\n        self.fc1 = nn.Linear(10, 50)\n        self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)\n        self.fc2 = nn.Linear(50, 1)\n    \n    def forward(self, x):\n        x = self.fc1(x)\n        x = self.leaky_relu(x)\n        x = self.fc2(x)\n        return x\n\n# 4. PReLU（可学习的Leaky ReLU）\nclass PReLUNet(nn.Module):\n    def __init__(self):\n        super(PReLUNet, self).__init__()\n        self.fc1 = nn.Linear(10, 50)\n        self.prelu = nn.PReLU()  # 可学习的α\n        self.fc2 = nn.Linear(50, 1)\n    \n    def forward(self, x):\n        x = self.fc1(x)\n        x = self.prelu(x)\n        x = self.fc2(x)\n        return x\n\n# 5. 对比ReLU和Leaky ReLU\nx = np.linspace(-3, 3, 100)\nrelu = np.maximum(0, x)\nleaky = leaky_relu(x, alpha=0.01)\n\nimport matplotlib.pyplot as plt\nplt.figure(figsize=(10, 6))\nplt.plot(x, relu, linewidth=2, label='ReLU')\nplt.plot(x, leaky, linewidth=2, label='Leaky ReLU (α=0.01)', linestyle='--')\nplt.axhline(y=0, color='k', linestyle='--', alpha=0.3)\nplt.axvline(x=0, color='k', linestyle='--', alpha=0.3)\nplt.xlabel('x')\nplt.ylabel('f(x)')\nplt.title('ReLU vs Leaky ReLU')\nplt.grid(True, alpha=0.3)\nplt.legend()\nplt.savefig('relu_vs_leaky.png')"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "title": "Context Parallelism 上下文并行",
+  "subtitle": "将长序列分片到不同设备并行处理",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Context Parallelism是一种针对长序列的并行训练方法，将长序列分片到不同的设备上并行处理。每个设备处理序列的一部分，通过通信机制协调不同设备之间的计算，从而实现对超长序列的高效训练。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "长序列支持：支持处理超长序列的训练",
+            "并行处理：将序列分片到多个设备并行处理",
+            "通信协调：通过通信机制协调不同设备的计算",
+            "显存优化：减少单个设备的显存占用",
+            "扩展性强：可以扩展到更多设备处理更长序列"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "序列分片、设备间通信、注意力计算、梯度同步"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "长文本训练、长代码训练、需要处理超长序列的大模型训练"
+        }
+      ]
+    }
+  ]
+}

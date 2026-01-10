@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoRA（Low-Rank Adaptation）- 技术详解</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>LoRA（Low-Rank Adaptation）低秩适应微调</h1>
+        <p class="tagline">通过低秩矩阵分解在冻结大模型主干的情况下注入少量可训练参数，实现极具性价比的参数高效微调。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card">
+                <h3>核心目标</h3>
+                <p>在保留预训练知识的同时，只训练秩为 r 的低维更新，显著降低显存与计算成本。</p>
+            </div>
+            <div class="meta-card">
+                <h3>参数规模</h3>
+                <p>可训练参数占比通常低于 1%，适合 7B~70B 大模型的消费级显卡微调。</p>
+            </div>
+            <div class="meta-card">
+                <h3>适用场景</h3>
+                <p>多场景指令微调、领域问答、风格定制、代码自动补全等。</p>
+            </div>
+            <div class="meta-card">
+                <h3>配套工具</h3>
+                <p>PEFT、Hugging Face Transformers、Unsloth、Axolotl、Lightning LoRA。</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⚙️ 技术要点</h2>
+            <ul>
+                <li><strong>冻结主权重：</strong>原始权重 $W_0$ 不再更新，只在前向中参与计算，避免灾难性遗忘。</li>
+                <li><strong>双层低秩插入：</strong>使用 $A \in \mathbb{R}^{d \times r}$、$B \in \mathbb{R}^{r \times k}$ 重构更新矩阵 $\Delta W = B A$。</li>
+                <li><strong>可插拔结构：</strong>LoRA 层可在训练后独立保存/加载，部署时按需合并至全量权重。</li>
+                <li><strong>Rank/Alpha 调参：</strong>典型设置 r=8/16、alpha=16/32，权衡表达能力与资源开销。</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>📊 架构图解</h2>
+            <div class="diagram-gallery">
+                <div class="diagram-item">
+                    <img src="./assets/LoRA结构示意.png" alt="LoRA 插入注意力矩阵" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">LoRA 插入注意力矩阵</div>
+                </div>
+                <div class="diagram-item">
+                    <img src="./assets/LoRA训练流程.png" alt="训练与推理流程" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">训练与推理流程</div>
+                </div>
+                <div class="diagram-item">
+                    <img src="./assets/LoRA参数占比.png" alt="参数效率对比" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">参数效率对比</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📐 数学原理</h2>
+            <div class="math-box">
+                <h3>低秩分解</h3>
+                <div class="math-formula">
+                    <p>LoRA 将权重更新表示为：</p>
+                    <p>$$W = W_0 + \Delta W, \quad \Delta W = B A, \; rank(A) = rank(B) = r \ll \min(d,k)$$</p>
+                    <p>训练时仅更新 $A,B$，推理阶段可将其合并回 $W$ 或以模块形式注入。</p>
+                </div>
+            </div>
+            <div class="math-box">
+                <h3>缩放因子</h3>
+                <div class="math-formula">
+                    <p>为保持梯度稳定，LoRA 引入缩放 $\alpha/r$：</p>
+                    <p>$$y = W_0 x + \frac{\alpha}{r} B A x$$</p>
+                    <p>其中 $\alpha$ 控制更新幅度，常与 rank 同量级。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💻 Python 代码示例</h2>
+            <div class="code-box">
+                <h3>使用 PEFT 构建 LoRA 适配器</h3>
+                <pre><code class="language-python">from transformers import AutoModelForCausalLM, AutoTokenizer
+from peft import LoraConfig, get_peft_model
+
+base_model = "meta-llama/Llama-2-13b-hf"
+tokenizer = AutoTokenizer.from_pretrained(base_model)
+model = AutoModelForCausalLM.from_pretrained(
+    base_model,
+    load_in_4bit=True,
+    device_map="auto"
+)
+
+lora_config = LoraConfig(
+    r=16,
+    lora_alpha=32,
+    target_modules=["q_proj", "v_proj"],
+    lora_dropout=0.05,
+    bias="none",
+    task_type="CAUSAL_LM"
+)
+
+model = get_peft_model(model, lora_config)
+model.print_trainable_parameters()
+
+# 之后即可像普通 SFT 一样使用 Trainer/Accelerate 进行训练
+</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal();">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

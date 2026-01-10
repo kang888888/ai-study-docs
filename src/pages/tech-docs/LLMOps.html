@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LLMOps 全景指南</title>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+<header>
+    <h1>LLMOps 全景指南</h1>
+    <p class="lead">从部署架构到监控与案例，打造可复现、可回滚、可观测的大语言模型运维体系。</p>
+</header>
+<main>
+    <section>
+        <h2>LLMOps 的定位</h2>
+        <ul>
+            <li>定义：面向 LLM 的 MLOps 延伸，强调资源管理、版本治理、安全与反馈闭环。</li>
+            <li>特点：参数量巨大、GPU 昂贵、多租户、合规需求高。</li>
+        </ul>
+        <table>
+            <thead><tr><th>维度</th><th>MLOps</th><th>LLMOps</th></tr></thead>
+            <tbody>
+                <tr><td>模型规模</td><td>百万级</td><td>十亿~万亿级</td></tr>
+                <tr><td>资源</td><td>单机/少量 GPU</td><td>GPU/NPU 集群</td></tr>
+                <tr><td>数据</td><td>结构化/图像</td><td>海量文本、多模态</td></tr>
+                <tr><td>运维重点</td><td>流水线自动化</td><td>性能、成本、安全、反馈</td></tr>
+            </tbody>
+        </table>
+        <p>成熟度：手工 → 脚本 → 自动化部署 → 全流程闭环（监控/反馈/CI/CD）。</p>
+    </section>
+
+    <section>
+        <h2>部署策略矩阵</h2>
+        <table>
+            <thead><tr><th>场景</th><th>代表方案</th><th>优势</th><th>适用对象</th></tr></thead>
+            <tbody>
+                <tr><td>本地部署</td><td>LM Studio、Ollama、oobabooga</td><td>隐私、离线、完全掌控</td><td>个人、PoC</td></tr>
+                <tr><td>演示部署</td><td>Gradio、Streamlit、Spaces</td><td>快速原型、易分享</td><td>Demo</td></tr>
+                <tr><td>服务器部署</td><td>TGI、vLLM、CTranslate2、mlc-llm</td><td>高吞吐、扩缩容、生产稳定</td><td>企业 API</td></tr>
+                <tr><td>边缘部署</td><td>MLC LLM、mnn-llm</td><td>移动/IoT、低延迟</td><td>边缘设备</td></tr>
+            </tbody>
+        </table>
+        <h3>Kubernetes 实践</h3>
+        <pre><code>Ingress → Service → 推理 Pod → GPU 节点
+                 ↘ Prometheus / Loki / Jaeger</code></pre>
+        <ul>
+            <li>关键组件：KServe/Triton、NVIDIA Device Plugin、HPA/VPA/KEDA、PVC/NVMe 模型仓库。</li>
+            <li>流程：命名空间/RBAC → GPU 驱动 → Model Serving → InferenceService → Autoscaler。</li>
+        </ul>
+        <pre><code>apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: llama-serve
+spec:
+  predictor:
+    triton:
+      runtimeVersion: 23.09
+      storageUri: pvc://models/llama-13b
+      resources:
+        limits:
+          nvidia.com/gpu: 1</code></pre>
+        <p>最佳实践：InitContainer 预热、控制/数据平面分离、Istio/KServe 灰度、路由多模型。</p>
+    </section>
+
+    <section>
+        <h2>部署最佳实践</h2>
+        <ul>
+            <li>性能：量化、批处理、KV Cache、硬件亲和。</li>
+            <li>扩展：多实例、负载均衡、自动扩缩容、资源配额。</li>
+            <li>监控：延迟、吞吐、错误率、GPU/CPU、Tokens/s。</li>
+            <li>安全：认证、速率限制、输入校验、流量审计。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>版本与配置治理</h2>
+        <ul>
+            <li>内容：模型权重、推理配置、Prompt/数据、依赖镜像。</li>
+            <li>命名：`qwen-7b-chat-sft-20250115-v2`。</li>
+            <li>工具：Git LFS/DVC、HF Hub、ModelScope、MLflow/W&B Registry。</li>
+            <li>流程：训练→评估打标签→打包→上传 Registry→记录变更。</li>
+            <li>回滚：保留稳定版本、自动脚本切换、同步数据/Prompt、蓝绿/金丝雀。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>监控 · 日志 · 可观测性</h2>
+        <table>
+            <thead><tr><th>维度</th><th>指标</th><th>工具</th></tr></thead>
+            <tbody>
+                <tr><td>性能</td><td>QPS、Latency、Tokens/s</td><td>Prometheus + Grafana</td></tr>
+                <tr><td>资源</td><td>GPU/CPU、显存、功耗</td><td>DCGM、Node Exporter</td></tr>
+                <tr><td>质量</td><td>评分、拒绝率、幻觉率</td><td>Langfuse、PromptLayer</td></tr>
+                <tr><td>安全</td><td>异常请求、敏感词</td><td>WAF、审计日志</td></tr>
+            </tbody>
+        </table>
+        <p>日志：访问、错误、模型参数、系统；Fluent Bit → Loki/ELK。Trace：OpenTelemetry + Jaeger。Metrics：Prometheus + Alertmanager。</p>
+        <p>告警：延迟/错误率阈值、GPU 空闲/饱和、质量下降、异常 Prompt。</p>
+    </section>
+
+    <section>
+        <h2>运营与自动化</h2>
+        <ul>
+            <li>自动扩缩容：基于 CPU/GPU、请求量、延迟、定时策略。</li>
+            <li>A/B & 灰度：流量分流、性能对比、逐步切换、自动回滚。</li>
+            <li>模型更新：蓝绿、金丝雀、滚动更新，与监控联动。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>实践案例速览</h2>
+        <ul>
+            <li>企业问答平台：KServe + vLLM、灰度、Langfuse，MTTR ↓60%、GPU 成本 ↓30%。</li>
+            <li>多模型平台：Qwen/LLaMA/文心按能力路由，蓝绿 + A/B，WAF + Prompt 防火墙。</li>
+            <li>推理即服务：Ray Serve + Kubernetes、Spot+OnDemand、按 Token 计费、GitOps 更新。</li>
+        </ul>
+    </section>
+</main>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

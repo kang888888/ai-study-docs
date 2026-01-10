@@ -1,0 +1,96 @@
+{
+  "title": "SmoothQuant：平滑激活的联合量化",
+  "subtitle": "通过在推理前将大幅度激活迁移到权重中，实现激活/权重量化的协同优化，显著降低 outlier 的影响。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "平滑流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "平滑流程"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "激活分布变化",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "激活分布变化"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "矩阵重缩放",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "矩阵重缩放"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "平滑变换",
+          "formulas": [
+            {
+              "display": "W' = W D^{-1}, \\quad A' = D A"
+            },
+            {
+              "text": "$D = \\text{diag}(\\alpha_1, ..., \\alpha_n)$，使得 $\\max(|A'|)$ 更小。",
+              "inline": "D = \\text{diag}(\\alpha_1, ..., \\alpha_n)"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "选择 $\\alpha$",
+          "formulas": [
+            {
+              "display": "\\alpha_i = \\arg\\min_{\\alpha \\in [0,1]} \\left( \\lambda \\cdot \\|A_i \\alpha\\|_{\\infty} + (1-\\lambda) \\cdot \\|W_i / \\alpha\\|_{\\infty} \\right)"
+            },
+            {
+              "text": "在实践中通常通过网格搜索或贪心近似。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "在 TensorRT-LLM 中启用 SmoothQuant",
+          "language": "python",
+          "code": "from tensorrt_llm.quantization import smooth_quantize\n\nengine = smooth_quantize(\n    onnx_path=\"llama2.onnx\",\n    calib_data=\"calib_texts.txt\",\n    act_bits=8,\n    weight_bits=8,\n    alpha=0.5,\n    per_channel=True\n)\nengine.save(\"./llama2_smoothquant.plan\")"
+        }
+      ]
+    }
+  ]
+}

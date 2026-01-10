@@ -1,0 +1,54 @@
+{
+  "title": "异构计算并行 (Heterogeneous Computing Parallelism)",
+  "subtitle": "CPU、GPU、NPU等异构设备的协同并行计算",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "异构计算并行是一种利用不同类型计算设备（CPU、GPU、NPU等）协同工作的并行计算技术。通过将不同的计算任务分配到最适合的设备上执行，充分发挥各设备的优势，实现整体计算性能的提升。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "设备协同：不同类型设备协同工作",
+            "任务分配：将任务分配到最适合的设备",
+            "性能提升：充分发挥各设备优势，提升整体性能",
+            "资源利用：最大化利用所有计算资源",
+            "灵活配置：支持灵活的硬件配置"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "任务分配、设备管理、数据同步、负载均衡、性能优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "混合计算、边缘计算、资源受限环境、高性能计算"
+        }
+      ]
+    }
+  ]
+}

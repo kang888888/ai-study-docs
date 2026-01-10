@@ -1,0 +1,97 @@
+{
+  "title": "KV Cache：注意力缓存与长序列推理",
+  "subtitle": "通过缓存历史 Key/Value 张量，让自回归推理从 O(T²) 降为 O(T)，是流式生成的关键优化。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "基本流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "基本流程"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "PagedAttention",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "PagedAttention"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "KV 量化",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "KV 量化"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学与复杂度",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "自注意力复杂度",
+          "formulas": [
+            {
+              "text": "无缓存：$\\mathcal{O}(T^2 d)$；有缓存：$\\mathcal{O}(T d^2)$。",
+              "inline": "\\mathcal{O}(T^2 d)"
+            },
+            {
+              "text": "Prefill 成本仍为 $T^2$，但 decode 阶段变为常数。",
+              "inline": "T^2"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "缓存内存",
+          "formulas": [
+            {
+              "display": "\\text{Mem} = 2 \\times L \\times H \\times d_{head} \\times bytes"
+            },
+            {
+              "text": "两个因子来自 Key/Value，常见优化：FP8、压缩、共享。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 vLLM API 自动管理 KV Cache",
+          "language": "python",
+          "code": "from vllm import LLM, SamplingParams\n\nllm = LLM(model=\"meta-llama/Llama-3-8b-instruct\", gpu_memory_utilization=0.9)\nparams = SamplingParams(temperature=0.7, max_tokens=256)\n\nprompts = [\n    \"说明 KV Cache 如何提高推理效率?\",\n    \"给出一个带 KV Cache 的推理伪代码\"\n]\n\noutputs = llm.generate(prompts, params)\nfor out in outputs:\n    print(out.outputs[0].text)"
+        }
+      ]
+    }
+  ]
+}

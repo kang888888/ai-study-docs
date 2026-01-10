@@ -1,0 +1,102 @@
+{
+  "title": "Moneta",
+  "subtitle": "基于Miras框架的高效关联记忆架构",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Moneta 是基于 Miras 框架提出的高效关联记忆架构，专注于快速检索和更新，适用于实时推理任务。Moneta 通过优化的记忆组织方式和检索机制，实现了低计算开销和高响应速度。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "**快速检索和更新**：优化的记忆访问模式，实现毫秒级响应",
+            "**低计算开销**：高效的关联记忆架构，减少计算复杂度",
+            "**实时响应**：专为实时推理任务设计，支持在线学习",
+            "**高效记忆管理**：智能的记忆组织方式，提高检索效率"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 技术架构",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "关联记忆架构：采用扁平记忆结构，所有记忆平等，支持快速全局检索"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "实时推理任务：需要快速响应的在线推理场景\n                    在线学习任务：需要实时更新模型的动态学习场景\n                    低延迟应用：对响应时间要求极高的应用场景"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Moneta架构图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Moneta架构图",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Moneta组件详解",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Moneta组件详解",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "Moneta 关联记忆模块",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\nclass MonetaMemory(nn.Module):\n    \"\"\"Moneta 高效关联记忆模块\"\"\"\n    def __init__(self, d_model, memory_size):\n        super(MonetaMemory, self).__init__()\n        self.d_model = d_model\n        self.memory_size = memory_size\n        \n        # 扁平记忆结构\n        self.memory = nn.Parameter(torch.randn(memory_size, d_model))\n        \n        # 快速检索投影\n        self.query_proj = nn.Linear(d_model, d_model)\n        self.key_proj = nn.Linear(d_model, d_model)\n        self.value_proj = nn.Linear(d_model, d_model)\n        \n        # 在线更新门控\n        self.update_gate = nn.Linear(d_model, d_model)\n    \n    def forward(self, query, new_info=None):\n        \"\"\"\n        快速检索和更新\n        参数:\n            query: [batch_size, d_model] 查询向量\n            new_info: [batch_size, d_model] 新信息（可选）\n        返回:\n            retrieved: [batch_size, d_model] 检索结果\n        \"\"\"\n        # 快速检索\n        q = self.query_proj(query)\n        k = self.key_proj(self.memory)\n        v = self.value_proj(self.memory)\n        \n        # 计算注意力（优化后的计算）\n        scores = torch.matmul(q, k.t()) / (self.d_model ** 0.5)\n        attention = F.softmax(scores, dim=-1)\n        retrieved = torch.matmul(attention, v)\n        \n        # 在线更新（如果提供了新信息）\n        if new_info is not None:\n            gate = torch.sigmoid(self.update_gate(new_info))\n            # 更新最相关的记忆位置\n            top_k_indices = torch.topk(attention, k=min(10, self.memory_size), dim=-1)[1]\n            for i, idx in enumerate(top_k_indices):\n                self.memory.data[idx] = gate[i] * new_info[i] + (1 - gate[i]) * self.memory.data[idx]\n        \n        return retrieved\n\n# 使用示例\nif __name__ == \"__main__\":\n    memory = MonetaMemory(d_model=512, memory_size=1000)\n    query = torch.randn(2, 512)\n    new_info = torch.randn(2, 512)\n    \n    # 检索\n    result = memory(query, new_info)\n    print(f\"检索结果形状: {result.shape}\")  # [2, 512]"
+        }
+      ]
+    }
+  ]
+}

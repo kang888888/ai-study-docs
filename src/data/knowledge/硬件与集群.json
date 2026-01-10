@@ -1,0 +1,56 @@
+{
+  "title": "硬件与集群",
+  "subtitle": "",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "硬件与集群架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "硬件与集群架构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "硬件与集群拓扑",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "硬件与集群拓扑",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "生态：CUDA、cuDNN、TensorRT、NCCL、Megatron-LM、DeepSpeed、vLLM/Triton。",
+            "调优：混合精度、Tensor Core、计算/通信重叠、NVLink/NVSwitch。"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "title": "Yaad",
+  "subtitle": "基于Miras框架的优化注意力偏差模型",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Yaad 是基于 Miras 框架提出的优化注意力偏差模型，专注于更好的信息选择和精确检索。Yaad 通过学习最优的注意力偏差模式，能够精确过滤噪声，提高检索精度，适用于需要精确检索的任务。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "**优化的注意力偏差**：学习最优的偏差模式，精确控制信息关注",
+            "**更好的信息选择**：智能过滤不相关信息，提高检索质量",
+            "**精确检索**：通过优化的偏差实现高精度信息检索",
+            "**减少噪声干扰**：有效降低不相关记忆的权重，提高检索精度"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 技术架构",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "注意力偏差学习：通过训练学习最优的注意力偏差模式，最大化相关性，最小化冗余"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "优化的注意力偏差",
+          "formulas": [
+            {
+              "text": "Yaad 的注意力权重计算："
+            },
+            {
+              "display": "\\alpha_i = \\text{softmax}(\\text{score}(q, k_i) + \\text{bias}_i(\\theta))"
+            },
+            {
+              "text": "其中 $\\text{bias}_i(\\theta)$ 是可学习的偏差函数，通过训练优化：",
+              "inline": "\\text{bias}_i(\\theta)"
+            },
+            {
+              "display": "\\theta^* = \\arg\\min_\\theta \\mathcal{L}(\\text{retrieval}, \\text{ground\\_truth})"
+            },
+            {
+              "text": "优化的目标是："
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "精确检索任务：需要高精度信息检索的场景\n                    信息检索系统：搜索引擎、推荐系统等需要精确匹配的应用\n                    知识问答：需要从大量知识中精确检索答案的任务\n                    高召回率任务：需要精确检索且减少误检的任务"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Yaad架构图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Yaad架构图",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Yaad组件详解",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Yaad组件详解",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "Yaad 优化注意力偏差模块",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\nclass YaadAttentionBias(nn.Module):\n    \"\"\"Yaad 优化的注意力偏差模块\"\"\"\n    def __init__(self, d_model, memory_size):\n        super(YaadAttentionBias, self).__init__()\n        self.d_model = d_model\n        self.memory_size = memory_size\n        \n        # 记忆存储\n        self.memory = nn.Parameter(torch.randn(memory_size, d_model))\n        \n        # 可学习的偏差网络\n        self.bias_network = nn.Sequential(\n            nn.Linear(d_model, d_model // 2),\n            nn.ReLU(),\n            nn.Linear(d_model // 2, memory_size)\n        )\n        \n        # 查询和键值投影\n        self.query_proj = nn.Linear(d_model, d_model)\n        self.key_proj = nn.Linear(d_model, d_model)\n        self.value_proj = nn.Linear(d_model, d_model)\n    \n    def forward(self, query):\n        \"\"\"\n        使用优化的注意力偏差进行检索\n        参数:\n            query: [batch_size, d_model] 查询向量\n        返回:\n            output: [batch_size, d_model] 检索结果\n            attention: [batch_size, memory_size] 注意力权重\n        \"\"\"\n        batch_size = query.shape[0]\n        \n        # 计算查询、键、值\n        q = self.query_proj(query)\n        k = self.key_proj(self.memory)\n        v = self.value_proj(self.memory)\n        \n        # 计算基础相似度\n        scores = torch.matmul(q, k.t()) / (self.d_model ** 0.5)\n        \n        # 学习最优的注意力偏差\n        learned_bias = self.bias_network(query)  # [batch_size, memory_size]\n        \n        # 应用优化的偏差\n        scores = scores + learned_bias\n        \n        # 计算注意力权重\n        attention = F.softmax(scores, dim=-1)\n        \n        # 加权求和\n        output = torch.matmul(attention, v)\n        \n        return output, attention\n\n# 使用示例\nif __name__ == \"__main__\":\n    yaad = YaadAttentionBias(d_model=512, memory_size=1000)\n    query = torch.randn(2, 512)\n    \n    output, attention = yaad(query)\n    print(f\"输出形状: {output.shape}\")  # [2, 512]\n    print(f\"注意力权重形状: {attention.shape}\")  # [2, 1000]\n    print(f\"注意力权重和: {attention.sum(dim=-1)}\")  # 应该接近1.0"
+        }
+      ]
+    }
+  ]
+}

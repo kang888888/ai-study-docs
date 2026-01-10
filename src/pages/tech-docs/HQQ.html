@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HQQ（Half-Quadratic Quantization）详解</title>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>HQQ · 半二次优化量化</h1>
+    <p class="tagline">无需校准数据、以数学优化快速收敛的离线量化路径，适合快速实验与资源受限场景。</p>
+
+    <div class="meta-grid">
+        <div class="meta-card">
+            <h3>核心特色</h3>
+            <p>Zero-Data、Half-Quadratic Minimization、极速量化。</p>
+        </div>
+        <div class="meta-card">
+            <h3>适用模型</h3>
+            <p>LLaMA/Qwen/Mistral 等主流 Causal LM，支持 INT4/INT3。</p>
+        </div>
+        <div class="meta-card">
+            <h3>硬件要求</h3>
+            <p>通用 GPU / CPU 即可，无需特定指令或大显存。</p>
+        </div>
+        <div class="meta-card">
+            <h3>典型场景</h3>
+            <p>快速原型、批量模型评估、数据受限实验室、CI 自动化。</p>
+        </div>
+    </div>
+
+    <section>
+        <h2>⚙️ 技术要点</h2>
+        <ul>
+            <li><strong>零校准数据</strong>：通过半二次优化直接在权重上完成量化，降低数据准备成本。</li>
+            <li><strong>块级优化</strong>：将权重矩阵划分为若干子块，对每个子块分别求解，天然并行。</li>
+            <li><strong>解析更新</strong>：交替最小化 $||W - Q||^2 + \lambda R(Q)$，将误差显式约束在可控范围。</li>
+            <li><strong>极速导出</strong>：单张 3090/4090 对 7B 模型可在数分钟内完成 INT4 导出。</li>
+            <li><strong>兼容常见推理引擎</strong>：产物可直接加载到 ExLlamaV2、TensorRT-LLM、llama.cpp。</li>
+        </ul>
+        <div class="badge-list">
+            <span class="badge">Zero-Calibration</span>
+            <span class="badge">Half-Quadratic Solver</span>
+            <span class="badge">INT4/INT3 支持</span>
+            <span class="badge">批量模型处理</span>
+        </div>
+    </section>
+
+    <section>
+        <h2>📊 与主流方案对比</h2>
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>指标</th>
+                    <th>GPTQ</th>
+                    <th>AWQ</th>
+                    <th>HQQ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>量化速度</td><td>慢</td><td>中等</td><td><strong>快</strong></td></tr>
+                <tr><td>校准数据</td><td>需要</td><td>需要</td><td><strong>不需要</strong></td></tr>
+                <tr><td>精度表现</td><td>高</td><td>高</td><td>中等（可调）</td></tr>
+                <tr><td>易用性</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td><td><strong>⭐⭐⭐⭐⭐</strong></td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>🚀 使用步骤</h2>
+        <ul>
+            <li>安装 <code>hqq</code> 库及依赖（PyTorch / CUDA）</li>
+            <li>下载原始 HF 权重，指定 INT4/INT3 位宽以及块大小</li>
+            <li>运行半二次量化脚本（可批处理多个层）</li>
+            <li>导出 ckpt / safetensors，或直接转换为 GGUF 以供 llama.cpp 使用</li>
+        </ul>
+        <div class="code-box">
+<code>pip install hqq torch --extra-index-url https://download.pytorch.org/whl/cu121
+
+python -m hqq.cli.quantize \
+  --model meta-llama/Llama-2-7b-hf \
+  --bits 4 \
+  --group-size 128 \
+  --out ./llama2-7b-hqq</code>
+        </div>
+        <p class="note">可通过 <code>--act-order</code>、<code>--sym</code>、<code>--zero-point</code> 等参数微调精度与速度；若需激活量化，可配合 SmoothQuant/TensorRT-LLM。</p>
+    </section>
+
+    <section>
+        <h2>📦 适用场景</h2>
+        <ul>
+            <li><strong>快速实验</strong>：数分钟获取多个量化版本，便于超参搜索。</li>
+            <li><strong>资源受限部署</strong>：无校准数据、无大显存仍可完成导出。</li>
+            <li><strong>批量评估</strong>：一次性量化多个 checkpoint，对比推理性能。</li>
+            <li><strong>原型验证</strong>：在 MVP 阶段快速评估 INT4/INT3 可行性。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>🔗 相关资源</h2>
+        <p class="resource">GitHub：<a href="https://github.com/mobiusml/hqq" target="_blank" rel="noreferrer">mobiusml/hqq</a></p>
+        <p class="resource">示例笔记：<a href="https://huggingface.co/blog/hqq" target="_blank" rel="noreferrer">Hugging Face Blog · HQQ</a></p>
+    </section>
+</div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

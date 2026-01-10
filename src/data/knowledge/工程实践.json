@@ -1,0 +1,61 @@
+{
+  "title": "工程实践",
+  "subtitle": "Minimind项目中的调试技巧、性能分析、最佳实践等工程经验。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "工程实践流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "工程实践流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "调试与优化工具",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "调试与优化工具",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "调试技巧",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\n\ndef debug_model(model, input_data):\n    \"\"\"模型调试工具\"\"\"\n    # 1. 检查梯度\n    def check_gradients(model):\n        for name, param in model.named_parameters():\n            if param.grad is not None:\n                grad_norm = param.grad.norm().item()\n                if grad_norm > 100 or grad_norm < 1e-6:\n                    print(f\"Warning: {name} has abnormal gradient norm: {grad_norm}\")\n    \n    # 2. 检查激活值\n    def check_activations(model, input_data):\n        hooks = []\n        def hook_fn(name):\n            def hook(module, input, output):\n                if isinstance(output, torch.Tensor):\n                    if torch.isnan(output).any():\n                        print(f\"NaN detected in {name}\")\n                    if torch.isinf(output).any():\n                        print(f\"Inf detected in {name}\")\n            return hook\n        \n        for name, module in model.named_modules():\n            hooks.append(module.register_forward_hook(hook_fn(name)))\n        \n        _ = model(input_data)\n        \n        for hook in hooks:\n            hook.remove()"
+        },
+        {
+          "type": "code-box",
+          "title": "性能分析",
+          "language": "python",
+          "code": "import torch\nfrom torch.profiler import profile, record_function, ProfilerActivity\n\ndef profile_training(model, dataloader):\n    \"\"\"训练性能分析\"\"\"\n    with profile(\n        activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA],\n        record_shapes=True,\n        profile_memory=True\n    ) as prof:\n        with record_function(\"training_step\"):\n            for batch in dataloader:\n                outputs = model(batch['input_ids'])\n                loss = compute_loss(outputs, batch['labels'])\n                loss.backward()\n                break  # 只分析一个batch\n    \n    # 打印分析结果\n    print(prof.key_averages().table(sort_by=\"cuda_time_total\", row_limit=10))\n    \n    # 导出Chrome trace\n    prof.export_chrome_trace(\"trace.json\")"
+        }
+      ]
+    }
+  ]
+}

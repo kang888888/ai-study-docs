@@ -1,0 +1,75 @@
+{
+  "title": "SwiGLU (Swish-Gated Linear Unit) 激活函数",
+  "subtitle": "LLaMA核心激活函数，结合Swish激活和门控机制",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "SwiGLU是结合Swish激活函数和门控线性单元(GLU)的激活函数，通过门控机制控制信息流，在LLaMA等模型中表现出色。它将输入分为两部分，一部分经过Swish激活，另一部分作为门控信号，两者相乘得到输出。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "门控机制：通过门控信号控制信息流，提升表达能力",
+            "平滑激活：Swish函数平滑且可导，训练稳定",
+            "性能优秀：在语言模型任务上表现优于ReLU和GELU",
+            "广泛应用：LLaMA、PaLM等主流模型采用SwiGLU",
+            "计算高效：相比复杂激活函数，计算开销适中"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "Swish激活、门控线性单元、信息流控制、激活函数设计"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "大语言模型、Transformer架构、前馈网络层等需要强大表达能力的场景"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "SwiGLU公式",
+          "formulas": [
+            {
+              "text": "SwiGLU(x) = Swish(xW + b) ⊙ (xV + c)"
+            },
+            {
+              "text": "其中Swish(x) = x · σ(x)，σ是Sigmoid函数，⊙是逐元素相乘"
+            },
+            {
+              "text": "W和V是权重矩阵，b和c是偏置"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

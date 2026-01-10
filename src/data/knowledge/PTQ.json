@@ -1,0 +1,105 @@
+{
+  "title": "大模型量化基础：PTQ / INT8 / INT4",
+  "subtitle": "理解权重量化、激活量化与缩放校准，是掌握 GPTQ、AWQ、GGUF 等高级方案的前提。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "PTQ 流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "PTQ 流程"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "逐通道缩放",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "逐通道缩放"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "激活分布与裁剪",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "激活分布与裁剪"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "线性量化",
+          "formulas": [
+            {
+              "text": "对称量化公式："
+            },
+            {
+              "display": "q = \\text{round}\\Big( \\frac{x}{s} \\Big), \\quad s = \\frac{\\max(|x|)}{2^{b-1}-1}"
+            },
+            {
+              "text": "非对称量化："
+            },
+            {
+              "display": "q = \\text{round}\\Big( \\frac{x}{s} + z \\Big), \\quad x \\approx s(q - z)"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "误差界",
+          "formulas": [
+            {
+              "text": "量化误差满足："
+            },
+            {
+              "display": "|x - \\hat{x}| \\le \\frac{s}{2}"
+            },
+            {
+              "text": "逐通道量化可显著减小 $s$，从而降低误差。",
+              "inline": "s"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 torch.int8 动态量化线性层",
+          "language": "python",
+          "code": "import torch\nfrom torch.ao.quantization import quantize_dynamic\nfrom transformers import AutoModelForSeq2SeqLM\n\nmodel = AutoModelForSeq2SeqLM.from_pretrained(\"google/flan-t5-base\")\nmodules_to_quantize = {torch.nn.Linear}\n\nquantized_model = quantize_dynamic(\n    model,\n    modules_to_quantize,\n    dtype=torch.qint8\n)\n\nsample = torch.randint(0, model.config.vocab_size, (1, 32))\nwith torch.inference_mode():\n    logits = quantized_model(input_ids=sample).logits"
+        }
+      ]
+    }
+  ]
+}

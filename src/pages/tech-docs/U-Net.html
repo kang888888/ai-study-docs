@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>U-Net - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>U-Net</h1>
+            <p>专为图像分割设计的编码器-解码器架构</p>
+        </div>
+        <div class="content">
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>专为医学图像分割设计的编码器-解码器架构。通过对称的U型结构和跳跃连接（Skip Connection），将编码器的高分辨率特征直接传递给解码器，保留细节信息。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>U型对称结构：编码器下采样，解码器上采样</li>
+                    <li>跳跃连接：将编码器特征拼接到解码器，保留空间细节</li>
+                    <li>少样本高效：在小数据集上也能训练出好效果</li>
+                    <li>像素级预测：输出与输入同尺寸的分割图</li>
+                    <li>广泛应用：成为图像分割的标准架构</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box"><p><strong>编码器-解码器、跳跃连接（Concatenation）、上采样（Transposed Convolution）</strong></p></div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box"><p>医学影像分割、语义分割、实例分割、Diffusion模型的去噪网络</p></div>
+            </div>
+            <div class="section">
+                <h2>📊 架构图解</h2>
+                <div class="diagram-gallery">
+                    <div class="diagram-item"><img src="U-Net架构图.png" alt="U-Net架构图" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">U-Net架构图</div></div>
+                    <div class="diagram-item"><img src="U-Net跳跃连接.png" alt="U-Net跳跃连接" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">U-Net跳跃连接</div></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>编码器-解码器结构</h3>
+                    <div class="math-formula">
+                        <p>编码器（下采样）：</p>
+                        <p>$$f_i = \text{MaxPool}(\text{ReLU}(\text{Conv}(f_{i-1})))$$</p>
+                        <p>解码器（上采样）：</p>
+                        <p>$$g_i = \text{ReLU}(\text{Conv}(\text{Concat}(\text{Upsample}(g_{i-1}), f_{n-i})))$$</p>
+                        <p>其中 $f_{n-i}$ 是编码器对应层的特征，通过跳跃连接传递</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>跳跃连接</h3>
+                    <div class="math-formula">
+                        <p>将编码器特征与解码器特征拼接：</p>
+                        <p>$$g_i = \text{Concat}(\text{Upsample}(g_{i-1}), f_{n-i})$$</p>
+                        <p>这样可以保留高分辨率的空间信息，提高分割精度</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 PyTorch 实现 U-Net</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class DoubleConv(nn.Module):
+    """双卷积块"""
+    def __init__(self, in_channels, out_channels):
+        super(DoubleConv, self).__init__()
+        self.conv = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, 3, padding=1),
+            nn.BatchNorm2d(out_channels),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(out_channels, out_channels, 3, padding=1),
+            nn.BatchNorm2d(out_channels),
+            nn.ReLU(inplace=True)
+        )
+    
+    def forward(self, x):
+        return self.conv(x)
+
+class UNet(nn.Module):
+    """U-Net 模型"""
+    def __init__(self, in_channels=3, num_classes=1):
+        super(UNet, self).__init__()
+        
+        # 编码器（下采样路径）
+        self.enc1 = DoubleConv(in_channels, 64)
+        self.enc2 = DoubleConv(64, 128)
+        self.enc3 = DoubleConv(128, 256)
+        self.enc4 = DoubleConv(256, 512)
+        
+        self.pool = nn.MaxPool2d(2)
+        
+        # 瓶颈层
+        self.bottleneck = DoubleConv(512, 1024)
+        
+        # 解码器（上采样路径）
+        self.up4 = nn.ConvTranspose2d(1024, 512, 2, stride=2)
+        self.dec4 = DoubleConv(1024, 512)
+        
+        self.up3 = nn.ConvTranspose2d(512, 256, 2, stride=2)
+        self.dec3 = DoubleConv(512, 256)
+        
+        self.up2 = nn.ConvTranspose2d(256, 128, 2, stride=2)
+        self.dec2 = DoubleConv(256, 128)
+        
+        self.up1 = nn.ConvTranspose2d(128, 64, 2, stride=2)
+        self.dec1 = DoubleConv(128, 64)
+        
+        # 输出层
+        self.final = nn.Conv2d(64, num_classes, 1)
+    
+    def forward(self, x):
+        # 编码器
+        e1 = self.enc1(x)
+        e2 = self.enc2(self.pool(e1))
+        e3 = self.enc3(self.pool(e2))
+        e4 = self.enc4(self.pool(e3))
+        
+        # 瓶颈层
+        b = self.bottleneck(self.pool(e4))
+        
+        # 解码器（带跳跃连接）
+        d4 = self.up4(b)
+        d4 = torch.cat([d4, e4], dim=1)
+        d4 = self.dec4(d4)
+        
+        d3 = self.up3(d4)
+        d3 = torch.cat([d3, e3], dim=1)
+        d3 = self.dec3(d3)
+        
+        d2 = self.up2(d3)
+        d2 = torch.cat([d2, e2], dim=1)
+        d2 = self.dec2(d2)
+        
+        d1 = self.up1(d2)
+        d1 = torch.cat([d1, e1], dim=1)
+        d1 = self.dec1(d1)
+        
+        # 输出
+        out = self.final(d1)
+        
+        return out
+
+# 使用示例
+if __name__ == "__main__":
+    model = UNet(in_channels=3, num_classes=1)
+    
+    # 模拟输入 (batch_size=4, channels=3, height=572, width=572)
+    x = torch.randn(4, 3, 572, 572)
+    
+    # 前向传播
+    output = model(x)
+    print(f"输出形状: {output.shape}")  # [4, 1, 572, 572]</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 图片放大弹窗 -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal()">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+            modalImg.onclick = function(e) { e.stopPropagation(); };
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,54 @@
+{
+  "title": "SigLIP (Sigmoid Loss for Language-Image Pre-training)",
+  "subtitle": "Sigmoid损失优化的图文对齐模型",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "SigLIP是CLIP的改进版本，使用Sigmoid损失替代Softmax损失进行图文对齐训练。通过这种改进，SigLIP在保持CLIP性能的同时，训练更加稳定，计算效率更高，特别适合大规模预训练。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "Sigmoid损失：使用Sigmoid损失替代Softmax，训练更稳定",
+            "计算高效：避免计算所有负样本的Softmax，计算开销更低",
+            "性能保持：在多个任务上性能接近或超过CLIP",
+            "训练稳定：损失函数更平滑，训练过程更稳定",
+            "易于扩展：适合大规模预训练和扩展"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "Sigmoid损失、图文对齐、对比学习、多模态预训练"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "图文检索、图像理解、多模态学习、大规模预训练"
+        }
+      ]
+    }
+  ]
+}

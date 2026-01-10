@@ -1,0 +1,61 @@
+{
+  "title": "生成指标",
+  "subtitle": "BLEU、ROUGE、METEOR、BERTScore等文本生成任务评估指标。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "生成指标对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "生成指标对比",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "生成指标计算流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "生成指标计算流程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "计算BLEU和ROUGE",
+          "language": "python",
+          "code": "from nltk.translate.bleu_score import sentence_bleu\nfrom rouge_score import rouge_scorer\n\n# 参考文本和生成文本\nreference = [\"the cat is on the mat\"].split()\ncandidate = \"the cat sat on the mat\".split()\n\n# 计算BLEU\nbleu_score = sentence_bleu([reference], candidate)\nprint(f\"BLEU Score: {bleu_score:.4f}\")\n\n# 计算ROUGE\nscorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)\nscores = scorer.score(\"the cat is on the mat\", \"the cat sat on the mat\")\n\nfor metric, score in scores.items():\n    print(f\"{metric}: P={score.precision:.4f}, R={score.recall:.4f}, F={score.fmeasure:.4f}\")"
+        },
+        {
+          "type": "code-box",
+          "title": "计算BERTScore",
+          "language": "python",
+          "code": "from bert_score import score\n\n# 参考文本和生成文本列表\nrefs = [\"the cat is on the mat\", \"a dog is running\"]\ncands = [\"the cat sat on the mat\", \"a dog runs\"]\n\n# 计算BERTScore\nP, R, F1 = score(cands, refs, lang='en', verbose=True)\n\nprint(f\"BERTScore Precision: {P.mean():.4f}\")\nprint(f\"BERTScore Recall: {R.mean():.4f}\")\nprint(f\"BERTScore F1: {F1.mean():.4f}\")"
+        }
+      ]
+    }
+  ]
+}

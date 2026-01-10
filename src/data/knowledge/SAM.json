@@ -1,0 +1,75 @@
+{
+  "title": "SAM (Sharpness-Aware Minimization) 锐度感知最小化",
+  "subtitle": "通过同时优化损失值与损失景观的平坦度提升泛化能力",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "SAM是一种优化算法，不仅最小化损失函数，还同时最小化损失景观的锐度（sharpness）。通过在损失景观的平坦区域寻找最优解，SAM能够提升模型的泛化能力，减少过拟合。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "泛化提升：通过优化损失景观平坦度，显著提升泛化能力",
+            "双重优化：同时优化损失值和损失景观",
+            "平坦区域：在损失景观的平坦区域寻找最优解",
+            "计算开销：相比标准SGD，计算量增加约2倍",
+            "效果显著：在多个任务上显著提升模型性能"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "锐度度量、双重优化、损失景观分析、泛化理论"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "图像分类、自然语言处理、小数据集训练、需要强泛化能力的场景"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "SAM优化目标",
+          "formulas": [
+            {
+              "text": "SAM优化目标：min_w max_{||ε||≤ρ} L(w + ε)"
+            },
+            {
+              "text": "其中L是损失函数，ρ是扰动半径，ε是参数扰动"
+            },
+            {
+              "text": "通过最大化扰动后的损失，找到平坦的最优解"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

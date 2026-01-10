@@ -1,0 +1,61 @@
+{
+  "title": "评估工具链",
+  "subtitle": "评估流程自动化、结果分析与报告生成工具。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "评估工具链架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "评估工具链架构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "评估流程自动化",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "评估流程自动化",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "评估流程自动化",
+          "language": "python",
+          "code": "import json\nimport pandas as pd\nfrom datetime import datetime\nfrom pathlib import Path\n\nclass EvaluationPipeline:\n    \"\"\"评估流程自动化工具\"\"\"\n    def __init__(self, output_dir=\"./eval_results\"):\n        self.output_dir = Path(output_dir)\n        self.output_dir.mkdir(exist_ok=True)\n        self.results = []\n    \n    def run_evaluation(self, model_name, tasks, config=None):\n        \"\"\"运行评估任务\"\"\"\n        from lm_eval import evaluator\n        \n        config = config or {}\n        \n        # 运行评估\n        results = evaluator.simple_evaluate(\n            model=model_name,\n            model_args=f\"pretrained={model_name}\",\n            tasks=tasks,\n            **config\n        )\n        \n        # 记录结果\n        result_entry = {\n            'model': model_name,\n            'timestamp': datetime.now().isoformat(),\n            'tasks': tasks,\n            'results': results['results']\n        }\n        \n        self.results.append(result_entry)\n        \n        # 保存结果\n        self.save_results(result_entry)\n        \n        return results\n    \n    def save_results(self, result_entry):\n        \"\"\"保存评估结果\"\"\"\n        timestamp = datetime.now().strftime(\"%Y%m%d_%H%M%S\")\n        filename = f\"{result_entry['model']}_{timestamp}.json\"\n        filepath = self.output_dir / filename\n        \n        with open(filepath, 'w') as f:\n            json.dump(result_entry, f, indent=2)\n        \n        print(f\"结果已保存到: {filepath}\")\n    \n    def generate_report(self):\n        \"\"\"生成评估报告\"\"\"\n        if not self.results:\n            return\n        \n        # 提取关键指标\n        report_data = []\n        for result in self.results:\n            for task, metrics in result['results'].items():\n                report_data.append({\n                    'model': result['model'],\n                    'task': task,\n                    'accuracy': metrics.get('acc', 0),\n                    'timestamp': result['timestamp']\n                })\n        \n        # 生成DataFrame\n        df = pd.DataFrame(report_data)\n        \n        # 保存为CSV\n        report_path = self.output_dir / \"evaluation_report.csv\"\n        df.to_csv(report_path, index=False)\n        \n        print(f\"报告已生成: {report_path}\")\n        return df\n\n# 使用示例\npipeline = EvaluationPipeline()\npipeline.run_evaluation(\"gpt2\", [\"hellaswag\", \"mmlu\"])\npipeline.generate_report()"
+        },
+        {
+          "type": "code-box",
+          "title": "结果分析与可视化",
+          "language": "python",
+          "code": "import pandas as pd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n\nclass ResultAnalyzer:\n    \"\"\"评估结果分析工具\"\"\"\n    def __init__(self, results_file):\n        self.df = pd.read_csv(results_file)\n    \n    def compare_models(self, models, task):\n        \"\"\"比较不同模型在特定任务上的表现\"\"\"\n        task_data = self.df[(self.df['task'] == task) & (self.df['model'].isin(models))]\n        \n        plt.figure(figsize=(10, 6))\n        sns.barplot(data=task_data, x='model', y='accuracy')\n        plt.title(f'模型对比 - {task}')\n        plt.ylabel('Accuracy')\n        plt.xticks(rotation=45)\n        plt.tight_layout()\n        plt.savefig(f'{task}_comparison.png')\n        plt.show()\n    \n    def task_performance_matrix(self):\n        \"\"\"生成任务性能矩阵\"\"\"\n        pivot_df = self.df.pivot_table(\n            index='model',\n            columns='task',\n            values='accuracy',\n            aggfunc='mean'\n        )\n        \n        plt.figure(figsize=(12, 8))\n        sns.heatmap(pivot_df, annot=True, fmt='.3f', cmap='YlOrRd')\n        plt.title('模型任务性能矩阵')\n        plt.tight_layout()\n        plt.savefig('performance_matrix.png')\n        plt.show()\n        \n        return pivot_df\n\n# 使用示例\nanalyzer = ResultAnalyzer('evaluation_report.csv')\nanalyzer.compare_models(['gpt2', 'gpt2-medium'], 'hellaswag')\nanalyzer.task_performance_matrix()"
+        }
+      ]
+    }
+  ]
+}

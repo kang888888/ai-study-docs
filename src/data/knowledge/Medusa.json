@@ -1,0 +1,54 @@
+{
+  "title": "Medusa 多头草稿解码",
+  "subtitle": "并行生成多个候选token提升吞吐的推理加速技术",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Medusa是一种推理加速技术，通过并行生成多个候选token（草稿token），然后一次性验证多个token，从而提升推理吞吐量。它使用多个头（head）并行生成候选序列，然后通过验证模型确认哪些token可以被接受。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "并行生成：同时生成多个候选token，提升吞吐",
+            "多头机制：使用多个头并行生成，增加候选多样性",
+            "验证机制：通过验证模型确认候选token的有效性",
+            "加速显著：在保持质量的同时，显著提升推理速度",
+            "易于集成：可以轻松集成到现有推理框架中"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "多头解码、并行生成、token验证、推理加速"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "批量推理、高吞吐场景、实时应用、需要快速响应的场景"
+        }
+      ]
+    }
+  ]
+}

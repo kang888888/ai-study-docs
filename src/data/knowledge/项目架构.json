@@ -1,0 +1,61 @@
+{
+  "title": "项目架构",
+  "subtitle": "Minimind项目的代码结构、模块设计、依赖管理等架构设计。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "项目架构图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "项目架构图",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "模块依赖关系",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "模块依赖关系",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "项目目录结构",
+          "language": "bash",
+          "code": "minimind/\n├── model/\n│   ├── __init__.py\n│   ├── gpt.py          # GPT模型定义\n│   ├── attention.py     # 注意力机制\n│   └── transformer.py   # Transformer块\n├── data/\n│   ├── __init__.py\n│   ├── dataset.py      # 数据集加载\n│   └── tokenizer.py     # 分词器\n├── training/\n│   ├── __init__.py\n│   ├── trainer.py       # 训练器\n│   └── optimizer.py     # 优化器配置\n├── configs/\n│   └── config.yaml      # 配置文件\n└── main.py              # 主入口"
+        },
+        {
+          "type": "code-box",
+          "title": "模块化设计示例",
+          "language": "python",
+          "code": "# model/gpt.py\nclass GPT(nn.Module):\n    def __init__(self, config):\n        super().__init__()\n        self.config = config\n        self.transformer = Transformer(config)\n        self.lm_head = nn.Linear(config.n_embd, config.vocab_size)\n    \n    def forward(self, idx, targets=None):\n        logits = self.transformer(idx)\n        logits = self.lm_head(logits)\n        \n        if targets is None:\n            loss = None\n        else:\n            loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1))\n        \n        return logits, loss"
+        }
+      ]
+    }
+  ]
+}

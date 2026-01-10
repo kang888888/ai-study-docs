@@ -1,0 +1,176 @@
+{
+  "title": "GRU (Gated Recurrent Unit) 门控循环单元",
+  "subtitle": "LSTM的简化版本，性能相近但更高效",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "LSTM的简化版本，将遗忘门和输入门合并为更新门，减少了参数量。在很多任务上性能接近LSTM，但训练速度更快。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "简化结构：只有两个门（重置门、更新门）",
+            "参数更少：相比LSTM减少约25%参数",
+            "计算更快：前向和反向传播速度更快",
+            "性能相近：在多数任务上与LSTM性能相当",
+            "易于调参：超参数更少，更容易调优"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "更新门、重置门、候选隐藏状态"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "序列建模、时间序列预测、NLP任务、语音识别"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GRUDiagram",
+              "caption": "GRU单元结构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "GRU单元结构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GRUDiagram",
+              "caption": "GRU序列展开",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "GRU序列展开",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GRUDiagram",
+              "caption": "GRU vs LSTM对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "GRU vs LSTM对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "GRU 核心公式",
+          "formulas": [
+            {
+              "text": "在时间步 $t$，GRU 的计算过程：",
+              "inline": "t"
+            },
+            {
+              "text": "重置门（Reset Gate）："
+            },
+            {
+              "display": "r_t = \\sigma(W_r \\cdot [h_{t-1}, x_t])"
+            },
+            {
+              "text": "更新门（Update Gate）："
+            },
+            {
+              "display": "z_t = \\sigma(W_z \\cdot [h_{t-1}, x_t])"
+            },
+            {
+              "text": "候选隐藏状态："
+            },
+            {
+              "display": "\\tilde{h}_t = \\tanh(W \\cdot [r_t * h_{t-1}, x_t])"
+            },
+            {
+              "text": "隐藏状态更新："
+            },
+            {
+              "display": "h_t = (1 - z_t) * h_{t-1} + z_t * \\tilde{h}_t"
+            },
+            {
+              "text": "其中 $*$ 表示逐元素相乘，$\\sigma$ 是 sigmoid 函数",
+              "inline": "*"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "与 LSTM 的区别",
+          "formulas": [
+            {
+              "text": "GRU 将 LSTM 的遗忘门和输入门合并为更新门："
+            },
+            {
+              "display": "z_t = \\sigma(W_z \\cdot [h_{t-1}, x_t])"
+            },
+            {
+              "text": "更新门 $z_t$ 同时控制遗忘和输入：",
+              "inline": "z_t"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 PyTorch 实现 GRU",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\n\nclass GRUCell(nn.Module):\n    \"\"\"手动实现 GRU 单元\"\"\"\n    def __init__(self, input_size, hidden_size):\n        super(GRUCell, self).__init__()\n        self.hidden_size = hidden_size\n        \n        # 重置门\n        self.W_r = nn.Linear(input_size + hidden_size, hidden_size)\n        \n        # 更新门\n        self.W_z = nn.Linear(input_size + hidden_size, hidden_size)\n        \n        # 候选隐藏状态\n        self.W_h = nn.Linear(input_size + hidden_size, hidden_size)\n    \n    def forward(self, x, h_prev):\n        \"\"\"\n        前向传播\n        \n        参数:\n            x: 当前输入 (batch_size, input_size)\n            h_prev: 前一个隐藏状态 (batch_size, hidden_size)\n        \"\"\"\n        # 拼接输入和隐藏状态\n        combined = torch.cat([x, h_prev], dim=1)\n        \n        # 重置门\n        r_t = torch.sigmoid(self.W_r(combined))\n        \n        # 更新门\n        z_t = torch.sigmoid(self.W_z(combined))\n        \n        # 候选隐藏状态\n        combined_reset = torch.cat([x, r_t * h_prev], dim=1)\n        h_tilde = torch.tanh(self.W_h(combined_reset))\n        \n        # 更新隐藏状态\n        h_t = (1 - z_t) * h_prev + z_t * h_tilde\n        \n        return h_t\n\nclass GRU_Model(nn.Module):\n    \"\"\"使用 PyTorch 内置 GRU\"\"\"\n    def __init__(self, input_size, hidden_size, num_layers, num_classes):\n        super(GRU_Model, self).__init__()\n        self.hidden_size = hidden_size\n        self.num_layers = num_layers\n        \n        # GRU 层\n        self.gru = nn.GRU(input_size, hidden_size, num_layers,\n                         batch_first=True, dropout=0.2)\n        \n        # 全连接层\n        self.fc = nn.Linear(hidden_size, num_classes)\n    \n    def forward(self, x):\n        # x shape: (batch_size, seq_length, input_size)\n        # 初始化隐藏状态\n        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)\n        \n        # GRU 前向传播\n        out, h_n = self.gru(x, h0)\n        \n        # 使用最后一个时间步的输出\n        out = self.fc(out[:, -1, :])\n        \n        return out\n\n# 使用示例\nif __name__ == \"__main__\":\n    # 使用 PyTorch 内置 GRU\n    model = GRU_Model(input_size=128, hidden_size=256, \n                     num_layers=2, num_classes=10)\n    \n    # 模拟输入 (batch_size=32, seq_length=50, input_size=128)\n    x = torch.randn(32, 50, 128)\n    \n    # 前向传播\n    output = model(x)\n    print(f\"输出形状: {output.shape}\")  # [32, 10]\n    \n    # 手动实现 GRU Cell\n    gru_cell = GRUCell(input_size=128, hidden_size=256)\n    \n    # 初始化状态\n    h = torch.zeros(32, 256)\n    \n    # 处理序列\n    for t in range(50):\n        x_t = torch.randn(32, 128)\n        h = gru_cell(x_t, h)\n    \n    print(f\"最终隐藏状态形状: {h.shape}\")"
+        }
+      ]
+    }
+  ]
+}

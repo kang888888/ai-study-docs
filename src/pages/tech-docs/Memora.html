@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memora - 基于Miras框架的长期记忆管理模型</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Memora</h1>
+            <p>基于Miras框架的长期记忆管理模型</p>
+        </div>
+        <div class="content">
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p><strong>Memora</strong> 是基于 Miras 框架提出的长期记忆管理模型，专注于高效存储和检索历史信息。Memora 通过层次化的记忆架构和智能的记忆管理机制，能够处理长序列建模任务，支持长期依赖关系的学习。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li><strong>长期记忆管理</strong>：层次化的记忆架构，支持大规模历史信息存储</li>
+                    <li><strong>高效存储和检索</strong>：压缩表示和选择性检索，提高存储和检索效率</li>
+                    <li><strong>长期依赖建模</strong>：能够捕获长距离依赖关系，支持长序列建模</li>
+                    <li><strong>记忆容量大</strong>：支持大规模记忆存储，适应长序列任务需求</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 技术架构</h2>
+                <div class="tech-box">
+                    <p><strong>层次记忆架构</strong>：采用层次化的记忆组织方式，支持多尺度记忆管理</p>
+                </div>
+                <div class="tech-box">
+                    <p><strong>压缩表示</strong>：高效存储大量历史数据，通过压缩减少存储开销</p>
+                </div>
+                <div class="tech-box">
+                    <p><strong>选择性检索</strong>：根据当前任务检索相关信息，提高检索效率</p>
+                </div>
+                <div class="tech-box">
+                    <p><strong>记忆更新机制</strong>：增量学习算法，支持动态更新长期记忆</p>
+                </div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box">
+                    <p><strong>长序列建模任务</strong>：需要处理超长序列的任务，如长文本理解、代码分析</p>
+                    <p><strong>多轮对话系统</strong>：需要长期记忆历史对话的智能助手、客服系统</p>
+                    <p><strong>历史信息检索</strong>：需要从大量历史信息中检索相关内容的场景</p>
+                    <p><strong>时间序列预测</strong>：需要利用长期历史模式进行预测的任务</p>
+                </div>
+            </div>
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>Memora 长期记忆管理模块</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class MemoraLongTermMemory(nn.Module):
+    """Memora 长期记忆管理模块"""
+    def __init__(self, d_model, memory_size, num_levels=3):
+        super(MemoraLongTermMemory, self).__init__()
+        self.d_model = d_model
+        self.memory_size = memory_size
+        self.num_levels = num_levels
+        
+        # 层次记忆：不同层次存储不同时间尺度的信息
+        self.memory_levels = nn.ModuleList([
+            nn.Parameter(torch.randn(memory_size // (2 ** i), d_model))
+            for i in range(num_levels)
+        ])
+        
+        # 记忆编码器（压缩表示）
+        self.encoder = nn.Sequential(
+            nn.Linear(d_model, d_model // 2),
+            nn.ReLU(),
+            nn.Linear(d_model // 2, d_model)
+        )
+        
+        # 记忆检索器
+        self.query_proj = nn.Linear(d_model, d_model)
+        self.key_proj = nn.Linear(d_model, d_model)
+        self.value_proj = nn.Linear(d_model, d_model)
+        
+        # 记忆更新器（选择性更新）
+        self.update_gate = nn.Linear(d_model * 2, d_model)
+        self.importance_score = nn.Linear(d_model, 1)
+    
+    def encode(self, x):
+        """压缩编码输入"""
+        return self.encoder(x)
+    
+    def retrieve(self, query):
+        """从层次记忆中检索相关信息"""
+        batch_size = query.shape[0]
+        q = self.query_proj(query)
+        
+        all_retrieved = []
+        all_attention = []
+        
+        # 从每个层次检索
+        for level_memory in self.memory_levels:
+            k = self.key_proj(level_memory)
+            v = self.value_proj(level_memory)
+            
+            scores = torch.matmul(q, k.t()) / (self.d_model ** 0.5)
+            attention = F.softmax(scores, dim=-1)
+            retrieved = torch.matmul(attention, v)
+            
+            all_retrieved.append(retrieved)
+            all_attention.append(attention)
+        
+        # 融合不同层次的检索结果
+        combined = torch.stack(all_retrieved, dim=1)  # [batch_size, num_levels, d_model]
+        # 简单的平均融合（可以改为加权融合）
+        final_retrieved = combined.mean(dim=1)  # [batch_size, d_model]
+        
+        return final_retrieved, all_attention
+    
+    def update(self, new_info, retrieved_memory):
+        """选择性更新长期记忆"""
+        # 计算重要性分数
+        importance = torch.sigmoid(self.importance_score(new_info))  # [batch_size, 1]
+        
+        # 门控更新
+        combined = torch.cat([new_info, retrieved_memory], dim=-1)
+        gate = torch.sigmoid(self.update_gate(combined))
+        updated = gate * new_info + (1 - gate) * retrieved_memory
+        
+        # 根据重要性选择性地更新记忆
+        # 这里简化处理，实际应该更新最相关的记忆位置
+        return updated, importance
+
+# 使用示例
+if __name__ == "__main__":
+    memora = MemoraLongTermMemory(d_model=512, memory_size=1000, num_levels=3)
+    query = torch.randn(2, 512)
+    new_info = torch.randn(2, 512)
+    
+    # 检索长期记忆
+    retrieved, attention = memora.retrieve(query)
+    print(f"检索结果形状: {retrieved.shape}")  # [2, 512]
+    
+    # 更新记忆
+    updated, importance = memora.update(new_info, retrieved)
+    print(f"更新后形状: {updated.shape}")  # [2, 512]
+    print(f"重要性分数: {importance.squeeze()}")</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

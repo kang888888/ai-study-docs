@@ -1,0 +1,54 @@
+{
+  "title": "LoRA+ 改进版LoRA",
+  "subtitle": "不同层使用不同学习率的LoRA改进版本",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "LoRA+是LoRA的改进版本，核心思想是对不同层使用不同的学习率。通常对适配器（adapter）使用较高的学习率，对基础模型使用较低的学习率，或者对不同深度的层使用不同的学习率，从而提升微调效果。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "分层学习率：不同层使用不同的学习率，更精细的控制",
+            "性能提升：相比标准LoRA在多个任务上表现更好",
+            "训练稳定：通过合理的学习率设置，提升训练稳定性",
+            "参数高效：保持LoRA的参数效率优势",
+            "易于实现：在LoRA基础上简单修改学习率配置即可"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "分层学习率、适配器学习率、基础模型学习率、学习率调度"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "模型微调、任务适配、需要精细控制不同层更新的场景"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "title": "ELU (Exponential Linear Unit)",
+  "subtitle": "负值部分平滑的激活函数",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "ELU（Exponential Linear Unit，指数线性单元）在负值区域使用指数函数，使得梯度在负值区域也能平滑传播。相比ReLU，ELU在负值区域有非零输出，有助于梯度传播和训练稳定性。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学表达",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "ELU函数定义",
+          "formulas": [
+            {
+              "text": "ELU函数定义为："
+            },
+            {
+              "display": "\\text{ELU}(x) = \\begin{cases} x & \\text{if } x > 0 \\\\ \\alpha(e^x - 1) & \\text{if } x \\leq 0 \\end{cases}"
+            },
+            {
+              "text": "其中 $\\alpha$ 是超参数（通常为1）"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "导数",
+          "formulas": [
+            {
+              "text": "ELU的导数："
+            },
+            {
+              "display": "\\frac{d}{dx}\\text{ELU}(x) = \\begin{cases} 1 & \\text{if } x > 0 \\\\ \\alpha e^x & \\text{if } x \\leq 0 \\end{cases}"
+            },
+            {
+              "text": "在 $x=0$ 处，导数为 $\\alpha$"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "平滑负值：负值区域使用指数函数，梯度平滑",
+            "零均值：通过调整α可以使得输出均值接近0",
+            "无死神经元：负值区域也有梯度，避免神经元失活",
+            "计算开销：需要计算指数，但现代硬件优化良好",
+            "性能优异：在某些任务上表现优于ReLU和Leaky ReLU"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 函数图像",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "MathFunctionDiagram",
+              "caption": "ELU函数图像",
+              "width": 1000,
+              "height": 600,
+              "interactive": true,
+              "props": {
+                "type": "activation",
+                "title": "ELU函数图像",
+                "function": "elu"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "深度CNN、需要平滑激活的场景、对训练稳定性要求高的任务"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "ELU实现与使用",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nimport numpy as np\n\n# 1. 基础实现\ndef elu(x, alpha=1.0):\n    return np.where(x > 0, x, alpha * (np.exp(x) - 1))\n\n# 2. PyTorch实现\nx = torch.tensor([-2.0, -1.0, 0.0, 1.0, 2.0])\nelu_output = F.elu(x, alpha=1.0)\nprint(f\"ELU输出: {elu_output}\")\n\n# 3. 在神经网络中使用\nclass ELUNet(nn.Module):\n    def __init__(self):\n        super(ELUNet, self).__init__()\n        self.fc1 = nn.Linear(10, 50)\n        self.elu = nn.ELU(alpha=1.0)\n        self.fc2 = nn.Linear(50, 1)\n    \n    def forward(self, x):\n        x = self.fc1(x)\n        x = self.elu(x)\n        x = self.fc2(x)\n        return x"
+        }
+      ]
+    }
+  ]
+}

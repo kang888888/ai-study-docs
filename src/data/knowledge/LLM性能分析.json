@@ -1,0 +1,56 @@
+{
+  "title": "LLM 性能分析与优化",
+  "subtitle": "",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "LLM性能分析方法",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "LLM性能分析方法",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "LLM性能分析工具",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "LLM性能分析工具",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "记录 CPU/GPU 算子、内存、分布式事件，输出 TensorBoard/Chrome Trace。",
+            "关注热点算子、DataLoader 阻塞、GPU idle、内存峰值。"
+          ]
+        }
+      ]
+    }
+  ]
+}

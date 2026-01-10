@@ -1,0 +1,61 @@
+{
+  "title": "模型并行基础",
+  "subtitle": "理解张量并行、列并行、行并行等模型并行的拆分方法。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "模型并行原理",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "模型并行原理",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "张量并行拆分",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "张量并行拆分",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "列并行线性层",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.distributed as dist\n\nclass ColumnParallelLinear(nn.Module):\n    \"\"\"列并行：将权重矩阵按列拆分\"\"\"\n    def __init__(self, in_features, out_features, world_size):\n        super().__init__\n        self.world_size = world_size\n        self.out_features = out_features // world_size\n        self.weight = nn.Parameter(torch.randn(self.out_features, in_features))\n    \n    def forward(self, x):\n        # 每个设备计算部分输出\n        output = F.linear(x, self.weight)\n        # AllGather收集所有输出\n        outputs = [torch.zeros_like(output) for _ in range(self.world_size)]\n        dist.all_gather(outputs, output)\n        # 拼接完整输出\n        return torch.cat(outputs, dim=-1)"
+        },
+        {
+          "type": "code-box",
+          "title": "行并行线性层",
+          "language": "python",
+          "code": "class RowParallelLinear(nn.Module):\n    \"\"\"行并行：将权重矩阵按行拆分\"\"\"\n    def __init__(self, in_features, out_features, world_size):\n        super().__init__()\n        self.world_size = world_size\n        self.in_features = in_features // world_size\n        self.weight = nn.Parameter(torch.randn(out_features, self.in_features))\n    \n    def forward(self, x):\n        # 将输入按列拆分\n        x_list = torch.split(x, self.in_features, dim=-1)\n        x_local = x_list[self.rank]\n        \n        # 每个设备计算部分结果\n        output = F.linear(x_local, self.weight)\n        # AllReduce求和得到最终输出\n        dist.all_reduce(output, op=dist.ReduceOp.SUM)\n        return output"
+        }
+      ]
+    }
+  ]
+}

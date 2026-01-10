@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QLoRA（Quantized LoRA）- 技术详解</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>QLoRA：4bit 量化 + LoRA 的双重效率方案</h1>
+        <p class="tagline">通过 NF4 非对称量化保存主模型，在量化权重上插入 LoRA 适配器，实现“低显存 + 高性能”的微调范式。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card">
+                <h3>核心亮点</h3>
+                <p>4bit NormalFloat 量化 + 双阶段块稀疏优化 + 动态可训练 LoRA，显存节省 70%+</p>
+            </div>
+            <div class="meta-card">
+                <h3>资源需求</h3>
+                <p>一块 24GB GPU 即可微调 65B 模型，Colab Pro 亦可完成 33B 微调。</p>
+            </div>
+            <div class="meta-card">
+                <h3>典型工具链</h3>
+                <p>bitsandbytes、PEFT、TRL、Accelerate、Unsloth QLoRA preset。</p>
+            </div>
+            <div class="meta-card">
+                <h3>适用任务</h3>
+                <p>中大型指令微调、领域对话、轻量 RLHF SFT 阶段、代码/多语种适配。</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔑 技术要点</h2>
+            <ul>
+                <li><strong>NF4 量化：</strong>使用正态分布感知的 4bit 非对称格式，保留权重方差与均值信息。</li>
+                <li><strong>双重量化器：</strong>按通道量化 + 双重量化补偿误差，显著降低量化噪声。</li>
+                <li><strong>Paged Optimizer：</strong>通过分块分页避免显存碎片，让极大 batch 也能训练。</li>
+                <li><strong>LoRA on Quantized Base：</strong>即便基础权重量化，也能对 LoRA 适配器进行精度较高的 FP16/FP32 训练。</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>📊 流程图解</h2>
+            <div class="diagram-gallery">
+                <div class="diagram-item">
+                    <img src="./assets/QLoRA流程.png" alt="QLoRA 数据到训练链路" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">数据到训练链路</div>
+                </div>
+                <div class="diagram-item">
+                    <img src="./assets/NF4量化示意.png" alt="NF4 量化示意" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">NF4 量化示意</div>
+                </div>
+                <div class="diagram-item">
+                    <img src="./assets/LoRA合并.png" alt="LoRA 适配器合并" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">LoRA 适配器合并</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📐 数学原理</h2>
+            <div class="math-box">
+                <h3>NormalFloat4 量化</h3>
+                <div class="math-formula">
+                    <p>QLoRA 对权重 $w$ 进行正态分布感知量化：</p>
+                    <p>$$q = \operatorname{clip}\Bigg( \Big\lfloor \frac{w - \mu}{\sigma} \cdot \alpha \Big\rceil, -8, 7 \Bigg)$$</p>
+                    <p>其中 $\mu, \sigma$ 来自高精度统计，$\alpha$ 为缩放因子，最终存储为 4bit。</p>
+                </div>
+            </div>
+            <div class="math-box">
+                <h3>LoRA 注入</h3>
+                <div class="math-formula">
+                    <p>量化后仍可插入 LoRA：</p>
+                    <p>$$y = (\operatorname{Dequant}(q) + \frac{\alpha}{r} BA ) x$$</p>
+                    <p>其中 $\operatorname{Dequant}(q)$ 为解量化权重，$BA$ 仍在 FP16/32 空间训练。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💻 Python 代码示例</h2>
+            <div class="code-box">
+                <h3>使用 bitsandbytes + PEFT 进行 QLoRA</h3>
+                <pre><code class="language-python">import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from peft import LoraConfig, get_peft_model
+
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype=torch.bfloat16,
+    bnb_4bit_use_double_quant=True
+)
+
+model = AutoModelForCausalLM.from_pretrained(
+    "meta-llama/Llama-3-8b",
+    quantization_config=bnb_config,
+    device_map="auto"
+)
+
+tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3-8b", use_fast=False)
+
+lora_config = LoraConfig(
+    r=64,
+    lora_alpha=64,
+    target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
+    lora_dropout=0.05,
+    task_type="CAUSAL_LM"
+)
+
+model = get_peft_model(model, lora_config)
+# 后续可使用 TRL/Accelerate 进行 SFT 或偏好训练
+</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal();">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

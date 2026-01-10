@@ -1,0 +1,61 @@
+{
+  "title": "数据并行基础",
+  "subtitle": "理解AllReduce、梯度同步、数据分片等数据并行的核心原理。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据并行原理",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "数据并行原理",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "AllReduce操作",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "AllReduce操作",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "AllReduce梯度同步",
+          "language": "python",
+          "code": "import torch\nimport torch.distributed as dist\n\ndef allreduce_gradients(model, world_size):\n    \"\"\"手动实现AllReduce梯度同步\"\"\"\n    for param in model.parameters():\n        if param.grad is not None:\n            # 将所有设备的梯度求和\n            dist.all_reduce(param.grad.data, op=dist.ReduceOp.SUM)\n            # 计算平均梯度\n            param.grad.data /= world_size"
+        },
+        {
+          "type": "code-box",
+          "title": "数据分片",
+          "language": "python",
+          "code": "from torch.utils.data import Dataset, DataLoader\nfrom torch.utils.data.distributed import DistributedSampler\n\nclass ShardedDataset(Dataset):\n    def __init__(self, data, rank, world_size):\n        self.data = data\n        self.rank = rank\n        self.world_size = world_size\n        # 每个进程只处理部分数据\n        self.shard_size = len(data) // world_size\n        self.start_idx = rank * self.shard_size\n        self.end_idx = self.start_idx + self.shard_size\n    \n    def __len__(self):\n        return self.shard_size\n    \n    def __getitem__(self, idx):\n        global_idx = self.start_idx + idx\n        return self.data[global_idx]\n\n# 使用DistributedSampler\nsampler = DistributedSampler(dataset, num_replicas=world_size, rank=rank)\ndataloader = DataLoader(dataset, batch_size=batch_size, sampler=sampler)"
+        }
+      ]
+    }
+  ]
+}

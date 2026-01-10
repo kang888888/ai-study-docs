@@ -1,0 +1,54 @@
+{
+  "title": "Llama-3 架构改进",
+  "subtitle": "Meta开源大语言模型的第三代架构，包括GQA、RoPE等优化",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Llama-3是Meta发布的第三代开源大语言模型，在Llama-2基础上进行了多项架构优化，包括采用GQA（分组查询注意力）、优化RoPE位置编码、改进训练数据等，在性能和效率上都有显著提升。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "GQA优化：采用分组查询注意力，减少KV缓存，提升推理效率",
+            "RoPE改进：优化旋转位置编码，支持更长序列",
+            "数据质量：使用更高质量的训练数据，提升模型能力",
+            "多尺度模型：提供8B、70B等多种规模版本",
+            "开源生态：完整的开源实现和丰富的社区支持"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "GQA、RoPE、数据优化、训练策略、推理优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "通用对话、代码生成、文本理解、多任务学习等大语言模型应用场景"
+        }
+      ]
+    }
+  ]
+}

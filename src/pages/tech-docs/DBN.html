@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBN (Deep Belief Network) 深度信念网络 - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DBN (Deep Belief Network) 深度信念网络</h1>
+            <p>深度学习早期的重要架构</p>
+        </div>
+        <div class="content">
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>由多个受限玻尔兹曼机（RBM）堆叠而成的深度生成模型。通过逐层预训练+微调的方式训练，是深度学习早期（2006年）的重要架构。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>逐层预训练：先无监督预训练每层RBM，再有监督微调</li>
+                    <li>生成模型：可以生成数据，也可以用于分类</li>
+                    <li>无监督学习：从无标注数据中学习特征</li>
+                    <li>历史意义：2006年深度学习复兴的关键技术</li>
+                    <li>现已较少使用：被Transformer等架构取代</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box"><p><strong>受限玻尔兹曼机（RBM）、对比散度算法（Contrastive Divergence）、逐层预训练</strong></p></div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box"><p>图像识别、特征提取、降维、协同过滤（早期）</p></div>
+            </div>
+            <div class="section">
+                <h2>📊 架构图解</h2>
+                <div class="diagram-gallery">
+                    <div class="diagram-item"><img src="DBN架构.png" alt="DBN架构" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">DBN架构</div></div>
+                    <div class="diagram-item"><img src="RBM结构.png" alt="RBM结构" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">RBM结构</div></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>受限玻尔兹曼机（RBM）能量函数</h3>
+                    <div class="math-formula">
+                        <p>RBM的能量函数：</p>
+                        <p>$$E(v, h) = -\sum_{i} a_i v_i - \sum_{j} b_j h_j - \sum_{i,j} v_i W_{ij} h_j$$</p>
+                        <p>其中：</p>
+                        <ul style="list-style: none; padding-left: 20px;">
+                            <li>$v$ 是可见层（输入）</li>
+                            <li>$h$ 是隐藏层</li>
+                            <li>$W$ 是权重矩阵</li>
+                            <li>$a, b$ 是偏置</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>概率分布</h3>
+                    <div class="math-formula">
+                        <p>基于能量函数的概率分布：</p>
+                        <p>$$P(v, h) = \frac{1}{Z} e^{-E(v, h)}$$</p>
+                        <p>其中 $Z = \sum_{v,h} e^{-E(v, h)}$ 是配分函数</p>
+                        <p>条件概率：</p>
+                        <p>$$P(h_j=1 | v) = \sigma(b_j + \sum_{i} W_{ij} v_i)$$</p>
+                        <p>$$P(v_i=1 | h) = \sigma(a_i + \sum_{j} W_{ij} h_j)$$</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>对比散度（CD）算法</h3>
+                    <div class="math-formula">
+                        <p>权重更新规则：</p>
+                        <p>$$\Delta W_{ij} = \epsilon (\langle v_i h_j \rangle_{data} - \langle v_i h_j \rangle_{recon})$$</p>
+                        <p>其中 $\langle \cdot \rangle_{data}$ 是数据分布的期望，$\langle \cdot \rangle_{recon}$ 是重构分布的期望</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 PyTorch 实现简单的 RBM</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class RBM(nn.Module):
+    """受限玻尔兹曼机"""
+    def __init__(self, n_visible, n_hidden):
+        super(RBM, self).__init__()
+        self.n_visible = n_visible
+        self.n_hidden = n_hidden
+        
+        # 权重和偏置
+        self.W = nn.Parameter(torch.randn(n_visible, n_hidden) * 0.1)
+        self.v_bias = nn.Parameter(torch.zeros(n_visible))
+        self.h_bias = nn.Parameter(torch.zeros(n_hidden))
+    
+    def sample_h(self, v):
+        """给定可见层，采样隐藏层"""
+        p_h = torch.sigmoid(torch.matmul(v, self.W) + self.h_bias)
+        return p_h, torch.bernoulli(p_h)
+    
+    def sample_v(self, h):
+        """给定隐藏层，采样可见层"""
+        p_v = torch.sigmoid(torch.matmul(h, self.W.t()) + self.v_bias)
+        return p_v, torch.bernoulli(p_v)
+    
+    def contrastive_divergence(self, v0, k=1):
+        """对比散度算法"""
+        # 正相
+        p_h0, h0 = self.sample_h(v0)
+        
+        # 负相（Gibbs采样）
+        v_k = v0
+        for _ in range(k):
+            p_h_k, h_k = self.sample_h(v_k)
+            p_v_k, v_k = self.sample_v(h_k)
+        
+        # 计算梯度
+        positive_grad = torch.matmul(v0.t(), p_h0)
+        negative_grad = torch.matmul(v_k.t(), p_h_k)
+        
+        return positive_grad - negative_grad
+    
+    def forward(self, v):
+        """前向传播"""
+        p_h, h = self.sample_h(v)
+        return p_h
+
+# 使用示例
+if __name__ == "__main__":
+    # 创建RBM
+    rbm = RBM(n_visible=784, n_hidden=500)
+    
+    # 模拟输入（二值化图像）
+    v0 = torch.rand(32, 784)
+    v0 = (v0 > 0.5).float()
+    
+    # 前向传播
+    h = rbm(v0)
+    print(f"隐藏层形状: {h.shape}")  # [32, 500]
+    
+    # 对比散度（用于训练）
+    grad = rbm.contrastive_divergence(v0, k=1)
+    print(f"梯度形状: {grad.shape}")  # [784, 500]</code></pre>
+                </div>
+                <div class="code-box">
+                    <h3>DBN 逐层预训练</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+from torch.optim import Adam
+
+class DBN(nn.Module):
+    """深度信念网络"""
+    def __init__(self, layers):
+        super(DBN, self).__init__()
+        self.layers = nn.ModuleList([RBM(layers[i], layers[i+1]) 
+                                     for i in range(len(layers)-1)])
+    
+    def pretrain_layer(self, layer_idx, data, epochs=10):
+        """预训练单层RBM"""
+        rbm = self.layers[layer_idx]
+        optimizer = Adam(rbm.parameters(), lr=0.01)
+        
+        for epoch in range(epochs):
+            # 获取当前层的输入
+            if layer_idx == 0:
+                input_data = data
+            else:
+                with torch.no_grad():
+                    input_data = self.layers[layer_idx-1](data)
+            
+            # 对比散度
+            grad = rbm.contrastive_divergence(input_data)
+            
+            # 更新权重（简化版）
+            optimizer.zero_grad()
+            loss = -torch.sum(grad * rbm.W)
+            loss.backward()
+            optimizer.step()
+            
+            if (epoch + 1) % 5 == 0:
+                print(f"Layer {layer_idx}, Epoch {epoch+1}, Loss: {loss.item():.4f}")
+
+# 使用示例
+if __name__ == "__main__":
+    # 创建DBN: 784 -> 500 -> 250 -> 100
+    dbn = DBN([784, 500, 250, 100])
+    
+    # 模拟数据
+    data = torch.rand(100, 784)
+    data = (data > 0.5).float()
+    
+    # 逐层预训练
+    for i in range(len(dbn.layers)):
+        print(f"预训练第 {i+1} 层...")
+        dbn.pretrain_layer(i, data, epochs=10)</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 图片放大弹窗 -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal()">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+            modalImg.onclick = function(e) { e.stopPropagation(); };
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

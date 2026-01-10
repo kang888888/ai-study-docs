@@ -1,0 +1,61 @@
+{
+  "title": "LM Evaluation Harness",
+  "subtitle": "覆盖主流基准的统一评估框架，支持快速评估大语言模型。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "LM Evaluation Harness架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "LM Evaluation Harness架构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "评估流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "评估流程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "基本使用",
+          "language": "python",
+          "code": "from lm_eval import evaluator\nfrom transformers import AutoModelForCausalLM, AutoTokenizer\n\n# 加载模型\nmodel_name = \"gpt2\"\nmodel = AutoModelForCausalLM.from_pretrained(model_name)\ntokenizer = AutoTokenizer.from_pretrained(model_name)\n\n# 定义评估任务\ntasks = [\"hellaswag\", \"mmlu\", \"truthfulqa\"]\n\n# 运行评估\nresults = evaluator.simple_evaluate(\n    model=model,\n    model_args=f\"pretrained={model_name}\",\n    tasks=tasks,\n    batch_size=4,\n    device=\"cuda\"\n)\n\n# 查看结果\nprint(f\"HellaSwag Accuracy: {results['results']['hellaswag']['acc']:.4f}\")\nprint(f\"MMLU Accuracy: {results['results']['mmlu']['acc']:.4f}\")\nprint(f\"TruthfulQA Accuracy: {results['results']['truthfulqa']['acc']:.4f}\")"
+        },
+        {
+          "type": "code-box",
+          "title": "自定义评估配置",
+          "language": "python",
+          "code": "from lm_eval import evaluator\nfrom lm_eval.tasks import TaskManager\n\n# 创建任务管理器\ntask_manager = TaskManager()\n\n# 配置评估参数\nconfig = {\n    \"model\": \"gpt2\",\n    \"model_args\": \"pretrained=gpt2\",\n    \"batch_size\": 8,\n    \"device\": \"cuda\",\n    \"num_fewshot\": 0,  # few-shot示例数量\n    \"limit\": 100,      # 限制评估样本数\n    \"output_path\": \"./eval_results.json\"\n}\n\n# 运行评估\nresults = evaluator.simple_evaluate(\n    model=config[\"model\"],\n    model_args=config[\"model_args\"],\n    tasks=[\"hellaswag\", \"mmlu\"],\n    batch_size=config[\"batch_size\"],\n    device=config[\"device\"],\n    num_fewshot=config[\"num_fewshot\"],\n    limit=config[\"limit\"]\n)\n\n# 保存结果\nimport json\nwith open(config[\"output_path\"], \"w\") as f:\n    json.dump(results, f, indent=2)\n\nprint(\"评估完成，结果已保存\")"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>流式生成（Streaming Generation）</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>流式生成（Streaming Generation）</h1>
+        <p class="tagline">实时逐token生成和返回文本的技术，显著提升用户体验。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card"><h3>核心特点</h3><p>实时生成、低延迟、连接管理、性能优化。</p></div>
+            <div class="meta-card"><h3>实现方式</h3><p>SSE、WebSocket、生成器模式。</p></div>
+            <div class="meta-card"><h3>关键指标</h3><p>首token时间、吞吐量、延迟。</p></div>
+            <div class="meta-card"><h3>应用场景</h3><p>对话系统、文本创作、代码生成等。</p></div>
+        </div>
+
+        <div class="section">
+            <h2>⚙️ 实现方式</h2>
+            <ul>
+                <li><strong>Server-Sent Events (SSE)</strong>：HTTP长连接，服务器推送数据</li>
+                <li><strong>WebSocket</strong>：双向通信，支持更复杂的交互</li>
+                <li><strong>生成器模式</strong>：使用Python生成器逐token生成</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>🔧 主要技术</h2>
+            
+            <h3 style="color:#fbbf24; margin-top:20px;">1. Server-Sent Events (SSE)</h3>
+            <ul>
+                <li><strong>特点</strong>：HTTP长连接，服务器推送数据</li>
+                <li><strong>优势</strong>：简单易用，浏览器原生支持</li>
+                <li><strong>劣势</strong>：单向通信，功能有限</li>
+            </ul>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">2. WebSocket</h3>
+            <ul>
+                <li><strong>特点</strong>：双向通信，支持复杂交互</li>
+                <li><strong>优势</strong>：功能强大，适合需要用户输入的场景</li>
+                <li><strong>劣势</strong>：实现复杂，需要额外协议</li>
+            </ul>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">3. 生成器模式</h3>
+            <ul>
+                <li><strong>特点</strong>：使用Python生成器逐token生成</li>
+                <li><strong>优势</strong>：简单高效，框架支持良好</li>
+                <li><strong>劣势</strong>：需要框架支持</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>💻 代码示例</h2>
+            <div class="code-box">
+                <h3>使用生成器实现流式生成</h3>
+                <pre><code class="language-python">from transformers import AutoTokenizer, AutoModelForCausalLM
+
+def generate_stream(model, tokenizer, prompt, max_length=100):
+    """流式生成文本"""
+    inputs = tokenizer(prompt, return_tensors="pt")
+    input_ids = inputs.input_ids
+    
+    for _ in range(max_length):
+        # 生成下一个token
+        with torch.no_grad():
+            outputs = model(input_ids)
+            logits = outputs.logits[:, -1, :]
+            next_token = torch.argmax(logits, dim=-1)
+        
+        # 解码并返回token
+        token_text = tokenizer.decode(next_token, skip_special_tokens=True)
+        yield token_text
+        
+        # 更新input_ids
+        input_ids = torch.cat([input_ids, next_token.unsqueeze(-1)], dim=-1)
+        
+        # 检查是否结束
+        if next_token.item() == tokenizer.eos_token_id:
+            break
+
+# 使用示例
+for token in generate_stream(model, tokenizer, "Hello"):
+    print(token, end="", flush=True)</code></pre>
+            </div>
+
+            <div class="code-box">
+                <h3>FastAPI流式响应</h3>
+                <pre><code class="language-python">from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
+
+app = FastAPI()
+
+@app.post("/stream")
+async def stream_generate(prompt: str):
+    """流式生成API"""
+    def generate():
+        for token in generate_stream(model, tokenizer, prompt):
+            yield f"data: {token}\n\n"
+    
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream"
+    )</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📊 关键指标</h2>
+            <ul>
+                <li><strong>首token时间（TTFT）</strong>：从请求到第一个token返回的时间，目标 < 200ms</li>
+                <li><strong>吞吐量</strong>：每秒生成的token数量</li>
+                <li><strong>延迟</strong>：每个token的生成时间，保证流畅度</li>
+            </ul>
+        </div>
+    </div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

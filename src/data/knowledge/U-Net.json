@@ -1,0 +1,146 @@
+{
+  "title": "U-Net",
+  "subtitle": "专为图像分割设计的编码器-解码器架构",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "专为医学图像分割设计的编码器-解码器架构。通过对称的U型结构和跳跃连接（Skip Connection），将编码器的高分辨率特征直接传递给解码器，保留细节信息。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "U型对称结构：编码器下采样，解码器上采样",
+            "跳跃连接：将编码器特征拼接到解码器，保留空间细节",
+            "少样本高效：在小数据集上也能训练出好效果",
+            "像素级预测：输出与输入同尺寸的分割图",
+            "广泛应用：成为图像分割的标准架构"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "编码器-解码器、跳跃连接（Concatenation）、上采样（Transposed Convolution）"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "医学影像分割、语义分割、实例分割、Diffusion模型的去噪网络"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "UNetDiagram",
+              "caption": "U-Net架构图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "U-Net架构图",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "UNetDiagram",
+              "caption": "U-Net跳跃连接",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "U-Net跳跃连接",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "编码器-解码器结构",
+          "formulas": [
+            {
+              "text": "编码器（下采样）："
+            },
+            {
+              "display": "f_i = \\text{MaxPool}(\\text{ReLU}(\\text{Conv}(f_{i-1})))"
+            },
+            {
+              "text": "解码器（上采样）："
+            },
+            {
+              "display": "g_i = \\text{ReLU}(\\text{Conv}(\\text{Concat}(\\text{Upsample}(g_{i-1}), f_{n-i})))"
+            },
+            {
+              "text": "其中 $f_{n-i}$ 是编码器对应层的特征，通过跳跃连接传递",
+              "inline": "f_{n-i}"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "跳跃连接",
+          "formulas": [
+            {
+              "text": "将编码器特征与解码器特征拼接："
+            },
+            {
+              "display": "g_i = \\text{Concat}(\\text{Upsample}(g_{i-1}), f_{n-i})"
+            },
+            {
+              "text": "这样可以保留高分辨率的空间信息，提高分割精度"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 PyTorch 实现 U-Net",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\nclass DoubleConv(nn.Module):\n    \"\"\"双卷积块\"\"\"\n    def __init__(self, in_channels, out_channels):\n        super(DoubleConv, self).__init__()\n        self.conv = nn.Sequential(\n            nn.Conv2d(in_channels, out_channels, 3, padding=1),\n            nn.BatchNorm2d(out_channels),\n            nn.ReLU(inplace=True),\n            nn.Conv2d(out_channels, out_channels, 3, padding=1),\n            nn.BatchNorm2d(out_channels),\n            nn.ReLU(inplace=True)\n        )\n    \n    def forward(self, x):\n        return self.conv(x)\n\nclass UNet(nn.Module):\n    \"\"\"U-Net 模型\"\"\"\n    def __init__(self, in_channels=3, num_classes=1):\n        super(UNet, self).__init__()\n        \n        # 编码器（下采样路径）\n        self.enc1 = DoubleConv(in_channels, 64)\n        self.enc2 = DoubleConv(64, 128)\n        self.enc3 = DoubleConv(128, 256)\n        self.enc4 = DoubleConv(256, 512)\n        \n        self.pool = nn.MaxPool2d(2)\n        \n        # 瓶颈层\n        self.bottleneck = DoubleConv(512, 1024)\n        \n        # 解码器（上采样路径）\n        self.up4 = nn.ConvTranspose2d(1024, 512, 2, stride=2)\n        self.dec4 = DoubleConv(1024, 512)\n        \n        self.up3 = nn.ConvTranspose2d(512, 256, 2, stride=2)\n        self.dec3 = DoubleConv(512, 256)\n        \n        self.up2 = nn.ConvTranspose2d(256, 128, 2, stride=2)\n        self.dec2 = DoubleConv(256, 128)\n        \n        self.up1 = nn.ConvTranspose2d(128, 64, 2, stride=2)\n        self.dec1 = DoubleConv(128, 64)\n        \n        # 输出层\n        self.final = nn.Conv2d(64, num_classes, 1)\n    \n    def forward(self, x):\n        # 编码器\n        e1 = self.enc1(x)\n        e2 = self.enc2(self.pool(e1))\n        e3 = self.enc3(self.pool(e2))\n        e4 = self.enc4(self.pool(e3))\n        \n        # 瓶颈层\n        b = self.bottleneck(self.pool(e4))\n        \n        # 解码器（带跳跃连接）\n        d4 = self.up4(b)\n        d4 = torch.cat([d4, e4], dim=1)\n        d4 = self.dec4(d4)\n        \n        d3 = self.up3(d4)\n        d3 = torch.cat([d3, e3], dim=1)\n        d3 = self.dec3(d3)\n        \n        d2 = self.up2(d3)\n        d2 = torch.cat([d2, e2], dim=1)\n        d2 = self.dec2(d2)\n        \n        d1 = self.up1(d2)\n        d1 = torch.cat([d1, e1], dim=1)\n        d1 = self.dec1(d1)\n        \n        # 输出\n        out = self.final(d1)\n        \n        return out\n\n# 使用示例\nif __name__ == \"__main__\":\n    model = UNet(in_channels=3, num_classes=1)\n    \n    # 模拟输入 (batch_size=4, channels=3, height=572, width=572)\n    x = torch.randn(4, 3, 572, 572)\n    \n    # 前向传播\n    output = model(x)\n    print(f\"输出形状: {output.shape}\")  # [4, 1, 572, 572]"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>硬件与集群基础</title>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+<header>
+    <h1>硬件与集群</h1>
+    <p class="lead">梳理 AI 加速卡、集群设计、网络通信与算力规划，为大模型提供稳定高效的基础设施。</p>
+</header>
+<main>
+    <section>
+        <h2>AI 加速卡矩阵</h2>
+        <h3>NVIDIA 数据中心 GPU</h3>
+        <table>
+            <thead><tr><th>型号</th><th>FP16 算力</th><th>HBM</th><th>亮点</th></tr></thead>
+            <tbody>
+                <tr><td>A100 80G</td><td>312 TFLOPS</td><td>80 GB</td><td>NVLink3、MIG</td></tr>
+                <tr><td>H100 80G</td><td>500 TFLOPS</td><td>80 GB</td><td>Transformer Engine、FP8</td></tr>
+                <tr><td>A800/H800</td><td>受限版本</td><td>80 GB</td><td>面向中国市场</td></tr>
+            </tbody>
+        </table>
+        <ul>
+            <li>生态：CUDA、cuDNN、TensorRT、NCCL、Megatron-LM、DeepSpeed、vLLM/Triton。</li>
+            <li>调优：混合精度、Tensor Core、计算/通信重叠、NVLink/NVSwitch。</li>
+        </ul>
+        <h3>Google TPU</h3>
+        <table>
+            <thead><tr><th>版本</th><th>BF16 算力</th><th>HBM</th><th>场景</th></tr></thead>
+            <tbody>
+                <tr><td>TPU v3</td><td>420 TFLOPS</td><td>32 GB</td><td>训练/推理</td></tr>
+                <tr><td>TPU v4</td><td>1 PFLOPS</td><td>32 GB</td><td>大模型训练</td></tr>
+                <tr><td>TPU v5e</td><td>275 TFLOPS</td><td>16 GB</td><td>经济型训练</td></tr>
+            </tbody>
+        </table>
+        <p>特点：Systolic Array、400+ Gbps TPU Pod、XLA/JAX 深度整合。</p>
+        <h3>多厂商对比</h3>
+        <table>
+            <thead><tr><th>指标</th><th>NVIDIA H100</th><th>Google TPU v4</th><th>昇腾 910B</th><th>海光 DCU300</th></tr></thead>
+            <tbody>
+                <tr><td>FP16 算力</td><td>500 TFLOPS</td><td>1000 TFLOPS (Pod)</td><td>320 TFLOPS</td><td>200 TFLOPS</td></tr>
+                <tr><td>HBM</td><td>80 GB</td><td>32 GB</td><td>64 GB</td><td>48 GB</td></tr>
+                <tr><td>生态</td><td>CUDA/Triton</td><td>XLA/JAX</td><td>MindSpore/MindIE</td><td>CUDA 兼容</td></tr>
+                <tr><td>部署</td><td>云 + 本地</td><td>Google Cloud</td><td>政企本地</td><td>自建集群</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>AI 集群架构</h2>
+        <pre><code>管理节点 → 调度/监控
+  ├── 计算：GPU/NPU 服务器 (8/16 卡)
+  ├── 存储：Ceph / Lustre / HDFS
+  └── 网络：InfiniBand / RoCE / 200G Ethernet</code></pre>
+        <ul>
+            <li>计算层：同/异构节点、NVSwitch/PCIe 分层、MIG 隔离。</li>
+            <li>存储层：热数据 NVMe、冷数据对象存储、元数据高可用。</li>
+            <li>网络层：双 Plane、Fat-Tree/Dragonfly+、ECN/PFC。</li>
+            <li>管理层：BMC/IPMI、SLURM/KubeFlow/Ray、Prometheus+Grafana。</li>
+        </ul>
+        <h3>资源规划</h3>
+        <pre><code>GPU = (目标算力 / 单卡有效算力) × 1.2
+节点 = ceil(GPU / 单节点 GPU)
+存储带宽 ≥ 数据吞吐 × 1.2</code></pre>
+        <p>同步评估电力、散热、机柜空间与容灾。</p>
+        <h3>集群管理</h3>
+        <ul>
+            <li>调度：SLURM、Kubernetes、Ray/KubeFlow。</li>
+            <li>资源：配额/MIG/cgroup、Spot 混合、Job Template。</li>
+            <li>监控：GPU 利用率/功耗/温度/网络 IO + ELK/Fluentd。</li>
+            <li>故障：健康检查、自动重启、Checkpoint 恢复、Tracing。</li>
+            <li>自动化：Terraform/Ansible、HPA/VPA、成本看板。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>网络通信与存储</h2>
+        <h3>InfiniBand</h3>
+        <ul>
+            <li>HDR 200G / NDR 400G / XDR 800G，亚微秒延迟，原生 RDMA。</li>
+            <li>软件：OFED、UCX、NCCL/HCCL、MPI over IB。</li>
+            <li>调优：PFC/ECN、防拥塞、Multi-Rail、SHARP 集合加速。</li>
+        </ul>
+        <h3>NVMe 数据管道</h3>
+        <ul>
+            <li>指标：IOPS、带宽、延迟、DWPD。</li>
+            <li>架构：本地 NVMe、NVMe-oF、分层存储。</li>
+            <li>优化：多线程 + 异步 IO、预加载缓存、列式格式 (Zarr/Parquet)。</li>
+        </ul>
+        <h3>网络优化技巧</h3>
+        <ul>
+            <li>通信算法：Ring/Tree/Hierarchical AllReduce。</li>
+            <li>拓扑感知：机柜分组、就近通信。</li>
+            <li>QoS/流控：PFC、ECN、RED。</li>
+            <li>Compute & Comm 重叠：多 Stream、提前触发梯度同步。</li>
+            <li>混合精度通信：FP16/BF16、Grad Compression。</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>算力资源与成本规划</h2>
+        <ul>
+            <li>需求：模型参数、序列长度、批大小、训练周期、推理 QPS/延迟、数据规模。</li>
+            <li>成本：自建 + 云 Spot、作业分级、夜间批处理、数据分层、自动释放闲置 GPU。</li>
+            <li>弹性：多云/多集群调度、抢占式实例 + 分布式 checkpoint、混合精度降低算力需求。</li>
+            <li>合规：数据驻留、租户隔离、访问控制、能耗监控。</li>
+        </ul>
+    </section>
+</main>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

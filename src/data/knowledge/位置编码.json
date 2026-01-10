@@ -1,0 +1,170 @@
+{
+  "title": "位置编码 (Positional Encoding)",
+  "subtitle": "为序列数据注入位置信息",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "位置编码是Transformer架构中的关键组件，用于为序列中的每个位置添加位置信息。由于Transformer的自注意力机制是置换不变的，需要显式地注入位置信息来区分不同位置的token。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 主要类型",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "绝对位置编码：为每个位置分配固定的编码，如正弦位置编码",
+            "相对位置编码：编码token之间的相对距离关系",
+            "学习位置编码：可训练的位置嵌入，通过反向传播学习",
+            "旋转位置编码（RoPE）：通过旋转矩阵编码相对位置，广泛应用于现代LLM",
+            "ALiBi：线性偏置注意力，无需显式位置编码"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "正弦位置编码、学习位置嵌入、相对位置编码、RoPE、ALiBi"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "Transformer模型、BERT、GPT、LLaMA、文本生成、机器翻译、序列建模"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "位置编码对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "位置编码对比",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "位置编码效果",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "位置编码效果",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "正弦位置编码（Sinusoidal）",
+          "formulas": [
+            {
+              "text": "原始Transformer使用的正弦位置编码："
+            },
+            {
+              "display": "PE_{(pos, 2i)} = \\sin\\left(\\frac{pos}{10000^{2i/d_{model}}}\\right)"
+            },
+            {
+              "display": "PE_{(pos, 2i+1)} = \\cos\\left(\\frac{pos}{10000^{2i/d_{model}}}\\right)"
+            },
+            {
+              "text": "其中 $pos$ 是位置，$i$ 是维度索引，$d_{model}$ 是模型维度",
+              "inline": "pos, i, d_{model}"
+            },
+            {
+              "text": "编码后的向量与词嵌入相加："
+            },
+            {
+              "display": "x_i = \\text{Embedding}(token_i) + PE_i"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "旋转位置编码（RoPE）",
+          "formulas": [
+            {
+              "text": "RoPE通过旋转矩阵编码相对位置："
+            },
+            {
+              "display": "R_{\\theta} = \\begin{pmatrix} \\cos\\theta & -\\sin\\theta \\\\ \\sin\\theta & \\cos\\theta \\end{pmatrix}"
+            },
+            {
+              "text": "对于位置 $m$ 的查询和位置 $n$ 的键，旋转角度为："
+            },
+            {
+              "display": "\\theta_i = 10000^{-2i/d}"
+            },
+            {
+              "text": "注意力分数自然包含相对位置信息，支持外推到更长序列"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "学习位置编码",
+          "formulas": [
+            {
+              "text": "可训练的位置嵌入矩阵："
+            },
+            {
+              "display": "PE = \\text{Embedding}(max\\_len, d_{model})"
+            },
+            {
+              "text": "通过反向传播学习最优位置表示，但无法外推到训练时未见过的长度"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "PyTorch 实现位置编码",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport math\n\n# 1. 正弦位置编码（原始Transformer）\nclass SinusoidalPositionalEncoding(nn.Module):\n    \"\"\"正弦位置编码\"\"\"\n    def __init__(self, d_model, max_len=5000, dropout=0.1):\n        super(SinusoidalPositionalEncoding, self).__init__()\n        self.dropout = nn.Dropout(p=dropout)\n        \n        # 创建位置编码矩阵\n        pe = torch.zeros(max_len, d_model)\n        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)\n        div_term = torch.exp(torch.arange(0, d_model, 2).float() * \n                            (-math.log(10000.0) / d_model))\n        \n        pe[:, 0::2] = torch.sin(position * div_term)  # 偶数维度用sin\n        pe[:, 1::2] = torch.cos(position * div_term)  # 奇数维度用cos\n        \n        pe = pe.unsqueeze(0)  # [1, max_len, d_model]\n        self.register_buffer('pe', pe)  # 不参与训练\n    \n    def forward(self, x):\n        \"\"\"\n        Args:\n            x: [batch_size, seq_len, d_model]\n        Returns:\n            x + positional_encoding: [batch_size, seq_len, d_model]\n        \"\"\"\n        x = x + self.pe[:, :x.size(1), :]\n        return self.dropout(x)\n\n# 2. 学习位置编码（可训练）\nclass LearnedPositionalEncoding(nn.Module):\n    \"\"\"可训练的位置嵌入\"\"\"\n    def __init__(self, d_model, max_len=5000, dropout=0.1):\n        super(LearnedPositionalEncoding, self).__init__()\n        self.dropout = nn.Dropout(p=dropout)\n        self.pe = nn.Embedding(max_len, d_model)\n    \n    def forward(self, x):\n        \"\"\"\n        Args:\n            x: [batch_size, seq_len, d_model]\n        \"\"\"\n        seq_len = x.size(1)\n        positions = torch.arange(seq_len, device=x.device).unsqueeze(0)\n        pos_emb = self.pe(positions)  # [1, seq_len, d_model]\n        x = x + pos_emb\n        return self.dropout(x)\n\n# 3. 旋转位置编码（RoPE）简化版\nclass RotaryPositionalEncoding(nn.Module):\n    \"\"\"旋转位置编码（RoPE）\"\"\"\n    def __init__(self, d_model, max_len=5000):\n        super(RotaryPositionalEncoding, self).__init__()\n        \n        # 计算频率\n        inv_freq = 1.0 / (10000 ** (torch.arange(0, d_model, 2).float() / d_model))\n        self.register_buffer('inv_freq', inv_freq)\n    \n    def forward(self, x, seq_len=None):\n        \"\"\"\n        Args:\n            x: [batch_size, seq_len, d_model] 或 [batch_size, nhead, seq_len, head_dim]\n        \"\"\"\n        if x.dim() == 3:\n            batch_size, seq_len, d_model = x.shape\n            # 重塑为 [batch_size, seq_len, d_model//2, 2]\n            x_complex = x.view(batch_size, seq_len, d_model // 2, 2)\n        else:\n            batch_size, nhead, seq_len, head_dim = x.shape\n            x_complex = x.view(batch_size, nhead, seq_len, head_dim // 2, 2)\n        \n        # 生成位置角度\n        t = torch.arange(seq_len, device=x.device, dtype=torch.float32)\n        freqs = torch.outer(t, self.inv_freq)  # [seq_len, d_model//2]\n        \n        # 创建旋转矩阵\n        cos = torch.cos(freqs).unsqueeze(-1)  # [seq_len, d_model//2, 1]\n        sin = torch.sin(freqs).unsqueeze(-1)  # [seq_len, d_model//2, 1]\n        \n        # 应用旋转（简化版，实际实现更复杂）\n        # 这里只是示例，实际RoPE需要更精细的实现\n        return x\n\n# 4. 使用示例\nif __name__ == \"__main__\":\n    d_model = 512\n    seq_len = 100\n    batch_size = 32\n    \n    # 词嵌入\n    vocab_size = 10000\n    embedding = nn.Embedding(vocab_size, d_model)\n    \n    # 输入token ids\n    tokens = torch.randint(0, vocab_size, (batch_size, seq_len))\n    x = embedding(tokens)  # [batch_size, seq_len, d_model]\n    \n    # 正弦位置编码\n    pos_encoder1 = SinusoidalPositionalEncoding(d_model, max_len=5000)\n    x1 = pos_encoder1(x)\n    print(f\"正弦位置编码输出形状: {x1.shape}\")\n    \n    # 学习位置编码\n    pos_encoder2 = LearnedPositionalEncoding(d_model, max_len=5000)\n    x2 = pos_encoder2(x)\n    print(f\"学习位置编码输出形状: {x2.shape}\")\n    \n    # 完整的Transformer编码器示例\n    class TransformerEncoder(nn.Module):\n        def __init__(self, vocab_size, d_model, nhead, num_layers, max_len=5000):\n            super(TransformerEncoder, self).__init__()\n            self.embedding = nn.Embedding(vocab_size, d_model)\n            self.pos_encoder = SinusoidalPositionalEncoding(d_model, max_len)\n            encoder_layer = nn.TransformerEncoderLayer(d_model, nhead, batch_first=True)\n            self.transformer = nn.TransformerEncoder(encoder_layer, num_layers)\n        \n        def forward(self, x):\n            x = self.embedding(x)\n            x = self.pos_encoder(x)\n            x = self.transformer(x)\n            return x\n    \n    model = TransformerEncoder(vocab_size, d_model, nhead=8, num_layers=6)\n    output = model(tokens)\n    print(f\"Transformer编码器输出形状: {output.shape}\")"
+        }
+      ]
+    }
+  ]
+}

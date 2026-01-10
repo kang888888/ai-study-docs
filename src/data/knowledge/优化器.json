@@ -1,0 +1,191 @@
+{
+  "title": "优化器 (Optimizer)",
+  "subtitle": "更新模型参数的算法，如SGD、Adam、AdamW等",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "优化器是用于更新神经网络参数的算法，根据梯度信息调整参数以最小化损失函数。不同的优化器采用不同的策略来加速收敛、避免局部最优、提高训练稳定性。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 主要类型",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "SGD：随机梯度下降，最基础的优化器",
+            "Momentum：引入动量，加速收敛并减少震荡",
+            "RMSprop：自适应学习率，适合RNN训练",
+            "Adam：结合Momentum和RMSprop，广泛使用",
+            "AdamW：Adam的改进版，修正权重衰减",
+            "AdaGrad：自适应学习率，适合稀疏数据",
+            "Adafactor：内存高效的Adam变体，适合大模型"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "梯度下降、动量、自适应学习率、权重衰减、学习率调度"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "神经网络训练、深度学习、参数优化、模型微调"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "优化器对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "优化器对比",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "优化器收敛曲线",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "优化器收敛曲线",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "SGD（随机梯度下降）",
+          "formulas": [
+            {
+              "text": "基础的参数更新公式："
+            },
+            {
+              "display": "\\theta_{t+1} = \\theta_t - \\eta \\nabla L(\\theta_t)"
+            },
+            {
+              "text": "其中 $\\eta$ 是学习率，$\\nabla L$ 是梯度",
+              "inline": "\\eta"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Momentum",
+          "formulas": [
+            {
+              "text": "引入动量项，累积历史梯度："
+            },
+            {
+              "display": "v_t = \\beta v_{t-1} + \\nabla L(\\theta_t)"
+            },
+            {
+              "display": "\\theta_{t+1} = \\theta_t - \\eta v_t"
+            },
+            {
+              "text": "其中 $\\beta$ 是动量系数，通常取0.9",
+              "inline": "\\beta"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Adam",
+          "formulas": [
+            {
+              "text": "结合Momentum和RMSprop，维护一阶和二阶矩估计："
+            },
+            {
+              "display": "m_t = \\beta_1 m_{t-1} + (1-\\beta_1) \\nabla L(\\theta_t)"
+            },
+            {
+              "display": "v_t = \\beta_2 v_{t-1} + (1-\\beta_2) (\\nabla L(\\theta_t))^2"
+            },
+            {
+              "text": "偏差修正："
+            },
+            {
+              "display": "\\hat{m}_t = \\frac{m_t}{1-\\beta_1^t}, \\quad \\hat{v}_t = \\frac{v_t}{1-\\beta_2^t}"
+            },
+            {
+              "text": "参数更新："
+            },
+            {
+              "display": "\\theta_{t+1} = \\theta_t - \\eta \\frac{\\hat{m}_t}{\\sqrt{\\hat{v}_t} + \\epsilon}"
+            },
+            {
+              "text": "通常 $\\beta_1=0.9$，$\\beta_2=0.999$，$\\epsilon=10^{-8}$"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "AdamW",
+          "formulas": [
+            {
+              "text": "AdamW修正了权重衰减的实现："
+            },
+            {
+              "display": "\\theta_{t+1} = \\theta_t - \\eta \\left(\\frac{\\hat{m}_t}{\\sqrt{\\hat{v}_t} + \\epsilon} + \\lambda \\theta_t\\right)"
+            },
+            {
+              "text": "其中 $\\lambda$ 是权重衰减系数，直接作用于参数而非梯度"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "PyTorch 中的优化器使用",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.optim as optim\n\n# 定义模型\nmodel = nn.Sequential(\n    nn.Linear(10, 50),\n    nn.ReLU(),\n    nn.Linear(50, 1)\n)\n\n# 1. SGD优化器\noptimizer_sgd = optim.SGD(model.parameters(), lr=0.01)\n\n# 2. SGD + Momentum\noptimizer_momentum = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)\n\n# 3. Adam优化器（最常用）\noptimizer_adam = optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.999))\n\n# 4. AdamW优化器（推荐用于Transformer）\noptimizer_adamw = optim.AdamW(model.parameters(), lr=0.001, weight_decay=0.01)\n\n# 5. RMSprop优化器\noptimizer_rmsprop = optim.RMSprop(model.parameters(), lr=0.01, alpha=0.99)\n\n# 6. 训练循环示例\ncriterion = nn.MSELoss()\noptimizer = optim.Adam(model.parameters(), lr=0.001)\n\n# 模拟数据\nx_train = torch.randn(100, 10)\ny_train = torch.randn(100, 1)\n\nfor epoch in range(100):\n    # 前向传播\n    output = model(x_train)\n    loss = criterion(output, y_train)\n    \n    # 反向传播\n    optimizer.zero_grad()  # 清零梯度\n    loss.backward()  # 计算梯度\n    optimizer.step()  # 更新参数\n    \n    if (epoch + 1) % 20 == 0:\n        print(f\"Epoch {epoch+1}, Loss: {loss.item():.4f}\")\n\n# 7. 学习率调度器\noptimizer = optim.Adam(model.parameters(), lr=0.001)\n\n# 学习率衰减\nscheduler = optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)\n\nfor epoch in range(100):\n    # 训练代码\n    output = model(x_train)\n    loss = criterion(output, y_train)\n    optimizer.zero_grad()\n    loss.backward()\n    optimizer.step()\n    \n    # 更新学习率\n    scheduler.step()\n    \n    if (epoch + 1) % 20 == 0:\n        current_lr = optimizer.param_groups[0]['lr']\n        print(f\"Epoch {epoch+1}, Loss: {loss.item():.4f}, LR: {current_lr:.6f}\")\n\n# 8. 余弦退火学习率\nscheduler_cosine = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100, eta_min=1e-6)\n\n# 9. 不同参数组使用不同学习率\noptimizer_groups = optim.Adam([\n    {'params': model[0].parameters(), 'lr': 0.001},  # 第一层\n    {'params': model[2].parameters(), 'lr': 0.0001}  # 第二层\n])\n\n# 10. 梯度裁剪 + 优化器\noptimizer = optim.Adam(model.parameters(), lr=0.001)\n\nfor epoch in range(100):\n    output = model(x_train)\n    loss = criterion(output, y_train)\n    \n    optimizer.zero_grad()\n    loss.backward()\n    \n    # 梯度裁剪\n    torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)\n    \n    optimizer.step()\n\n# 11. 优化器状态保存和加载\n# 保存\ncheckpoint = {\n    'model_state_dict': model.state_dict(),\n    'optimizer_state_dict': optimizer.state_dict(),\n    'epoch': epoch,\n    'loss': loss\n}\ntorch.save(checkpoint, 'checkpoint.pth')\n\n# 加载\ncheckpoint = torch.load('checkpoint.pth')\nmodel.load_state_dict(checkpoint['model_state_dict'])\noptimizer.load_state_dict(checkpoint['optimizer_state_dict'])\nepoch = checkpoint['epoch']\nloss = checkpoint['loss']\n\n# 12. 混合精度训练（使用Apex或torch.cuda.amp）\nfrom torch.cuda.amp import autocast, GradScaler\n\nmodel = model.cuda()\noptimizer = optim.Adam(model.parameters(), lr=0.001)\nscaler = GradScaler()\n\nfor epoch in range(100):\n    x_train_gpu = x_train.cuda()\n    y_train_gpu = y_train.cuda()\n    \n    optimizer.zero_grad()\n    \n    # 使用自动混合精度\n    with autocast():\n        output = model(x_train_gpu)\n        loss = criterion(output, y_train_gpu)\n    \n    # 缩放损失并反向传播\n    scaler.scale(loss).backward()\n    scaler.step(optimizer)\n    scaler.update()\n\n# 13. 优化器选择建议\ndef get_optimizer(model, optimizer_name='adam', lr=0.001):\n    \"\"\"根据任务选择优化器\"\"\"\n    if optimizer_name == 'sgd':\n        return optim.SGD(model.parameters(), lr=lr, momentum=0.9)\n    elif optimizer_name == 'adam':\n        return optim.Adam(model.parameters(), lr=lr, betas=(0.9, 0.999))\n    elif optimizer_name == 'adamw':\n        # Transformer推荐使用AdamW\n        return optim.AdamW(model.parameters(), lr=lr, weight_decay=0.01)\n    elif optimizer_name == 'rmsprop':\n        return optim.RMSprop(model.parameters(), lr=lr, alpha=0.99)\n    else:\n        raise ValueError(f\"Unknown optimizer: {optimizer_name}\")\n\n# 使用示例\noptimizer = get_optimizer(model, 'adamw', lr=0.001)"
+        }
+      ]
+    }
+  ]
+}

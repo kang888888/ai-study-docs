@@ -1,0 +1,54 @@
+{
+  "title": "MTP (Multi-Token Prediction)",
+  "subtitle": "多 Token 预测",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "MTP (Multi-Token Prediction) 是 DeepSeek-V3 及其 2026 年相关论文中披露的分布式训练协同优化技术。该技术在训练时预测未来多个 Token，从而提升推理时的并行度，实现 1.8 倍的加速效果。MTP 是软硬一体协同优化的关键组件，通过多 Token 预测机制实现训练与推理的协同优化。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "多 Token 预测：在训练时预测未来多个 Token",
+            "推理加速：提升推理时的并行度，实现 1.8 倍加速",
+            "训练优化：通过多 Token 预测优化训练过程",
+            "并行度提升：显著提升推理时的并行处理能力",
+            "软硬协同：作为软硬一体协同优化的关键组件"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "多 Token 预测、并行度优化、推理加速、训练与推理协同、并行处理、软硬一体优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "大规模模型训练、推理加速需求、并行处理优化、训练与推理协同场景、需要提升吞吐量的场景、分布式训练协同优化"
+        }
+      ]
+    }
+  ]
+}

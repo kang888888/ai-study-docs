@@ -1,0 +1,183 @@
+{
+  "title": "GAN (Generative Adversarial Network) 生成对抗网络",
+  "subtitle": "生成器与判别器的对抗博弈",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "由生成器（Generator）和判别器（Discriminator）组成的对抗系统。生成器试图生成逼真数据，判别器试图区分真假，两者博弈最终达到纳什均衡。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "对抗训练：生成器和判别器相互博弈，交替训练",
+            "生成速度快：一次前向传播即可生成，无需多步采样",
+            "训练不稳定：容易出现模式崩溃（Mode Collapse）",
+            "无显式密度：不学习数据分布的显式形式",
+            "多种变体：DCGAN、StyleGAN、CycleGAN等"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "对抗损失、WGAN、谱归一化（Spectral Normalization）、渐进式训练"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "图像生成、风格迁移、图像超分辨率、数据增强、人脸生成（StyleGAN）"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GANDiagram",
+              "caption": "GAN架构图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "GAN架构图",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GANDiagram",
+              "caption": "GAN训练过程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "GAN训练过程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GANDiagram",
+              "caption": "GAN分布演化",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "GAN分布演化",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GANDiagram",
+              "caption": "GAN变体对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "GAN变体对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "GAN 的对抗损失函数",
+          "formulas": [
+            {
+              "text": "GAN 的优化目标是一个极小极大博弈："
+            },
+            {
+              "display": "\\min_G \\max_D V(D, G) = \\mathbb{E}_{x \\sim p_{data}(x)}[\\log D(x)] + \\mathbb{E}_{z \\sim p_z(z)}[\\log(1 - D(G(z)))]"
+            },
+            {
+              "text": "其中："
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "最优判别器",
+          "formulas": [
+            {
+              "text": "对于固定的生成器 $G$，最优判别器为：",
+              "inline": "G"
+            },
+            {
+              "display": "D^*(x) = \\frac{p_{data}(x)}{p_{data}(x) + p_g(x)}"
+            },
+            {
+              "text": "其中 $p_g(x)$ 是生成器生成的数据分布",
+              "inline": "p_g(x)"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "全局最优解",
+          "formulas": [
+            {
+              "text": "当 $p_g = p_{data}$ 时达到全局最优，此时：",
+              "inline": "p_g = p_{data}"
+            },
+            {
+              "display": "D^*(x) = \\frac{1}{2}"
+            },
+            {
+              "text": "判别器无法区分真实数据和生成数据"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 PyTorch 实现简单 GAN",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.optim as optim\nimport torch.nn.functional as F\n\nclass Generator(nn.Module):\n    \"\"\"生成器网络\"\"\"\n    def __init__(self, latent_dim, img_shape):\n        super(Generator, self).__init__()\n        self.img_shape = img_shape\n        \n        def block(in_feat, out_feat, normalize=True):\n            layers = [nn.Linear(in_feat, out_feat)]\n            if normalize:\n                layers.append(nn.BatchNorm1d(out_feat, 0.8))\n            layers.append(nn.LeakyReLU(0.2, inplace=True))\n            return layers\n        \n        self.model = nn.Sequential(\n            *block(latent_dim, 128, normalize=False),\n            *block(128, 256),\n            *block(256, 512),\n            *block(512, 1024),\n            nn.Linear(1024, int(torch.prod(torch.tensor(img_shape)))),\n            nn.Tanh()\n        )\n    \n    def forward(self, z):\n        img = self.model(z)\n        img = img.view(img.size(0), *self.img_shape)\n        return img\n\nclass Discriminator(nn.Module):\n    \"\"\"判别器网络\"\"\"\n    def __init__(self, img_shape):\n        super(Discriminator, self).__init__()\n        \n        self.model = nn.Sequential(\n            nn.Linear(int(torch.prod(torch.tensor(img_shape))), 512),\n            nn.LeakyReLU(0.2, inplace=True),\n            nn.Linear(512, 256),\n            nn.LeakyReLU(0.2, inplace=True),\n            nn.Linear(256, 1),\n            nn.Sigmoid()\n        )\n    \n    def forward(self, img):\n        img_flat = img.view(img.size(0), -1)\n        validity = self.model(img_flat)\n        return validity\n\n# 训练函数\ndef train_gan(generator, discriminator, dataloader, epochs=200, lr=0.0002, latent_dim=100):\n    device = torch.device(\"cuda\" if torch.cuda.is_available() else \"cpu\")\n    \n    generator = generator.to(device)\n    discriminator = discriminator.to(device)\n    \n    optimizer_G = optim.Adam(generator.parameters(), lr=lr, betas=(0.5, 0.999))\n    optimizer_D = optim.Adam(discriminator.parameters(), lr=lr, betas=(0.5, 0.999))\n    \n    adversarial_loss = nn.BCELoss()\n    \n    for epoch in range(epochs):\n        for i, (imgs, _) in enumerate(dataloader):\n            batch_size = imgs.size(0)\n            real_imgs = imgs.to(device)\n            \n            # 训练判别器\n            optimizer_D.zero_grad()\n            \n            # 真实数据\n            real_validity = discriminator(real_imgs)\n            real_loss = adversarial_loss(real_validity, torch.ones(batch_size, 1).to(device))\n            \n            # 生成数据\n            z = torch.randn(batch_size, latent_dim).to(device)\n            fake_imgs = generator(z)\n            fake_validity = discriminator(fake_imgs.detach())\n            fake_loss = adversarial_loss(fake_validity, torch.zeros(batch_size, 1).to(device))\n            \n            d_loss = (real_loss + fake_loss) / 2\n            d_loss.backward()\n            optimizer_D.step()\n            \n            # 训练生成器\n            optimizer_G.zero_grad()\n            \n            z = torch.randn(batch_size, latent_dim).to(device)\n            gen_imgs = generator(z)\n            validity = discriminator(gen_imgs)\n            g_loss = adversarial_loss(validity, torch.ones(batch_size, 1).to(device))\n            \n            g_loss.backward()\n            optimizer_G.step()\n            \n            if i % 100 == 0:\n                print(f\"[Epoch {epoch}/{epochs}] [Batch {i}] [D loss: {d_loss.item():.4f}] [G loss: {g_loss.item():.4f}]\")\n\n# 使用示例\nif __name__ == \"__main__\":\n    img_shape = (1, 28, 28)  # MNIST图像形状\n    latent_dim = 100\n    \n    generator = Generator(latent_dim, img_shape)\n    discriminator = Discriminator(img_shape)\n    \n    print(f\"生成器参数量: {sum(p.numel() for p in generator.parameters()):,}\")\n    print(f\"判别器参数量: {sum(p.numel() for p in discriminator.parameters()):,}\")"
+        }
+      ]
+    }
+  ]
+}

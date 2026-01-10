@@ -1,0 +1,122 @@
+{
+  "title": "Mish激活函数",
+  "subtitle": "自正则化的平滑激活函数",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Mish是一种自正则化的激活函数，由Diganta Misra在2019年提出。它结合了Tanh和Softplus的特性，在多个任务上表现优异，特别是在图像分类和目标检测任务中。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学表达",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "Mish函数定义",
+          "formulas": [
+            {
+              "text": "Mish函数定义为："
+            },
+            {
+              "display": "\\text{Mish}(x) = x \\cdot \\tanh(\\text{softplus}(x)) = x \\cdot \\tanh(\\ln(1 + e^x))"
+            },
+            {
+              "text": "其中 $\\text{softplus}(x) = \\ln(1 + e^x)$"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "性质",
+          "formulas": [
+            {
+              "text": "重要性质："
+            },
+            {
+              "text": "- 平滑：处处可导，无间断点"
+            },
+            {
+              "text": "- 无上界：$x \\to +\\infty$ 时线性增长"
+            },
+            {
+              "text": "- 有下界：$\\lim_{x \\to -\\infty} \\text{Mish}(x) \\approx -0.31$"
+            },
+            {
+              "text": "- 自正则化：有助于梯度传播"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "平滑性：处处可导，梯度连续",
+            "自正则化：有助于训练稳定性",
+            "性能优异：在多个任务上优于ReLU",
+            "计算开销：需要计算tanh和softplus",
+            "广泛应用：图像分类、目标检测等任务"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 函数图像",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "MathFunctionDiagram",
+              "caption": "Mish函数图像",
+              "width": 1000,
+              "height": 600,
+              "interactive": true,
+              "props": {
+                "type": "activation",
+                "title": "Mish函数图像",
+                "function": "mish"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "图像分类、目标检测、需要平滑激活的深度网络"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "Mish实现与使用",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nimport numpy as np\n\n# 1. 基础实现\ndef mish(x):\n    softplus = np.log(1 + np.exp(x))\n    return x * np.tanh(softplus)\n\n# 2. PyTorch实现（需要自定义，PyTorch没有内置）\nclass Mish(nn.Module):\n    def forward(self, x):\n        return x * torch.tanh(F.softplus(x))\n\n# 使用\nx = torch.tensor([-2.0, -1.0, 0.0, 1.0, 2.0])\nmish_fn = Mish()\nmish_output = mish_fn(x)\nprint(f\"Mish输出: {mish_output}\")\n\n# 3. 在神经网络中使用\nclass MishNet(nn.Module):\n    def __init__(self):\n        super(MishNet, self).__init__()\n        self.fc1 = nn.Linear(10, 50)\n        self.mish = Mish()\n        self.fc2 = nn.Linear(50, 1)\n    \n    def forward(self, x):\n        x = self.fc1(x)\n        x = self.mish(x)\n        x = self.fc2(x)\n        return x"
+        }
+      ]
+    }
+  ]
+}

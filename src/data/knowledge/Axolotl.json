@@ -1,0 +1,101 @@
+{
+  "title": "Axolotl：模块化大模型微调流水线",
+  "subtitle": "通过 YAML 配置驱动的数据处理、LoRA/QLoRA/全参数训练、分布式调度与日志监控，实现“一套配置跑遍所有模型”。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "工作流",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "工作流"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "配置结构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "配置结构"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "分布式拓扑",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "分布式拓扑"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学/资源估算",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "显存预算",
+          "formulas": [
+            {
+              "text": "Axolotl 的内置估算器按如下近似："
+            },
+            {
+              "display": "\\text{VRAM} \\approx \\frac{n_{\\text{params}} \\times bytes_{\\text{precision}}}{\\text{tensor_parallel}} + \\text{optimizer\noverhead} + \\text{activation\noverhead}"
+            },
+            {
+              "text": "结合 ZeRO-3 可将优化器状态按节点平均，显著降低峰值显存。"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "吞吐与梯度同步",
+          "formulas": [
+            {
+              "text": "使用 FSDP/ZeRO 时的通信开销："
+            },
+            {
+              "display": "T = T_{\\text{compute}} + \\frac{P-1}{P} \\cdot T_{\\text{allreduce}}"
+            },
+            {
+              "text": "Axolotl 通过梯度累积与 overlap reduce 优化上述项。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "最小化 YAML 配置",
+          "language": "yaml",
+          "code": "base_model: meta-llama/Llama-3-8b-Instruct\nload_in_4bit: true\nadapter: lora\nlora_r: 64\nlora_alpha: 128\ndataset_mixer:\n  - ./data/sharegpt.json: 1.0\nval_set_size: 0.01\nsequence_len: 4096\nmicro_batch_size: 2\ngradient_accumulation_steps: 8\nlearning_rate: 2e-4\nepochs: 3\ndevice_map: auto"
+        }
+      ]
+    }
+  ]
+}

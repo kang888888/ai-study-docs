@@ -1,0 +1,136 @@
+{
+  "title": "HuggingFace Hub",
+  "subtitle": "模型、数据集管理与 Spaces 部署平台",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "HuggingFace Hub 是一个模型、数据集和演示应用（Spaces）的托管平台。它提供了版本管理、协作功能、自动推理API，让AI开发者可以轻松分享、发现和使用模型和数据集。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "模型托管：免费托管和分享模型，支持版本管理",
+            "数据集管理：上传、版本化和分享数据集",
+            "Spaces部署：一键部署交互式演示应用",
+            "自动推理API：为模型自动生成推理API",
+            "版本控制：类似Git的版本管理系统",
+            "协作功能：支持团队协作和权限管理",
+            "模型卡片：自动生成模型文档和使用说明",
+            "社区生态：庞大的模型和数据集库"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "Git LFS、版本管理、自动推理API、Gradio/Streamlit集成、模型卡片、权限管理"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "模型分享：将训练好的模型分享给社区\n                    模型发现：查找和使用他人训练的模型\n                    数据集共享：分享和获取数据集\n                    演示部署：快速部署模型演示应用\n                    协作开发：团队协作开发模型\n                    模型版本管理：管理模型的不同版本"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "HuggingFace Hub架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "HuggingFace Hub架构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "HuggingFace Hub流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "HuggingFace Hub流程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "上传模型到Hub",
+          "language": "python",
+          "code": "from transformers import AutoModelForCausalLM, AutoTokenizer\nfrom huggingface_hub import login, HfApi\n\n# 登录（需要token）\nlogin(token=\"your_token_here\")\n\n# 保存模型和分词器\nmodel = AutoModelForCausalLM.from_pretrained(\"./my_model\")\ntokenizer = AutoTokenizer.from_pretrained(\"./my_model\")\n\n# 推送到Hub\nmodel.push_to_hub(\"username/my-model-name\")\ntokenizer.push_to_hub(\"username/my-model-name\")\n\n# 或者使用API\napi = HfApi()\napi.upload_folder(\n    folder_path=\"./my_model\",\n    repo_id=\"username/my-model-name\",\n    repo_type=\"model\"\n)"
+        },
+        {
+          "type": "code-box",
+          "title": "从Hub加载模型",
+          "language": "python",
+          "code": "from transformers import AutoModelForCausalLM, AutoTokenizer\n\n# 加载模型和分词器\nmodel = AutoModelForCausalLM.from_pretrained(\"username/my-model-name\")\ntokenizer = AutoTokenizer.from_pretrained(\"username/my-model-name\")\n\n# 使用模型\ntext = \"Hello, how are you?\"\ninputs = tokenizer(text, return_tensors=\"pt\")\noutputs = model.generate(**inputs)\nprint(tokenizer.decode(outputs[0]))"
+        },
+        {
+          "type": "code-box",
+          "title": "上传数据集",
+          "language": "python",
+          "code": "from datasets import load_dataset, Dataset\nfrom huggingface_hub import login\n\n# 登录\nlogin(token=\"your_token_here\")\n\n# 创建数据集\ndata = {\"text\": [\"Hello\", \"World\"], \"label\": [0, 1]}\ndataset = Dataset.from_dict(data)\n\n# 上传到Hub\ndataset.push_to_hub(\"username/my-dataset-name\")\n\n# 从Hub加载数据集\nloaded_dataset = load_dataset(\"username/my-dataset-name\")"
+        },
+        {
+          "type": "code-box",
+          "title": "使用推理API",
+          "language": "python",
+          "code": "from huggingface_hub import InferenceClient\n\n# 创建推理客户端\nclient = InferenceClient(\"username/my-model-name\")\n\n# 文本生成\nresponse = client.text_generation(\n    \"The future of AI is\",\n    max_new_tokens=50\n)\nprint(response)\n\n# 文本分类\nresponse = client.text_classification(\"I love this movie!\")\nprint(response)\n\n# 问答\nresponse = client.question_answering(\n    question=\"What is AI?\",\n    context=\"Artificial Intelligence is...\"\n)\nprint(response)"
+        },
+        {
+          "type": "code-box",
+          "title": "创建和部署Space",
+          "language": "python",
+          "code": "# 1. 创建Space应用（使用Gradio）\n# app.py\nimport gradio as gr\nfrom transformers import pipeline\n\n# 加载模型\nclassifier = pipeline(\"sentiment-analysis\")\n\ndef predict(text):\n    result = classifier(text)[0]\n    return f\"{result['label']}: {result['score']:.2f}\"\n\n# 创建Gradio界面\niface = gr.Interface(\n    fn=predict,\n    inputs=gr.Textbox(placeholder=\"Enter text here...\"),\n    outputs=\"text\",\n    title=\"Sentiment Analysis\"\n)\n\niface.launch()\n\n# 2. 创建requirements.txt\n# transformers\n# torch\n# gradio\n\n# 3. 推送到Hub\n# git init\n# git add .\n# git commit -m \"Initial commit\"\n# git push https://huggingface.co/spaces/username/my-space\"\n\n# 或者使用huggingface_hub CLI\n# huggingface-cli upload username/my-space ./app.py"
+        },
+        {
+          "type": "code-box",
+          "title": "管理模型版本",
+          "language": "python",
+          "code": "from huggingface_hub import HfApi, create_repo\n\napi = HfApi()\n\n# 创建仓库\ncreate_repo(\"username/my-model\", repo_type=\"model\")\n\n# 上传文件（会自动创建版本）\napi.upload_file(\n    path_or_fileobj=\"./model.safetensors\",\n    path_in_repo=\"model.safetensors\",\n    repo_id=\"username/my-model\",\n    repo_type=\"model\"\n)\n\n# 查看版本历史\nrevisions = api.list_repo_refs(\"username/my-model\")\nfor rev in revisions.branches:\n    print(f\"Branch: {rev.name}\")\n\nfor rev in revisions.tags:\n    print(f\"Tag: {rev.name}\")\n\n# 下载特定版本\nfrom transformers import AutoModel\nmodel = AutoModel.from_pretrained(\n    \"username/my-model\",\n    revision=\"v1.0\"  # 指定版本\n)"
+        }
+      ]
+    }
+  ]
+}

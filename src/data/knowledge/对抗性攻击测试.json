@@ -1,0 +1,54 @@
+{
+  "title": "对抗性攻击测试 (Adversarial Attack Testing)",
+  "subtitle": "对抗性样本生成与模型鲁棒性测试",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "对抗性攻击测试是一种模型安全评估方法，通过生成对抗性样本（adversarial examples）来测试模型的鲁棒性。对抗性样本是对原始输入进行微小扰动后生成的样本，这些扰动对人类几乎不可见，但可能导致模型产生错误输出。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "样本生成：生成各种类型的对抗性样本",
+            "鲁棒性评估：评估模型对对抗性攻击的抵抗能力",
+            "漏洞发现：发现模型的安全漏洞",
+            "防御验证：验证防御机制的有效性",
+            "持续测试：建立持续的安全测试机制"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "对抗样本生成、FGSM、PGD、CW攻击、鲁棒性评估"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "模型安全评估、鲁棒性测试、漏洞发现、安全研究"
+        }
+      ]
+    }
+  ]
+}

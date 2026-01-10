@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>评估与安全知识图谱</title>
+    
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+    
+    <!-- 页面特定样式 -->
+    <style>
+        body {
+            background: radial-gradient(circle at top, var(--bg-primary) 0%, #030712 60%, #010409 100%);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- 知识图谱容器 -->
+        <div id="chart"></div>
+        
+        <!-- 标题栏 -->
+        <div class="title-bar">
+            <h1>评估与安全知识图谱</h1>
+            <p>从模型评估指标到安全威胁防御，全面掌握大模型评估与安全防护技术。</p>
+            <div class="legend">
+                <span><i style="background:#8b5cf6"></i>评估技术</span>
+            <span><i style="background:#ec4899"></i>安全防御</span>
+            <span><i style="background:#10b981"></i>评估指标</span>
+            <span><i style="background:#f59e0b"></i>安全威胁</span>
+            </div>
+        </div>
+        
+        <!-- 控制栏 -->
+        <div class="control-bar">
+            <button class="control-btn" onclick="resetView()">重新布局</button>
+            <button class="control-btn" onclick="toggleAnimation()">暂停/继续动画</button>
+        </div>
+        
+        <!-- 侧边栏 -->
+        <div class="sidebar" id="sidebar">
+            <button class="close-btn" onclick="closeSidebar()">×</button>
+            <div class="sidebar-header">
+                <h2 class="sidebar-title" id="sidebar-title">评估与安全知识图谱</h2>
+                <div class="sidebar-tag" id="sidebar-tag">指南</div>
+            </div>
+            <div class="sidebar-body" id="sidebar-content">
+                <div class="sidebar-placeholder">
+                    <p>👇 在左侧图谱中选择一个节点即可查看详情。</p>
+                    <p>• 点击分类节点查看概览说明<br>• 点击具体技术节点，会在此侧边栏加载对应的 HTML 讲解页</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 公共脚本 -->
+    <script src="../common/knowledge-graph.js"></script>
+    
+    <!-- 页面特定数据 -->
+    <script>
+        // 页面配置
+        const pageConfig = {
+          "containerId": "chart",
+          "data": {
+                    "name": "评估与安全知识地图",
+                    "value": "根节点",
+                    "symbolSize": 70,
+                    "itemStyle": {
+                              "color": "#06b6d4",
+                              "borderColor": "#f8fafc",
+                              "borderWidth": 4
+                    },
+                    "children": [
+                              {
+                                        "name": "模型评估",
+                                        "value": "指标体系 + 评估方法 + 基准测试 + 工具链。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Evaluation",
+                                        "children": [
+                                                  {
+                                                            "name": "指标体系",
+                                                            "value": "Accuracy/F1、BLEU/ROUGE/BERTScore、任务特定指标。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Metrics"
+                                                  },
+                                                  {
+                                                            "name": "评估方法",
+                                                            "value": "自动评估、模型裁判、人工评审、A/B 测试。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Methods"
+                                                  },
+                                                  {
+                                                            "name": "基准测试",
+                                                            "value": "GLUE、MMLU、HellaSwag、HumanEval、MT-Bench。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Benchmarks"
+                                                  },
+                                                  {
+                                                            "name": "工具链",
+                                                            "value": "LM Evaluation Harness、LLM AutoEval、Ragas、DeepEval。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Tooling"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "安全防御",
+                                        "value": "识别与防护提示注入、数据泄露、越狱、后门等威胁。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Security",
+                                        "children": [
+                                                  {
+                                                            "name": "提示注入",
+                                                            "value": "直接/间接注入、多轮诱导，目标是篡改系统行为。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Injection"
+                                                  },
+                                                  {
+                                                            "name": "数据泄露",
+                                                            "value": "训练/用户数据暴露，涉及隐私与合规风险。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Leakage"
+                                                  },
+                                                  {
+                                                            "name": "越狱攻击",
+                                                            "value": "通过角色扮演等手法绕过安全策略。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Jailbreak"
+                                                  },
+                                                  {
+                                                            "name": "后门攻击",
+                                                            "value": "触发器驱动的隐蔽攻击，需要供应链防护。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Backdoor"
+                                                  },
+                                                  {
+                                                            "name": "安全评估",
+                                                            "value": "红队、自动化测试、OWASP LLM Top10 Checklist。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Assessment"
+                                                  }
+                                        ]
+                              }
+                    ]
+          },
+          "techPages": {
+                    "模型评估": "../tech-docs/模型评估.html",
+                    "安全防御": "../tech-docs/安全防御.html"
+          },
+          "categoryDescriptions": {
+                    "模型评估": "覆盖指标体系、评估方法、基准测试与自动化工具，帮助构建可复现、可对比的模型评估闭环。",
+                    "安全防御": "聚焦提示注入、数据泄露、越狱、后门等威胁，强调输入输出过滤、工具沙箱、监控审计与DevSecOps的立体防护。"
+          },
+          "force": {
+                    "repulsion": 1800,
+                    "gravity": 0.15,
+                    "edgeLength": [
+                              80,
+                              240
+                    ],
+                    "friction": 0.2
+          }
+};
+        
+        // 初始化页面
+        initKnowledgeGraph(pageConfig);
+        
+        // 窗口大小改变时重新调整
+        window.addEventListener('resize', function() {
+            if (typeof chart !== 'undefined' && chart) {
+                chart.resize();
+            }
+        });
+    </script>
+</body>
+</html>

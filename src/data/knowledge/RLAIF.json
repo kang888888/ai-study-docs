@@ -1,0 +1,56 @@
+{
+  "title": "RLAIF：基于AI反馈的强化学习",
+  "subtitle": "使用AI模型（如大语言模型）提供反馈，替代人类反馈，降低成本并提高可扩展性。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "RLAIF流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "RLAIF流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "RLAIF对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "RLAIF对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "CAI（Constitutional AI）：基于宪法的强化学习",
+            "RBR（Rule-Based Reward）：基于规则的奖励"
+          ]
+        }
+      ]
+    }
+  ]
+}

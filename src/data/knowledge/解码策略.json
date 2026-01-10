@@ -1,0 +1,55 @@
+{
+  "title": "解码策略（Decoding Strategies）",
+  "subtitle": "大语言模型中文本生成的关键技术，直接影响生成文本的质量、多样性和可控性。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "解码策略对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "解码策略对比",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "解码策略效果",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "解码策略效果",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用不同解码策略生成文本",
+          "language": "python",
+          "code": "from transformers import AutoTokenizer, AutoModelForCausalLM\n\nmodel_name = \"microsoft/DialoGPT-medium\"\ntokenizer = AutoTokenizer.from_pretrained(model_name)\nmodel = AutoModelForCausalLM.from_pretrained(model_name)\n\nprompt = \"Hello, how are you?\"\n\n# 贪心搜索\noutputs_greedy = model.generate(\n    tokenizer(prompt, return_tensors=\"pt\")[\"input_ids\"],\n    max_length=100,\n    do_sample=False,\n    num_beams=1\n)\n\n# 束搜索\noutputs_beam = model.generate(\n    tokenizer(prompt, return_tensors=\"pt\")[\"input_ids\"],\n    max_length=100,\n    do_sample=False,\n    num_beams=4\n)\n\n# 核采样\noutputs_nucleus = model.generate(\n    tokenizer(prompt, return_tensors=\"pt\")[\"input_ids\"],\n    max_length=100,\n    do_sample=True,\n    top_p=0.9,\n    temperature=0.7\n)"
+        }
+      ]
+    }
+  ]
+}

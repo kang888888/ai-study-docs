@@ -1,0 +1,163 @@
+{
+  "title": "MoE (Mixture of Experts) 混合专家模型",
+  "subtitle": "稀疏激活的超大规模模型架构",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "将大模型拆分为多个'专家'子网络（通常是FFN层），通过门控网络（Router/Gating Network）动态选择激活哪些专家。实现了参数总量大但计算量小的稀疏激活。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "稀疏激活：每次推理只激活部分专家（如Top-2），计算量大幅降低",
+            "参数效率：总参数量可达数千亿，但激活参数仅数十亿",
+            "门控路由：可学习的Router决定输入应该交给哪些专家处理",
+            "负载均衡：通过辅助损失函数确保专家负载均衡",
+            "极致性价比：Mixtral 8x7B性能媲美LLaMA-70B，但推理成本仅为13B"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "门控网络（Gating Network）、Top-K路由、负载均衡损失（Auxiliary Loss）、专家并行"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "超大规模语言模型（DeepSeek-V2/V3、Mixtral、GPT-4推测）、多任务学习"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "MoEDiagram",
+              "caption": "MoE路由可视化",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "MoE路由可视化",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "MoEDiagram",
+              "caption": "MoE组件详解",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "MoE组件详解",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "门控网络（Gating Network）",
+          "formulas": [
+            {
+              "text": "门控网络计算每个专家的权重："
+            },
+            {
+              "display": "G(x) = \\text{softmax}(W_g x + b_g)"
+            },
+            {
+              "text": "其中 $G(x) \\in \\mathbb{R}^E$，$E$ 是专家数量",
+              "inline": "G(x) \\in \\mathbb{R}^E"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Top-K 路由",
+          "formulas": [
+            {
+              "text": "选择Top-K个专家："
+            },
+            {
+              "display": "\\text{TopK}(G(x), k) = \\{i_1, i_2, ..., i_k\\}"
+            },
+            {
+              "text": "输出为选中专家的加权和："
+            },
+            {
+              "display": "y = \\sum_{i \\in \\text{TopK}} G_i(x) \\cdot E_i(x)"
+            },
+            {
+              "text": "其中 $E_i(x)$ 是第 $i$ 个专家的输出",
+              "inline": "E_i(x)"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "负载均衡损失",
+          "formulas": [
+            {
+              "text": "确保专家负载均衡："
+            },
+            {
+              "display": "L_{aux} = \\alpha \\cdot \\sum_{i=1}^{E} f_i \\cdot P_i"
+            },
+            {
+              "text": "其中 $f_i$ 是专家 $i$ 被选中的频率，$P_i$ 是平均路由概率",
+              "inline": "f_i"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 PyTorch 实现 MoE 层",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\nclass MoELayer(nn.Module):\n    \"\"\"混合专家层\"\"\"\n    def __init__(self, d_model, num_experts=8, top_k=2):\n        super(MoELayer, self).__init__()\n        self.num_experts = num_experts\n        self.top_k = top_k\n        \n        # 门控网络\n        self.gate = nn.Linear(d_model, num_experts)\n        \n        # 多个专家（FFN）\n        self.experts = nn.ModuleList([\n            nn.Sequential(\n                nn.Linear(d_model, d_model * 4),\n                nn.ReLU(),\n                nn.Linear(d_model * 4, d_model)\n            ) for _ in range(num_experts)\n        ])\n    \n    def forward(self, x):\n        \"\"\"\n        参数:\n            x: [batch_size, seq_length, d_model]\n        返回:\n            output: [batch_size, seq_length, d_model]\n        \"\"\"\n        batch_size, seq_length, d_model = x.shape\n        \n        # 计算门控权重\n        gate_logits = self.gate(x)  # [batch_size, seq_length, num_experts]\n        gate_probs = F.softmax(gate_logits, dim=-1)\n        \n        # Top-K 选择\n        top_k_probs, top_k_indices = torch.topk(gate_probs, self.top_k, dim=-1)\n        top_k_probs = top_k_probs / top_k_probs.sum(dim=-1, keepdim=True)\n        \n        # 初始化输出\n        output = torch.zeros_like(x)\n        \n        # 对每个专家计算输出\n        for i in range(self.num_experts):\n            # 找到使用当前专家的位置\n            expert_mask = (top_k_indices == i)\n            \n            if expert_mask.any():\n                # 计算专家输出\n                expert_output = self.experts[i](x)\n                \n                # 加权累加\n                weights = top_k_probs * expert_mask.float()\n                output += weights.unsqueeze(-1) * expert_output\n        \n        return output\n\n# 使用示例\nif __name__ == \"__main__\":\n    moe = MoELayer(d_model=512, num_experts=8, top_k=2)\n    x = torch.randn(2, 100, 512)\n    output = moe(x)\n    print(f\"输出形状: {output.shape}\")  # [2, 100, 512]"
+        }
+      ]
+    }
+  ]
+}

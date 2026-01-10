@@ -1,0 +1,61 @@
+{
+  "title": "流水线并行基础",
+  "subtitle": "理解流水线分段、气泡抑制、调度策略等流水线并行的核心概念。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "流水线并行原理",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "流水线并行原理",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "气泡抑制策略",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "气泡抑制策略",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "流水线分段",
+          "language": "python",
+          "code": "import torch.nn as nn\n\ndef split_model_into_stages(model, num_stages):\n    \"\"\"将模型分割成多个流水线阶段\"\"\"\n    layers = list(model.children())\n    layers_per_stage = len(layers) // num_stages\n    \n    stages = []\n    for i in range(num_stages):\n        start_idx = i * layers_per_stage\n        end_idx = (i + 1) * layers_per_stage if i < num_stages - 1 else len(layers)\n        stage = nn.Sequential(*layers[start_idx:end_idx])\n        stages.append(stage)\n    \n    return stages\n\nclass PipelineStage(nn.Module):\n    def __init__(self, stage_model, stage_id, num_stages):\n        super().__init__()\n        self.stage_model = stage_model\n        self.stage_id = stage_id\n        self.num_stages = num_stages\n    \n    def forward(self, x, micro_batch_id=None):\n        return self.stage_model(x)"
+        },
+        {
+          "type": "code-box",
+          "title": "1F1B调度策略",
+          "language": "python",
+          "code": "def schedule_1f1b(num_microbatches, num_stages):\n    \"\"\"1F1B (One Forward One Backward) 调度策略\"\"\"\n    schedule = []\n    \n    # 前向传播阶段\n    for mb_id in range(num_microbatches):\n        for stage_id in range(num_stages):\n            schedule.append(('forward', mb_id, stage_id))\n    \n    # 反向传播阶段（1F1B模式）\n    for mb_id in range(num_microbatches - 1, -1, -1):\n        for stage_id in range(num_stages - 1, -1, -1):\n            schedule.append(('backward', mb_id, stage_id))\n    \n    return schedule"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPTQ（Gradient Post-Training Quantization）详解</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>GPTQ：梯度驱动的后训练 4bit 量化</h1>
+        <p class="tagline">通过最小二乘 + 梯度校正的方式在不重新训练的情况下实现高精度 4bit 权重量化，被广泛用于 LLaMA/OPT 家族。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card"><h3>核心思想</h3><p>以块为单位对权重进行贪心量化，并用 Hessian/梯度信息补偿误差。</p></div>
+            <div class="meta-card"><h3>优点</h3><p>无需训练、精度高、适合大模型、推理友好。</p></div>
+            <div class="meta-card"><h3>依赖</h3><p>校准数据、Hessian 近似（可由梯度或近似矩阵表示），bitsandbytes 实现。</p></div>
+            <div class="meta-card"><h3>典型应用</h3><p>LLaMA、Mistral、Qwen、CodeLlama 4bit/3bit 推理。</p></div>
+        </div>
+
+        <div class="section">
+            <h2>⚙️ 流程</h2>
+            <ul>
+                <li>将权重矩阵按列or行拆成小块（如 128 列）。</li>
+                <li>计算该块的 Hessian 近似 $H$，记录灵敏度。</li>
+                <li>对每列执行最小化 $(w - \hat{w})^T H (w - \hat{w})$ 的量化。</li>
+                <li>使用剩余误差更新尚未量化的列，避免误差扩散。</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>📊 图解</h2>
+            <div class="diagram-gallery">
+                <div class="diagram-item"><img src="./assets/GPTQ流程.png" alt="GPTQ 量化流程" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">流程</div></div>
+                <div class="diagram-item"><img src="./assets/GPTQ误差.png" alt="误差补偿" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">误差补偿</div></div>
+                <div class="diagram-item"><img src="./assets/GPTQ性能.png" alt="性能对比" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">精度 vs 推理速度</div></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📐 数学原理</h2>
+            <div class="math-box">
+                <h3>最小二乘量化</h3>
+                <div class="math-formula">
+                    <p>目标：$$\hat{w} = \arg\min_{q} (w - q)^T H (w - q)$$</p>
+                    <p>其中 $H$ 是 Hessian 近似，通过梯度积累或近似 Fisher 信息获得。</p>
+                </div>
+            </div>
+            <div class="math-box">
+                <h3>误差回传</h3>
+                <div class="math-formula">
+                    <p>量化第 i 列后更新剩余列：</p>
+                    <p>$$W_{j} \leftarrow W_{j} - \frac{H_{ji}}{H_{ii}} (w_i - \hat{w}_i)$$</p>
+                    <p>避免误差集中，提升整体精度。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💻 代码示例</h2>
+            <div class="code-box">
+                <h3>使用 AutoGPTQ 导出 4bit 模型</h3>
+                <pre><code class="language-python">from auto_gptq import AutoGPTQForCausalLM, BaseQuantizeConfig
+from transformers import AutoTokenizer
+
+model_name = "meta-llama/Llama-2-13b-hf"
+quant_config = BaseQuantizeConfig(
+    bits=4,
+    group_size=128,
+    damp_percent=0.01,
+    desc_act=False
+)
+
+model = AutoGPTQForCausalLM.from_pretrained(
+    model_name,
+    quantize_config=quant_config
+)
+
+tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=False)
+model.quantize(dataset="c4", batch_size=16, cache_examples_on_gpu=False)
+model.save_quantized("./llama2-13b-gptq", use_safetensors=True)
+</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal();">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+
+    <script>
+        function openImageModal(img){const modal=document.getElementById('imageModal');modal.classList.add('active');document.getElementById('modalImage').src=img.src;document.getElementById('modalCaption').textContent=img.alt||'';}
+        function closeImageModal(){document.getElementById('imageModal').classList.remove('active');}
+        document.addEventListener('keydown',e=>{if(e.key==='Escape')closeImageModal();});
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

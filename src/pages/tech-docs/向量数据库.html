@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>向量数据库</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>向量数据库</h1>
+        <p class="tagline">向量数据库的核心概念、主流产品与选择指南。专门用于存储和检索高维向量的数据库系统，是RAG系统和语义搜索的基础。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card"><h3>核心概念</h3><p>向量嵌入、相似度计算、索引结构、检索方式。</p></div>
+            <div class="meta-card"><h3>索引类型</h3><p>HNSW、IVF、LSH等高效索引算法。</p></div>
+            <div class="meta-card"><h3>主流产品</h3><p>Milvus、Pinecone、Weaviate、Qdrant。</p></div>
+            <div class="meta-card"><h3>应用场景</h3><p>语义搜索、RAG系统、推荐系统、相似度检索。</p></div>
+        </div>
+
+        <div class="section">
+            <h2>⚙️ 核心概念</h2>
+            
+            <h3 style="color:#fbbf24; margin-top:20px;">1. 向量嵌入（Vector Embedding）</h3>
+            <ul>
+                <li><strong>定义</strong>：将文本、图像等数据转换为固定维度的数值向量</li>
+                <li><strong>特点</strong>：高维向量（通常128-1536维），语义相似的数据向量距离近</li>
+                <li><strong>生成</strong>：通过神经网络模型生成（如BERT、OpenAI Embeddings）</li>
+            </ul>
+            <div class="code-box" style="margin-top:12px;">
+                <pre><code class="language-python"># 文本向量化示例
+text = "人工智能是未来"
+embedding = model.encode(text)  # [0.1, 0.2, ..., 0.9] (768维)</code></pre>
+            </div>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">2. 相似度计算</h3>
+            <ul>
+                <li><strong>余弦相似度</strong>：$\text{similarity} = \cos(\theta) = \frac{A \cdot B}{||A|| \times ||B||}$</li>
+                <li><strong>欧氏距离</strong>：$\text{distance} = \sqrt{\sum(A_i - B_i)^2}$</li>
+                <li><strong>点积</strong>：$\text{similarity} = A \cdot B = \sum(A_i \times B_i)$</li>
+            </ul>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">3. 索引结构</h3>
+            <ul>
+                <li><strong>HNSW（Hierarchical Navigable Small World）</strong>：分层图结构，快速近似检索，适合大规模数据</li>
+                <li><strong>IVF（Inverted File）</strong>：倒排索引，聚类加速，内存效率高</li>
+                <li><strong>LSH（Locality Sensitive Hashing）</strong>：局部敏感哈希，快速检索，近似结果</li>
+            </ul>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">4. 检索方式</h3>
+            <ul>
+                <li><strong>精确检索</strong>：计算所有向量距离，返回最相似结果，准确但慢</li>
+                <li><strong>近似检索</strong>：使用索引加速，近似结果，快速但可能遗漏</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>💻 代码示例</h2>
+            <div class="code-box">
+                <h3>文本向量化</h3>
+                <pre><code class="language-python">from sentence_transformers import SentenceTransformer
+
+# 加载嵌入模型
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+# 文本向量化
+text = "人工智能是未来"
+embedding = model.encode(text)
+# 输出: [0.1, 0.2, ..., 0.9] (384维)</code></pre>
+            </div>
+
+            <div class="code-box">
+                <h3>向量相似度检索</h3>
+                <pre><code class="language-python">import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+
+# 计算余弦相似度
+query_vector = model.encode("机器学习")
+doc_vectors = model.encode(["深度学习", "神经网络", "自然语言处理"])
+
+similarities = cosine_similarity([query_vector], doc_vectors)
+# 返回相似度分数</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔧 工作流程</h2>
+            
+            <h3 style="color:#fbbf24; margin-top:20px;">1. 数据向量化</h3>
+            <div class="code-box">
+                <pre><code class="language-python">from sentence_transformers import SentenceTransformer
+
+model = SentenceTransformer('all-MiniLM-L6-v2')
+embeddings = model.encode(texts)</code></pre>
+            </div>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">2. 向量存储</h3>
+            <div class="code-box">
+                <pre><code class="language-python"># 存储到向量数据库
+vector_db.insert(
+    vectors=embeddings,
+    ids=document_ids,
+    metadata=metadata
+)</code></pre>
+            </div>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">3. 向量检索</h3>
+            <div class="code-box">
+                <pre><code class="language-python"># 查询向量化
+query_embedding = model.encode(query)
+
+# 检索相似向量
+results = vector_db.search(
+    query_vector=query_embedding,
+    top_k=10
+)</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📊 性能指标</h2>
+            
+            <h3 style="color:#fbbf24; margin-top:20px;">检索性能</h3>
+            <ul>
+                <li><strong>延迟</strong>：检索响应时间</li>
+                <li><strong>吞吐量</strong>：每秒查询数</li>
+                <li><strong>准确率</strong>：检索结果准确性</li>
+            </ul>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">存储性能</h3>
+            <ul>
+                <li><strong>存储容量</strong>：支持向量数量</li>
+                <li><strong>内存使用</strong>：内存占用</li>
+                <li><strong>扩展性</strong>：水平扩展能力</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>💡 最佳实践</h2>
+            <ul>
+                <li><strong>选择合适的维度</strong>：平衡性能和精度</li>
+                <li><strong>优化索引</strong>：根据数据选择索引（HNSW适合大规模，IVF适合高维）</li>
+                <li><strong>批量操作</strong>：批量插入和查询，提高效率</li>
+                <li><strong>监控性能</strong>：监控检索性能，及时优化</li>
+                <li><strong>定期更新</strong>：更新向量和索引，保持数据新鲜度</li>
+                <li><strong>产品选择</strong>：根据实际需求（开源、性能、易用性）选择合适产品</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>🏢 主流产品</h2>
+            
+            <h3 style="color:#fbbf24; margin-top:20px;">1. Milvus</h3>
+            <ul>
+                <li><strong>概述</strong>：开源向量数据库，专为AI应用设计，支持大规模向量检索</li>
+                <li><strong>核心特性</strong>：高性能（十亿级向量）、可扩展（分布式架构）、易用性（简单API）</li>
+                <li><strong>适用场景</strong>：大规模向量检索、企业级应用、自建部署</li>
+            </ul>
+            <div class="code-box" style="margin-top:12px;">
+                <h3>Milvus快速开始</h3>
+                <pre><code class="language-python">from pymilvus import connections, Collection
+
+# 连接Milvus
+connections.connect("default", host="localhost", port="19530")
+
+# 创建集合和检索
+collection = Collection("documents", schema)
+collection.insert(data)
+results = collection.search(data=query_vectors, anns_field="vector", limit=10)</code></pre>
+            </div>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">2. Pinecone</h3>
+            <ul>
+                <li><strong>概述</strong>：完全托管的云服务向量数据库，提供简单易用的API</li>
+                <li><strong>核心特性</strong>：完全托管（无需运维）、简单易用（快速上手）、高性能（低延迟）</li>
+                <li><strong>适用场景</strong>：快速原型、中小规模应用、无需运维</li>
+            </ul>
+            <div class="code-box" style="margin-top:12px;">
+                <h3>Pinecone快速开始</h3>
+                <pre><code class="language-python">import pinecone
+
+# 初始化和创建索引
+pinecone.init(api_key="your-api-key", environment="us-west1-gcp")
+pinecone.create_index(name="documents", dimension=768, metric="cosine")
+
+# 操作
+index = pinecone.Index("documents")
+index.upsert(vectors=[("id1", [0.1, 0.2, ...])])
+results = index.query(vector=[0.1, 0.2, ...], top_k=10)</code></pre>
+            </div>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">3. Weaviate</h3>
+            <ul>
+                <li><strong>概述</strong>：开源向量搜索引擎，集成图数据库功能，支持多模态检索</li>
+                <li><strong>核心特性</strong>：图数据库集成、多模态支持、RESTful API</li>
+                <li><strong>适用场景</strong>：知识图谱、多模态检索、复杂查询</li>
+            </ul>
+            <div class="code-box" style="margin-top:12px;">
+                <h3>Weaviate快速开始</h3>
+                <pre><code class="language-python">import weaviate
+
+client = weaviate.Client("http://localhost:8080")
+client.schema.create_class(schema)
+client.data_object.create(data_object={"text": "文档内容"}, class_name="Document", vector=embedding)
+result = client.query.get("Document", ["text"]).with_near_vector({"vector": query_vector}).do()</code></pre>
+            </div>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">4. Qdrant</h3>
+            <ul>
+                <li><strong>概述</strong>：高性能向量数据库，使用Rust实现，提供优秀的性能和易用性</li>
+                <li><strong>核心特性</strong>：高性能（Rust实现）、内存优化、易用性（简单API）</li>
+                <li><strong>适用场景</strong>：高性能需求、实时检索、资源受限环境</li>
+            </ul>
+            <div class="code-box" style="margin-top:12px;">
+                <h3>Qdrant快速开始</h3>
+                <pre><code class="language-python">from qdrant_client import QdrantClient
+from qdrant_client.models import Distance, VectorParams, PointStruct
+
+client = QdrantClient(host="localhost", port=6333)
+client.create_collection(collection_name="documents", vectors_config=VectorParams(size=768, distance=Distance.COSINE))
+client.upsert(collection_name="documents", points=points)
+results = client.search(collection_name="documents", query_vector=[0.1, 0.2, ...], limit=10)</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📊 产品对比</h2>
+            
+            <div style="overflow-x:auto; margin-top:20px;">
+                <table style="width:100%; border-collapse:collapse; background:rgba(8,8,20,0.95); border:1px solid rgba(245,158,11,0.35); border-radius:12px;">
+                    <thead>
+                        <tr style="background:rgba(245,158,11,0.15);">
+                            <th style="padding:12px; text-align:left; border-bottom:1px solid rgba(245,158,11,0.3);">特性</th>
+                            <th style="padding:12px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.3);">Milvus</th>
+                            <th style="padding:12px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.3);">Pinecone</th>
+                            <th style="padding:12px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.3);">Weaviate</th>
+                            <th style="padding:12px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.3);">Qdrant</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding:10px; border-bottom:1px solid rgba(245,158,11,0.2);"><strong>开源</strong></td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">✅</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">❌</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">✅</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">✅</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:10px; border-bottom:1px solid rgba(245,158,11,0.2);"><strong>云服务</strong></td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">✅</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">✅</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">✅</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">✅</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:10px; border-bottom:1px solid rgba(245,158,11,0.2);"><strong>性能</strong></td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">高</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">中高</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">中</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">高</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:10px; border-bottom:1px solid rgba(245,158,11,0.2);"><strong>易用性</strong></td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">中</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">高</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">中</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">高</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:10px; border-bottom:1px solid rgba(245,158,11,0.2);"><strong>扩展性</strong></td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">高</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">中</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">中</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">中</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:10px; border-bottom:1px solid rgba(245,158,11,0.2);"><strong>成本</strong></td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">低</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">中高</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">低</td>
+                            <td style="padding:10px; text-align:center; border-bottom:1px solid rgba(245,158,11,0.2);">低</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:10px;"><strong>部署</strong></td>
+                            <td style="padding:10px; text-align:center;">复杂</td>
+                            <td style="padding:10px; text-align:center;">简单</td>
+                            <td style="padding:10px; text-align:center;">中等</td>
+                            <td style="padding:10px; text-align:center;">简单</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 style="color:#fbbf24; margin-top:30px;">选择建议</h3>
+            <ul>
+                <li><strong>需要开源</strong>：Milvus、Weaviate、Qdrant</li>
+                <li><strong>需要云服务</strong>：Pinecone</li>
+                <li><strong>需要高性能</strong>：Milvus、Qdrant</li>
+                <li><strong>需要易用性</strong>：Pinecone、Qdrant</li>
+                <li><strong>需要知识图谱</strong>：Weaviate</li>
+                <li><strong>需要快速部署</strong>：Pinecone、Qdrant</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>📊 应用场景</h2>
+            <ul>
+                <li><strong>语义搜索</strong>：基于语义相似度的搜索，而非关键词匹配</li>
+                <li><strong>RAG系统</strong>：检索相关文档片段，增强生成质量</li>
+                <li><strong>推荐系统</strong>：基于向量相似度的内容推荐</li>
+                <li><strong>相似度检索</strong>：查找相似内容、去重、聚类</li>
+                <li><strong>图像检索</strong>：基于图像向量的相似图像检索</li>
+            </ul>
+        </div>
+    </div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

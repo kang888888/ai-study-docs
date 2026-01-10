@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI智能体</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [["$", "$"], ["\\(", "\\)"]], displayMath: [["$$", "$$"], ["\\[", "\\]"]] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>AI智能体</h1>
+    <p class="tagline">自主智能体（Autonomous Agents）的核心概念、框架选择、ReAct 工作流与实践案例。</p>
+
+    <div class="meta-grid">
+        <div class="meta-card"><h3>核心能力</h3><p>感知、推理、行动、反馈、记忆</p></div>
+        <div class="meta-card"><h3>典型模式</h3><p>ReAct、Self-Ask、Plan-and-Execute、Multi-Agent</p></div>
+        <div class="meta-card"><h3>主流框架</h3><p>LangGraph、LlamaIndex、CrewAI、AutoGen、OpenAI SDK</p></div>
+        <div class="meta-card"><h3>应用场景</h3><p>搜索助手、代码生成、数据分析、自动化运营</p></div>
+    </div>
+
+    <div class="section">
+        <h2>🧠 核心概念</h2>
+        <h3>智能体组成</h3>
+        <ul>
+            <li><strong>感知（Perception）</strong>：读取指令、环境状态和记忆</li>
+            <li><strong>决策（Decision）</strong>：推理、规划、选择行动</li>
+            <li><strong>行动（Action）</strong>：调用工具、执行 API、与外部系统交互</li>
+            <li><strong>反馈（Feedback）</strong>：根据 Observation 更新状态，继续迭代</li>
+        </ul>
+        <h3>思考-行动循环（ReAct）</h3>
+        <p>Thought → Action → Observation → Thought → …</p>
+        <ul>
+            <li>结合推理与行动，既可解释又高效</li>
+            <li>每一步都有日志，方便调试与审计</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>🤖 智能体类型</h2>
+        <table>
+            <thead><tr><th>类型</th><th>特点</th><th>适用场景</th></tr></thead>
+            <tbody>
+                <tr><td>Zero-shot ReAct</td><td>无需示例，通用性强</td><td>快速接入、多领域问答</td></tr>
+                <tr><td>ReAct Docstore</td><td>结合文档检索</td><td>RAG + Agent 整合</td></tr>
+                <tr><td>Self-Ask w/ Search</td><td>自我提问、深度推理</td><td>复杂问题拆解</td></tr>
+                <tr><td>Plan-and-Execute</td><td>先规划后执行</td><td>多步骤长任务</td></tr>
+                <tr><td>Multi-Agent（CrewAI/AutoGen）</td><td>多角色协作</td><td>复杂项目、任务分工</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>🧩 工具与记忆</h2>
+        <h3>工具（Tools）</h3>
+        <ul>
+            <li>简单工具：`Tool` 封装函数</li>
+            <li>结构化工具：`StructuredTool` + Pydantic Schema</li>
+            <li>系统工具：搜索、计算、代码执行、数据库、API</li>
+        </ul>
+        <div class="code-box"><pre><code class="language-python">from langchain.tools import StructuredTool
+from pydantic import BaseModel
+
+class CalculatorInput(BaseModel):
+    expression: str
+
+calc_tool = StructuredTool.from_function(
+    func=calculate,
+    name="Calculator",
+    description="执行数学计算",
+    args_schema=CalculatorInput
+)</code></pre></div>
+        <h3>记忆（Memory）</h3>
+        <ul>
+            <li>ConversationBufferMemory：完整对话</li>
+            <li>ConversationSummaryMemory：自动摘要</li>
+            <li>VectorStoreRetrieverMemory：向量记忆/长期记忆</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>⚙️ ReAct 工作流</h2>
+        <div class="code-box"><pre><code class="language-python">thought = "需要了解AI最新进展"
+action = "Search[AI 最新进展]"
+observation = execute(action)
+thought = "有了信息，生成回答"
+action = "Answer[...]"</code></pre></div>
+        <ul>
+            <li>推理和行动结合，保证可解释性</li>
+            <li>通过观察结果持续优化策略</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>🏗️ 框架选型</h2>
+        <table>
+            <thead><tr><th>框架</th><th>核心卖点</th><th>适用场景</th></tr></thead>
+            <tbody>
+                <tr><td>LangGraph</td><td>工作流可视化、状态管理、条件/循环</td><td>复杂流程、生产系统</td></tr>
+                <tr><td>LlamaIndex</td><td>RAG + Agent、数据增强</td><td>文档问答、知识检索</td></tr>
+                <tr><td>smolagents</td><td>轻量级、快速原型</td><td>入门学习、简单任务</td></tr>
+                <tr><td>CrewAI</td><td>多智能体协作、角色管理</td><td>团队协作、任务分解</td></tr>
+                <tr><td>AutoGen</td><td>对话驱动、多智能体对话</td><td>协作讨论、决策制定</td></tr>
+                <tr><td>OpenAI Agents SDK</td><td>生产就绪、强 OpenAI 集成</td><td>企业级应用</td></tr>
+            </tbody>
+        </table>
+        <p><strong>选择建议：</strong>复杂工作流 → LangGraph；需要 RAG → LlamaIndex；快速原型 → smolagents；多智能体 → CrewAI / AutoGen；生产级 → LangGraph / OpenAI SDK。</p>
+    </div>
+
+    <div class="section">
+        <h2>🔧 开发流程示例</h2>
+        <div class="code-box"><pre><code class="language-python">from langchain.agents import initialize_agent, Tool
+from langchain.memory import ConversationBufferMemory
+
+# 1. 定义工具
+tools = [Tool(name="Search", func=search_web, description="网络搜索")]
+
+# 2. 初始化 LLM 与记忆
+llm = ChatOpenAI()
+memory = ConversationBufferMemory()
+
+# 3. 构建智能体
+agent = initialize_agent(
+    tools=tools,
+    llm=llm,
+    agent="zero-shot-react-description",
+    memory=memory,
+    verbose=True
+)
+
+# 4. 运行
+agent.run("帮我整理本周 AI 大事件，并生成行动建议")</code></pre></div>
+    </div>
+
+    <div class="section">
+        <h2>🧪 实践案例</h2>
+        <h3>1. 搜索助手智能体</h3>
+        <div class="code-box"><pre><code class="language-python">def search_web(query):
+    return search_results
+
+tools = [Tool(name="Search", func=search_web, description="搜索网络信息")]
+agent = initialize_agent(tools=tools, llm=llm, agent="zero-shot-react-description")
+agent.run("总结 2024 年 AI 的最新突破")</code></pre></div>
+
+        <h3>2. 代码生成智能体</h3>
+        <div class="code-box"><pre><code class="language-python">def generate_code(requirement):
+    return code
+
+tools = [Tool(name="CodeGenerator", func=generate_code, description="生成代码")]
+agent = initialize_agent(tools=tools, llm=llm)
+agent.run("生成一个 Python 函数计算斐波那契数列")</code></pre></div>
+
+        <h3>3. 数据分析智能体</h3>
+        <div class="code-box"><pre><code class="language-python">def analyze_data(data):
+    return analysis_result
+
+tools = [Tool(name="DataAnalyzer", func=analyze_data, description="分析数据")]
+agent = initialize_agent(tools=tools, llm=llm)
+agent.run("分析销售数据并给出趋势")</code></pre></div>
+    </div>
+
+    <div class="section">
+        <h2>✅ 最佳实践</h2>
+        <ul>
+            <li>明确任务目标，避免指令歧义</li>
+            <li>设计职责清晰、输入输出可控的工具</li>
+            <li>优化提示：说明角色、步骤和格式要求</li>
+            <li>使用回调/日志监控思考、行动、反馈</li>
+            <li>引入缓存与速率限制，控制成本与稳定性</li>
+            <li>建立安全合规策略：过滤输入输出、记录关键调用</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>🔗 相关资源</h2>
+        <ul>
+            <li><a href="./AI智能体.md">AI智能体（Markdown）</a></li>
+            <li><a href="../LangChain框架/LangChain框架.md">LangChain框架</a></li>
+            <li><a href="../RAG系统/RAG系统.md">RAG系统</a></li>
+            <li><a href="../向量数据库/向量数据库.md">向量数据库</a></li>
+            <li><a href="https://arxiv.org/abs/2210.03629" target="_blank">ReAct 论文</a></li>
+        </ul>
+    </div>
+</div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

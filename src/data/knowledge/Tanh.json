@@ -1,0 +1,119 @@
+{
+  "title": "Tanh (双曲正切函数)",
+  "subtitle": "输出范围(-1,1)的零中心激活函数",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Tanh（双曲正切）函数将输入映射到(-1,1)区间，是零中心化的激活函数。相比Sigmoid，Tanh的输出均值接近0，有助于梯度传播，在RNN和LSTM中广泛使用。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学表达",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "Tanh函数定义",
+          "formulas": [
+            {
+              "text": "Tanh函数定义为："
+            },
+            {
+              "display": "\\tanh(x) = \\frac{e^x - e^{-x}}{e^x + e^{-x}} = \\frac{\\sinh(x)}{\\cosh(x)}"
+            },
+            {
+              "text": "与Sigmoid的关系："
+            },
+            {
+              "display": "\\tanh(x) = 2\\sigma(2x) - 1"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "导数",
+          "formulas": [
+            {
+              "text": "Tanh的导数："
+            },
+            {
+              "display": "\\frac{d}{dx}\\tanh(x) = 1 - \\tanh^2(x) = \\text{sech}^2(x)"
+            },
+            {
+              "text": "最大梯度在 $x=0$ 处，值为 $1$"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "零中心化：输出均值接近0，有助于梯度传播",
+            "输出范围：(-1, 1)，比Sigmoid更宽的动态范围",
+            "对称性：关于原点对称，$\\tanh(-x) = -\\tanh(x)$",
+            "仍会饱和：当|x|较大时，梯度接近0",
+            "计算开销：涉及指数运算"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 函数图像",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "MathFunctionDiagram",
+              "caption": "Tanh函数图像",
+              "width": 1000,
+              "height": 600,
+              "interactive": true,
+              "props": {
+                "type": "activation",
+                "title": "Tanh函数图像",
+                "function": "tanh"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "RNN隐藏层、LSTM/GRU门控机制、需要零中心输出的场景"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "Tanh实现与使用",
+          "language": "python",
+          "code": "import numpy as np\nimport torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\n# 1. 基础实现\nx = np.array([-2, -1, 0, 1, 2])\ntanh_output = np.tanh(x)\nprint(f\"Tanh输出: {tanh_output}\")\n\n# 2. PyTorch实现\nx_tensor = torch.tensor([-2.0, -1.0, 0.0, 1.0, 2.0])\ntanh_torch = torch.tanh(x_tensor)\nprint(f\"PyTorch Tanh: {tanh_torch}\")\n\n# 3. 在RNN中使用\nclass SimpleRNN(nn.Module):\n    def __init__(self, input_size, hidden_size):\n        super(SimpleRNN, self).__init__()\n        self.hidden_size = hidden_size\n        self.i2h = nn.Linear(input_size + hidden_size, hidden_size)\n        self.tanh = nn.Tanh()\n    \n    def forward(self, x, hidden):\n        combined = torch.cat([x, hidden], dim=1)\n        hidden = self.tanh(self.i2h(combined))\n        return hidden"
+        }
+      ]
+    }
+  ]
+}

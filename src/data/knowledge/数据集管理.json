@@ -1,0 +1,61 @@
+{
+  "title": "数据集管理",
+  "subtitle": "数据版本管理、元数据管理、数据监控等数据集管理技术。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据集管理架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "数据集管理架构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据集管理流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "数据集管理流程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "版本管理",
+          "language": "python",
+          "code": "import dvc.api\n\n# 使用DVC管理数据版本\n# 读取特定版本的数据\ndata_path = dvc.api.get_url('data/dataset.csv', rev='v1.0')"
+        },
+        {
+          "type": "code-box",
+          "title": "元数据管理",
+          "language": "python",
+          "code": "metadata = {\n    \"dataset_name\": \"training_data\",\n    \"version\": \"v1.0\",\n    \"source\": \"Hugging Face\",\n    \"size\": \"10GB\",\n    \"format\": \"JSONL\",\n    \"quality_score\": 0.95\n}"
+        }
+      ]
+    }
+  ]
+}

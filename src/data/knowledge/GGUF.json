@@ -1,0 +1,102 @@
+{
+  "title": "GGUF：下一代 llama.cpp 量化模型格式",
+  "subtitle": "将模型权重、词表、超参数、量化元数据打包到统一文件中，支持 Q4/Q5/Q6 多种方案，方便桌面端与移动端推理。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "文件结构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "文件结构"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "量化精度",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "量化精度"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "部署路线",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "部署路线"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学与编码",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "块量化",
+          "formulas": [
+            {
+              "text": "GGUF 使用固定大小 block，如 32/64 元素："
+            },
+            {
+              "display": "w_{block} = s \\cdot q + m"
+            },
+            {
+              "text": "其中 $s$ 为缩放，$q$ 为量化整数，$m$ 可选偏置。",
+              "inline": "s"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "内存映射",
+          "formulas": [
+            {
+              "text": "推理时直接 mmap："
+            },
+            {
+              "display": "\\text{ptr} = \\text{mmap}(\\text{GGUF}, \\text{PROT\\_READ})"
+            },
+            {
+              "text": "避免拷贝，降低启动时间。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 操作示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "转换 & 推理",
+          "language": "bash",
+          "code": "# 1. 将 HF 权重转为 GGUF 并量化\npython3 convert.py \\\n  --model llama-2-13b \\\n  --output llama-2-13b.q4_k.gguf \\\n  --quant q4_k\n\n# 2. 使用 llama.cpp 运行\n./main -m llama-2-13b.q4_k.gguf -p \"你好, 请介绍量化\""
+        }
+      ]
+    }
+  ]
+}

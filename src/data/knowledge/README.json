@@ -1,0 +1,61 @@
+{
+  "title": "Accelerate库",
+  "subtitle": "简化分布式训练和混合精度训练的加速库，让训练代码更简洁高效。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "README架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "README架构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "README组件详解",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "README组件详解",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "基本使用",
+          "language": "python",
+          "code": "from accelerate import Accelerator\n\n# 初始化Accelerator\naccelerator = Accelerator()\n\n# 准备模型、优化器、数据加载器\nmodel, optimizer, train_dataloader = accelerator.prepare(\n    model, optimizer, train_dataloader\n)\n\n# 训练循环\nfor epoch in range(num_epochs):\n    for batch in train_dataloader:\n        outputs = model(**batch)\n        loss = outputs.loss\n        accelerator.backward(loss)\n        optimizer.step()\n        optimizer.zero_grad()"
+        },
+        {
+          "type": "code-box",
+          "title": "混合精度训练",
+          "language": "python",
+          "code": "from accelerate import Accelerator\n\n# 启用混合精度\naccelerator = Accelerator(mixed_precision=\"fp16\")\n\n# 准备模型和数据\nmodel, optimizer, train_dataloader = accelerator.prepare(\n    model, optimizer, train_dataloader\n)\n\n# 训练（自动使用混合精度）\nfor batch in train_dataloader:\n    outputs = model(**batch)\n    loss = outputs.loss\n    accelerator.backward(loss)\n    optimizer.step()"
+        }
+      ]
+    }
+  ]
+}

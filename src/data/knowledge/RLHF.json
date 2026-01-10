@@ -1,0 +1,105 @@
+{
+  "title": "RLHF：基于人类反馈的强化学习微调",
+  "subtitle": "通过“偏好数据 → 奖励模型 → PPO 微调”三阶段流程，让大模型在安全性、有用性和礼貌性上与人类期望对齐。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "三阶段流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "三阶段流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "奖励模型结构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "奖励模型结构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "PPO 训练曲线",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "PPO 训练曲线",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "奖励模型",
+          "formulas": [
+            {
+              "text": "使用 Bradley-Terry 损失："
+            },
+            {
+              "display": "\\mathcal{L}_{\\text{RM}} = -\\log \\sigma(r_\\phi(x, y^{+}) - r_\\phi(x, y^{-}))"
+            },
+            {
+              "text": "鼓励模型为更优回答给出更高评分。"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "PPO 目标",
+          "formulas": [
+            {
+              "text": "策略更新目标："
+            },
+            {
+              "display": "\\max_\\theta \\mathbb{E}\\left[ \\min\\left( \\rho_t(\\theta) A_t, \\operatorname{clip}(\\rho_t(\\theta), 1-\\epsilon, 1+\\epsilon) A_t \\right) - \\beta \\cdot KL(\\pi_\\theta || \\pi_{\\text{SFT}}) \\right]"
+            },
+            {
+              "text": "其中 $A_t$ 由奖励 - 基准组成，$\\beta$ 控制与 SFT 模型的偏离程度。",
+              "inline": "A_t"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 TRL 进行 PPO 微调",
+          "language": "python",
+          "code": "from trl import PPOTrainer, PPOConfig, AutoModelForCausalLMWithValueHead\nfrom transformers import AutoTokenizer\n\nconfig = PPOConfig(\n    model_name=\"meta-llama/Llama-2-7b-hf\",\n    learning_rate=1e-5,\n    batch_size=64,\n    ppo_epochs=4,\n    kl_penalty=0.1\n)\n\ntokenizer = AutoTokenizer.from_pretrained(config.model_name)\nmodel = AutoModelForCausalLMWithValueHead.from_pretrained(\n    config.model_name,\n    load_in_4bit=True,\n    device_map=\"auto\"\n)\n\nppo_trainer = PPOTrainer(\n    config,\n    model,\n    tokenizer,\n    dataset=rlhf_dataset  # 包含 prompt / chosen / rejected\n)\n\nfor batch in ppo_trainer.dataloader:\n    query_tensors = batch[\"input_ids\"]\n    response_tensors = ppo_trainer.generate(query_tensors)\n    rewards = reward_model(query_tensors, response_tensors)\n    ppo_trainer.step(query_tensors, response_tensors, rewards)"
+        }
+      ]
+    }
+  ]
+}

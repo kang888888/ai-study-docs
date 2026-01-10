@@ -1,0 +1,159 @@
+{
+  "title": "残差链接 (Residual Connection)",
+  "subtitle": "跳跃连接实现梯度直接传播",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "残差链接（Skip Connection / Shortcut Connection）是一种跳跃连接技术，通过将输入直接添加到层的输出，允许信息直接从前层传递到后层，解决了深层网络的梯度消失问题。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "恒等映射：允许网络学习恒等函数，降低优化难度",
+            "梯度直通：梯度可以直接通过跳跃连接传播，避免梯度消失",
+            "特征复用：浅层特征可以直接传递到深层，保留细节信息",
+            "训练稳定：使深层网络更容易训练和收敛",
+            "广泛应用：ResNet、Transformer、UNet等架构的核心组件"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "残差块、跳跃连接、恒等映射、梯度直通、特征融合"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "ResNet残差网络、Transformer前馈网络、UNet编码器-解码器、GAN生成器、注意力机制"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "残差链接原理",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "残差链接原理",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "残差链接效果",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "残差链接效果",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "残差学习",
+          "formulas": [
+            {
+              "text": "残差链接的核心思想是学习残差而非直接映射："
+            },
+            {
+              "display": "y = F(x, W) + x"
+            },
+            {
+              "text": "其中 $F(x, W)$ 是残差函数，$x$ 是输入",
+              "inline": "F(x, W)"
+            },
+            {
+              "text": "如果最优映射接近恒等映射，学习残差 $F(x) \\approx 0$ 比直接学习 $H(x) \\approx x$ 更容易"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "梯度流动",
+          "formulas": [
+            {
+              "text": "残差连接使得梯度可以直接传播："
+            },
+            {
+              "display": "\\frac{\\partial L}{\\partial x} = \\frac{\\partial L}{\\partial y} \\cdot \\left(1 + \\frac{\\partial F(x)}{\\partial x}\\right)"
+            },
+            {
+              "text": "即使 $\\frac{\\partial F(x)}{\\partial x} \\approx 0$，梯度仍可以通过恒等项 $1$ 传播，避免了梯度消失",
+              "inline": "\\frac{\\partial F(x)}{\\partial x} \\approx 0"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "维度匹配",
+          "formulas": [
+            {
+              "text": "当输入输出维度不同时，需要投影："
+            },
+            {
+              "display": "y = F(x, W) + W_s x"
+            },
+            {
+              "text": "其中 $W_s$ 是投影矩阵，用于匹配维度"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "PyTorch 实现残差链接",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\n# 1. 基础残差块（维度相同）\nclass ResidualBlock(nn.Module):\n    \"\"\"基础残差块，输入输出维度相同\"\"\"\n    def __init__(self, dim):\n        super(ResidualBlock, self).__init__()\n        self.fc1 = nn.Linear(dim, dim)\n        self.bn1 = nn.BatchNorm1d(dim)\n        self.fc2 = nn.Linear(dim, dim)\n        self.bn2 = nn.BatchNorm1d(dim)\n    \n    def forward(self, x):\n        identity = x  # 保存输入\n        \n        out = self.fc1(x)\n        out = self.bn1(out)\n        out = F.relu(out)\n        \n        out = self.fc2(out)\n        out = self.bn2(out)\n        \n        out += identity  # 残差连接\n        out = F.relu(out)\n        \n        return out\n\n# 2. 带投影的残差块（维度不同）\nclass ResidualBlockWithProjection(nn.Module):\n    \"\"\"残差块，支持输入输出维度不同\"\"\"\n    def __init__(self, in_dim, out_dim):\n        super(ResidualBlockWithProjection, self).__init__()\n        self.fc1 = nn.Linear(in_dim, out_dim)\n        self.bn1 = nn.BatchNorm1d(out_dim)\n        self.fc2 = nn.Linear(out_dim, out_dim)\n        self.bn2 = nn.BatchNorm1d(out_dim)\n        \n        # 投影层，用于维度匹配\n        self.projection = nn.Linear(in_dim, out_dim) if in_dim != out_dim else nn.Identity()\n    \n    def forward(self, x):\n        identity = self.projection(x)  # 投影到相同维度\n        \n        out = self.fc1(x)\n        out = self.bn1(out)\n        out = F.relu(out)\n        \n        out = self.fc2(out)\n        out = self.bn2(out)\n        \n        out += identity  # 残差连接\n        out = F.relu(out)\n        \n        return out\n\n# 3. Transformer 中的残差链接\nclass TransformerBlock(nn.Module):\n    \"\"\"Transformer 块，包含多头注意力和前馈网络，都有残差链接\"\"\"\n    def __init__(self, d_model, nhead, dim_feedforward, dropout=0.1):\n        super(TransformerBlock, self).__init__()\n        self.self_attn = nn.MultiheadAttention(d_model, nhead, dropout=dropout)\n        self.ffn = nn.Sequential(\n            nn.Linear(d_model, dim_feedforward),\n            nn.ReLU(),\n            nn.Dropout(dropout),\n            nn.Linear(dim_feedforward, d_model)\n        )\n        self.norm1 = nn.LayerNorm(d_model)\n        self.norm2 = nn.LayerNorm(d_model)\n        self.dropout = nn.Dropout(dropout)\n    \n    def forward(self, x):\n        # 多头注意力 + 残差链接 + LayerNorm\n        attn_out, _ = self.self_attn(x, x, x)\n        x = self.norm1(x + self.dropout(attn_out))\n        \n        # 前馈网络 + 残差链接 + LayerNorm\n        ffn_out = self.ffn(x)\n        x = self.norm2(x + self.dropout(ffn_out))\n        \n        return x\n\n# 4. 使用示例\nif __name__ == \"__main__\":\n    # 基础残差块\n    block1 = ResidualBlock(dim=512)\n    x1 = torch.randn(32, 512)  # batch_size=32, dim=512\n    out1 = block1(x1)\n    print(f\"基础残差块输出形状: {out1.shape}\")\n    \n    # 带投影的残差块\n    block2 = ResidualBlockWithProjection(in_dim=256, out_dim=512)\n    x2 = torch.randn(32, 256)\n    out2 = block2(x2)\n    print(f\"投影残差块输出形状: {out2.shape}\")\n    \n    # Transformer 块\n    transformer = TransformerBlock(d_model=512, nhead=8, dim_feedforward=2048)\n    x3 = torch.randn(10, 32, 512)  # seq_len=10, batch_size=32, d_model=512\n    out3 = transformer(x3)\n    print(f\"Transformer 块输出形状: {out3.shape}\")"
+        }
+      ]
+    }
+  ]
+}

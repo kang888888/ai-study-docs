@@ -1,0 +1,67 @@
+{
+  "title": "Pipeline使用",
+  "subtitle": "Transformers库提供的高级API，可以一行代码使用预训练模型完成任务。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Pipeline使用流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Pipeline使用流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Pipeline使用组件详解",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Pipeline使用组件详解",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "文本分类",
+          "language": "python",
+          "code": "from transformers import pipeline\n\nclassifier = pipeline(\"text-classification\")\nresult = classifier(\"I love this movie!\")\n# [{'label': 'POSITIVE', 'score': 0.9998}]"
+        },
+        {
+          "type": "code-box",
+          "title": "文本生成",
+          "language": "python",
+          "code": "generator = pipeline(\"text-generation\", model=\"gpt2\")\nresult = generator(\n    \"The future of AI is\",\n    max_length=50,\n    num_return_sequences=3\n)"
+        },
+        {
+          "type": "code-box",
+          "title": "问答",
+          "language": "python",
+          "code": "qa = pipeline(\"question-answering\")\nresult = qa(\n    question=\"What is AI?\",\n    context=\"Artificial Intelligence is...\"\n)\n# {'answer': '...', 'score': 0.95}"
+        }
+      ]
+    }
+  ]
+}

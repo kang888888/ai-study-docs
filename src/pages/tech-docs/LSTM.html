@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSTM (Long Short-Term Memory) 长短期记忆网络 - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>LSTM (Long Short-Term Memory) 长短期记忆网络</h1>
+            <p>解决长程依赖问题的RNN改进版本</p>
+        </div>
+        <div class="content">
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>RNN的改进版本，通过引入门控机制（遗忘门、输入门、输出门）和细胞状态（Cell State），有效解决了长程依赖问题和梯度消失问题。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>门控机制：通过三个门（遗忘、输入、输出）控制信息流动</li>
+                    <li>细胞状态：长期记忆通道，梯度可以无损传播</li>
+                    <li>长程依赖：能够捕捉序列中相距较远的依赖关系</li>
+                    <li>参数量较大：相比RNN，参数量增加约4倍</li>
+                    <li>训练稳定：梯度流动更加稳定</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box"><p><strong>门控单元、细胞状态、Peephole连接（可选）、遗忘门偏置初始化</strong></p></div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box"><p>机器翻译、文本生成、语音识别、时间序列预测、情感分析</p></div>
+            </div>
+            <div class="section">
+                <h2>📊 架构图解</h2>
+                <div class="diagram-gallery">
+                    <div class="diagram-item"><img src="LSTM单元结构.png" alt="LSTM单元结构" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">LSTM单元结构</div></div>
+                    <div class="diagram-item"><img src="LSTM序列展开.png" alt="LSTM序列展开" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">LSTM序列展开</div></div>
+                    <div class="diagram-item"><img src="LSTM门控机制.png" alt="LSTM门控机制" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">LSTM门控机制</div></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>LSTM 核心公式</h3>
+                    <div class="math-formula">
+                        <p>在时间步 $t$，LSTM 的计算过程：</p>
+                        <p><strong>遗忘门（Forget Gate）：</strong></p>
+                        <p>$$f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)$$</p>
+                        <p><strong>输入门（Input Gate）：</strong></p>
+                        <p>$$i_t = \sigma(W_i \cdot [h_{t-1}, x_t] + b_i)$$</p>
+                        <p>$$\tilde{C}_t = \tanh(W_C \cdot [h_{t-1}, x_t] + b_C)$$</p>
+                        <p><strong>细胞状态更新：</strong></p>
+                        <p>$$C_t = f_t * C_{t-1} + i_t * \tilde{C}_t$$</p>
+                        <p><strong>输出门（Output Gate）：</strong></p>
+                        <p>$$o_t = \sigma(W_o \cdot [h_{t-1}, x_t] + b_o)$$</p>
+                        <p>$$h_t = o_t * \tanh(C_t)$$</p>
+                        <p>其中：</p>
+                        <ul style="list-style: none; padding-left: 20px;">
+                            <li>$x_t$ 是当前时间步的输入</li>
+                            <li>$h_{t-1}$ 是前一个时间步的隐藏状态</li>
+                            <li>$C_t$ 是细胞状态</li>
+                            <li>$\sigma$ 是 sigmoid 激活函数</li>
+                            <li>$*$ 表示逐元素相乘</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 PyTorch 实现 LSTM</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+
+class LSTMCell(nn.Module):
+    """手动实现 LSTM 单元"""
+    def __init__(self, input_size, hidden_size):
+        super(LSTMCell, self).__init__()
+        self.hidden_size = hidden_size
+        
+        # 遗忘门参数
+        self.W_f = nn.Linear(input_size + hidden_size, hidden_size)
+        
+        # 输入门参数
+        self.W_i = nn.Linear(input_size + hidden_size, hidden_size)
+        self.W_C = nn.Linear(input_size + hidden_size, hidden_size)
+        
+        # 输出门参数
+        self.W_o = nn.Linear(input_size + hidden_size, hidden_size)
+    
+    def forward(self, x, h_prev, C_prev):
+        """
+        前向传播
+        
+        参数:
+            x: 当前输入 (batch_size, input_size)
+            h_prev: 前一个隐藏状态 (batch_size, hidden_size)
+            C_prev: 前一个细胞状态 (batch_size, hidden_size)
+        """
+        # 拼接输入和隐藏状态
+        combined = torch.cat([x, h_prev], dim=1)
+        
+        # 遗忘门
+        f_t = torch.sigmoid(self.W_f(combined))
+        
+        # 输入门
+        i_t = torch.sigmoid(self.W_i(combined))
+        C_tilde = torch.tanh(self.W_C(combined))
+        
+        # 更新细胞状态
+        C_t = f_t * C_prev + i_t * C_tilde
+        
+        # 输出门
+        o_t = torch.sigmoid(self.W_o(combined))
+        
+        # 计算隐藏状态
+        h_t = o_t * torch.tanh(C_t)
+        
+        return h_t, C_t
+
+class LSTM_Model(nn.Module):
+    """使用 PyTorch 内置 LSTM"""
+    def __init__(self, input_size, hidden_size, num_layers, num_classes):
+        super(LSTM_Model, self).__init__()
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        
+        # LSTM 层
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, 
+                           batch_first=True, dropout=0.2)
+        
+        # 全连接层
+        self.fc = nn.Linear(hidden_size, num_classes)
+    
+    def forward(self, x):
+        # x shape: (batch_size, seq_length, input_size)
+        # 初始化隐藏状态和细胞状态
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+        
+        # LSTM 前向传播
+        out, (h_n, c_n) = self.lstm(x, (h0, c0))
+        
+        # 使用最后一个时间步的输出
+        out = self.fc(out[:, -1, :])
+        
+        return out
+
+# 使用示例
+if __name__ == "__main__":
+    # 使用 PyTorch 内置 LSTM
+    model = LSTM_Model(input_size=128, hidden_size=256, 
+                      num_layers=2, num_classes=10)
+    
+    # 模拟输入 (batch_size=32, seq_length=50, input_size=128)
+    x = torch.randn(32, 50, 128)
+    
+    # 前向传播
+    output = model(x)
+    print(f"输出形状: {output.shape}")  # [32, 10]
+    
+    # 手动实现 LSTM Cell
+    lstm_cell = LSTMCell(input_size=128, hidden_size=256)
+    
+    # 初始化状态
+    h = torch.zeros(32, 256)
+    C = torch.zeros(32, 256)
+    
+    # 处理序列
+    for t in range(50):
+        x_t = torch.randn(32, 128)
+        h, C = lstm_cell(x_t, h, C)
+    
+    print(f"最终隐藏状态形状: {h.shape}")</code></pre>
+                </div>
+                <div class="code-box">
+                    <h3>使用 NumPy 手动实现 LSTM</h3>
+                    <pre><code class="language-python">import numpy as np
+
+class LSTM_Numpy:
+    """使用 NumPy 手动实现 LSTM"""
+    def __init__(self, input_size, hidden_size):
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        
+        # 初始化权重矩阵
+        # 权重形状: (input_size + hidden_size, hidden_size)
+        scale = 1.0 / np.sqrt(input_size + hidden_size)
+        
+        # 遗忘门权重
+        self.W_f = np.random.randn(input_size + hidden_size, hidden_size) * scale
+        self.b_f = np.zeros((1, hidden_size))
+        
+        # 输入门权重
+        self.W_i = np.random.randn(input_size + hidden_size, hidden_size) * scale
+        self.b_i = np.zeros((1, hidden_size))
+        
+        # 候选值权重
+        self.W_C = np.random.randn(input_size + hidden_size, hidden_size) * scale
+        self.b_C = np.zeros((1, hidden_size))
+        
+        # 输出门权重
+        self.W_o = np.random.randn(input_size + hidden_size, hidden_size) * scale
+        self.b_o = np.zeros((1, hidden_size))
+    
+    def sigmoid(self, x):
+        """Sigmoid 激活函数"""
+        return 1 / (1 + np.exp(-np.clip(x, -250, 250)))
+    
+    def tanh(self, x):
+        """Tanh 激活函数"""
+        return np.tanh(x)
+    
+    def forward_step(self, x_t, h_prev, C_prev):
+        """
+        单个时间步的前向传播
+        
+        参数:
+            x_t: 当前输入 (batch_size, input_size)
+            h_prev: 前一个隐藏状态 (batch_size, hidden_size)
+            C_prev: 前一个细胞状态 (batch_size, hidden_size)
+        """
+        # 拼接输入和隐藏状态
+        combined = np.concatenate([x_t, h_prev], axis=1)
+        
+        # 遗忘门
+        f_t = self.sigmoid(np.dot(combined, self.W_f) + self.b_f)
+        
+        # 输入门
+        i_t = self.sigmoid(np.dot(combined, self.W_i) + self.b_i)
+        C_tilde = self.tanh(np.dot(combined, self.W_C) + self.b_C)
+        
+        # 更新细胞状态
+        C_t = f_t * C_prev + i_t * C_tilde
+        
+        # 输出门
+        o_t = self.sigmoid(np.dot(combined, self.W_o) + self.b_o)
+        
+        # 计算隐藏状态
+        h_t = o_t * self.tanh(C_t)
+        
+        return h_t, C_t
+    
+    def forward(self, X):
+        """
+        处理整个序列
+        
+        参数:
+            X: 输入序列 (batch_size, seq_length, input_size)
+        """
+        batch_size, seq_length, _ = X.shape
+        
+        # 初始化状态
+        h = np.zeros((batch_size, self.hidden_size))
+        C = np.zeros((batch_size, self.hidden_size))
+        
+        # 存储所有时间步的隐藏状态
+        hidden_states = []
+        
+        for t in range(seq_length):
+            x_t = X[:, t, :]
+            h, C = self.forward_step(x_t, h, C)
+            hidden_states.append(h)
+        
+        # 返回所有隐藏状态和最终状态
+        return np.array(hidden_states), h, C
+
+# 使用示例
+if __name__ == "__main__":
+    # 创建 LSTM 模型
+    lstm = LSTM_Numpy(input_size=10, hidden_size=20)
+    
+    # 创建输入序列 (batch_size=5, seq_length=8, input_size=10)
+    X = np.random.randn(5, 8, 10)
+    
+    # 前向传播
+    hidden_states, final_h, final_C = lstm.forward(X)
+    
+    print(f"隐藏状态序列形状: {hidden_states.shape}")  # (8, 5, 20)
+    print(f"最终隐藏状态形状: {final_h.shape}")  # (5, 20)
+    print(f"最终细胞状态形状: {final_C.shape}")  # (5, 20)</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 图片放大弹窗 -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal()">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+            modalImg.onclick = function(e) { e.stopPropagation(); };
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

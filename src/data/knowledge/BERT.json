@@ -1,0 +1,173 @@
+{
+  "title": "BERT (Bidirectional Encoder Representations from Transformers)",
+  "subtitle": "Google的预训练语言模型",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Google在2018年提出的预训练模型，只使用Transformer的Encoder部分。通过掩码语言模型（MLM）和下一句预测（NSP）任务进行预训练，学习双向上下文表示。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "双向理解：同时利用左侧和右侧的上下文信息",
+            "掩码语言模型（MLM）：随机遮盖15%的词，预测被遮盖的词",
+            "预训练+微调：在大规模语料上预训练，然后在下游任务微调",
+            "只有Encoder：不包含Decoder，不适合生成任务",
+            "SOTA性能：在多个NLP理解任务上刷新记录"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "Masked Language Model、Next Sentence Prediction、WordPiece分词、[CLS]和[SEP]特殊Token"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "文本分类、命名实体识别（NER）、问答系统（QA）、语义相似度、情感分析"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "BERTDiagram",
+              "caption": "BERT架构图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "BERT架构图"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "BERTDiagram",
+              "caption": "BERT MLM可视化",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "mlm",
+                "title": "BERT MLM可视化"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "BERTDiagram",
+              "caption": "BERT双向注意力",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "attention",
+                "title": "BERT双向注意力"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "掩码语言模型（MLM）损失",
+          "formulas": [
+            {
+              "text": "对于被掩码的位置 $m$，预测被掩码的词：",
+              "inline": "m"
+            },
+            {
+              "display": "L_{MLM} = -\\sum_{m \\in M} \\log P(x_m | x_{\\backslash m})"
+            },
+            {
+              "text": "其中 $M$ 是被掩码的位置集合，$x_{\\backslash m}$ 是除位置 $m$ 外的所有词",
+              "inline": "M"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "下一句预测（NSP）损失",
+          "formulas": [
+            {
+              "text": "预测句子B是否是句子A的下一句："
+            },
+            {
+              "display": "L_{NSP} = -\\log P(\\text{IsNext} | \\text{CLS})"
+            },
+            {
+              "text": "总损失：$L = L_{MLM} + L_{NSP}$",
+              "inline": "L = L_{MLM} + L_{NSP}"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "双向注意力",
+          "formulas": [
+            {
+              "text": "BERT使用双向自注意力，每个词可以同时看到左右两侧的上下文："
+            },
+            {
+              "display": "\\text{Attention}(Q, K, V) = \\text{softmax}\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V"
+            },
+            {
+              "text": "与GPT的单向注意力不同，BERT可以同时利用前后文信息"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 Transformers 库加载 BERT",
+          "language": "python",
+          "code": "from transformers import BertModel, BertTokenizer, BertForMaskedLM\nimport torch\n\n# 加载预训练的BERT模型和分词器\ntokenizer = BertTokenizer.from_pretrained('bert-base-uncased')\nmodel = BertModel.from_pretrained('bert-base-uncased')\n\n# 输入文本\ntext = \"The cat sat on the [MASK].\"\n\n# 分词和编码\ninputs = tokenizer(text, return_tensors='pt', padding=True, truncation=True)\n\n# 前向传播\nwith torch.no_grad():\n    outputs = model(**inputs)\n\n# 获取词嵌入\nembeddings = outputs.last_hidden_state\nprint(f\"词嵌入形状: {embeddings.shape}\")  # [batch_size, seq_len, hidden_size]\n\n# 使用MLM模型进行掩码预测\nmlm_model = BertForMaskedLM.from_pretrained('bert-base-uncased')\nwith torch.no_grad():\n    mlm_outputs = mlm_model(**inputs)\n    predictions = mlm_outputs.logits\n\n# 预测被掩码的词\nmasked_index = inputs['input_ids'][0].tolist().index(tokenizer.mask_token_id)\npredicted_token_id = predictions[0, masked_index].argmax().item()\npredicted_token = tokenizer.decode([predicted_token_id])\nprint(f\"预测的词: {predicted_token}\")"
+        },
+        {
+          "type": "code-box",
+          "title": "手动实现 BERT 的掩码语言模型",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nimport math\n\nclass BertEmbedding(nn.Module):\n    \"\"\"BERT词嵌入层\"\"\"\n    def __init__(self, vocab_size, hidden_size, max_seq_length, dropout=0.1):\n        super(BertEmbedding, self).__init__()\n        self.token_embedding = nn.Embedding(vocab_size, hidden_size)\n        self.position_embedding = nn.Embedding(max_seq_length, hidden_size)\n        self.segment_embedding = nn.Embedding(2, hidden_size)  # 句子A和B\n        self.layer_norm = nn.LayerNorm(hidden_size)\n        self.dropout = nn.Dropout(dropout)\n    \n    def forward(self, input_ids, segment_ids=None):\n        seq_length = input_ids.size(1)\n        position_ids = torch.arange(seq_length, dtype=torch.long, device=input_ids.device)\n        position_ids = position_ids.unsqueeze(0).expand_as(input_ids)\n        \n        if segment_ids is None:\n            segment_ids = torch.zeros_like(input_ids)\n        \n        token_emb = self.token_embedding(input_ids)\n        position_emb = self.position_embedding(position_ids)\n        segment_emb = self.segment_embedding(segment_ids)\n        \n        embeddings = token_emb + position_emb + segment_emb\n        embeddings = self.layer_norm(embeddings)\n        embeddings = self.dropout(embeddings)\n        \n        return embeddings\n\nclass BertMLMHead(nn.Module):\n    \"\"\"BERT MLM预测头\"\"\"\n    def __init__(self, hidden_size, vocab_size):\n        super(BertMLMHead, self).__init__()\n        self.dense = nn.Linear(hidden_size, hidden_size)\n        self.layer_norm = nn.LayerNorm(hidden_size)\n        self.decoder = nn.Linear(hidden_size, vocab_size)\n    \n    def forward(self, hidden_states):\n        hidden_states = self.dense(hidden_states)\n        hidden_states = F.gelu(hidden_states)\n        hidden_states = self.layer_norm(hidden_states)\n        logits = self.decoder(hidden_states)\n        return logits\n\n# 使用示例\nif __name__ == \"__main__\":\n    vocab_size = 30522  # BERT-base词汇表大小\n    hidden_size = 768\n    max_seq_length = 512\n    \n    embedding = BertEmbedding(vocab_size, hidden_size, max_seq_length)\n    mlm_head = BertMLMHead(hidden_size, vocab_size)\n    \n    # 模拟输入\n    input_ids = torch.randint(0, vocab_size, (2, 128))  # batch_size=2, seq_len=128\n    segment_ids = torch.zeros(2, 128, dtype=torch.long)\n    \n    # 前向传播\n    embeddings = embedding(input_ids, segment_ids)\n    print(f\"嵌入形状: {embeddings.shape}\")  # [2, 128, 768]\n    \n    # MLM预测\n    logits = mlm_head(embeddings)\n    print(f\"MLM logits形状: {logits.shape}\")  # [2, 128, 30522]"
+        }
+      ]
+    }
+  ]
+}

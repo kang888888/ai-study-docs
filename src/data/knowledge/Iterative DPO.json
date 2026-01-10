@@ -1,0 +1,54 @@
+{
+  "title": "Iterative DPO 迭代DPO",
+  "subtitle": "通过多轮迭代提升对齐效果的DPO改进方法",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Iterative DPO是DPO的改进版本，通过多轮迭代的方式逐步提升模型的对齐效果。在每一轮迭代中，使用当前模型生成新的偏好数据，然后进行DPO训练，通过迭代不断改进模型性能。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "迭代优化：通过多轮迭代逐步提升模型性能",
+            "数据增强：每轮迭代生成新的偏好数据",
+            "性能提升：相比单轮DPO，对齐效果更好",
+            "自适应：根据模型当前状态生成合适的训练数据",
+            "灵活配置：可根据需求调整迭代轮数和策略"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "迭代训练、数据生成、DPO优化、对齐策略"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "模型对齐、偏好学习、需要高质量对齐效果的场景"
+        }
+      ]
+    }
+  ]
+}

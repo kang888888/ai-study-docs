@@ -1,0 +1,55 @@
+{
+  "title": "数据格式转换",
+  "subtitle": "将原始数据转换为模型训练所需格式。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据格式转换流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "数据格式转换流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据格式转换组件详解",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "数据格式转换组件详解",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "Alpaca格式转换",
+          "language": "python",
+          "code": "def convert_to_alpaca(instruction, input_text, output):\n    return {\n        \"instruction\": instruction,\n        \"input\": input_text if input_text else \"\",\n        \"output\": output\n    }\n\n# 批量转换\nalpaca_data = []\nfor item in raw_data:\n    alpaca_item = convert_to_alpaca(\n        instruction=item[\"task\"],\n        input_text=item.get(\"input\", \"\"),\n        output=item[\"response\"]\n    )\n    alpaca_data.append(alpaca_item)"
+        }
+      ]
+    }
+  ]
+}

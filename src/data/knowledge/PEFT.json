@@ -1,0 +1,103 @@
+{
+  "title": "PEFT：参数高效微调方法族",
+  "subtitle": "通过 Adapter、Prefix-Tuning、LoRA、IA3、BitFit 等方法冻结大部分参数，仅训练小型附加模块，实现“低资源可扩展”。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "方法家族",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "方法家族"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Adapter 结构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Adapter 结构"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Prompt Tuning",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Prompt Tuning"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "Adapter",
+          "formulas": [
+            {
+              "text": "Adapter 在层内添加瓶颈结构："
+            },
+            {
+              "display": "h' = h + W_{up} \\sigma(W_{down} h)"
+            },
+            {
+              "text": "$W_{down} \\in \\mathbb{R}^{d \\times r}, W_{up} \\in \\mathbb{R}^{r \\times d}$，仅训练这两层。",
+              "inline": "W_{down} \\in \\mathbb{R}^{d \\times r}, W_{up} \\in \\mathbb{R}^{r \\times d}"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Prefix/Prompt Tuning",
+          "formulas": [
+            {
+              "text": "在多头注意力前注入虚拟 token："
+            },
+            {
+              "display": "\\text{Attention}(Q, K, V) \\Rightarrow \\text{Attention}([Q; Q_p], [K; K_p], [V; V_p])"
+            },
+            {
+              "text": "$Q_p,K_p,V_p$ 为可训练前缀向量。",
+              "inline": "Q_p,K_p,V_p"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "PEFT 统一接口",
+          "language": "python",
+          "code": "from peft import (LoraConfig, PrefixTuningConfig, PromptTuningConfig,\n                   get_peft_model, TaskType)\nfrom transformers import AutoModelForSeq2SeqLM, AutoTokenizer\n\nbase_model = \"google/flan-t5-large\"\nmodel = AutoModelForSeq2SeqLM.from_pretrained(base_model)\n\nlora_cfg = LoraConfig(\n    task_type=TaskType.SEQ_2_SEQ_LM,\n    r=8,\n    lora_alpha=32,\n    lora_dropout=0.05,\n    target_modules=[\"q\", \"v\"]\n)\nmodel = get_peft_model(model, lora_cfg)\n\n# 也可切换为 Prefix Tuning\n# prefix_cfg = PrefixTuningConfig(task_type=TaskType.SEQ_2_SEQ_LM, num_virtual_tokens=30)\n# model = get_peft_model(model, prefix_cfg)"
+        }
+      ]
+    }
+  ]
+}

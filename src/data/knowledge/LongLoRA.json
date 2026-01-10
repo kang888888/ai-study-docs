@@ -1,0 +1,54 @@
+{
+  "title": "LongLoRA 长上下文LoRA",
+  "subtitle": "通过移位注意力实现长上下文微调",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "LongLoRA是一种专门用于长上下文微调的方法，通过移位注意力（shifted attention）机制，使得模型能够在有限的显存下处理更长的序列。它结合了LoRA的参数高效性和移位注意力的内存效率，实现了长上下文的低成本微调。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "长上下文：支持处理超长序列的微调",
+            "移位注意力：通过移位操作减少显存占用",
+            "参数高效：结合LoRA，保持参数效率",
+            "显存友好：在有限显存下处理长序列",
+            "性能保持：在长上下文任务上保持良好性能"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "移位注意力、长上下文处理、LoRA微调、显存优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "长文档理解、长代码生成、长对话微调、需要处理超长序列的场景"
+        }
+      ]
+    }
+  ]
+}

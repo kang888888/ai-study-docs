@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNN (Convolutional Neural Network) 卷积神经网络 - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CNN (Convolutional Neural Network) 卷积神经网络</h1>
+            <p>专门用于处理图像数据的神经网络</p>
+        </div>
+        <div class="content">
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>专门用于处理具有网格结构的数据（如图像、视频）。通过卷积层提取局部特征，池化层降低维度，是计算机视觉领域的基石。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>局部连接：每个神经元只与局部区域连接，大幅减少参数</li>
+                    <li>权值共享：同一卷积核在整个输入上共享参数</li>
+                    <li>平移不变性：对图像的平移具有鲁棒性</li>
+                    <li>层次化特征提取：浅层提取边缘，深层提取语义特征</li>
+                    <li>池化降维：通过Max Pooling或Average Pooling降低特征图尺寸</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box"><p><strong>卷积操作、池化操作、批量归一化（Batch Normalization）、Dropout正则化</strong></p></div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box"><p>图像分类（ImageNet）、目标检测、图像分割、人脸识别、医学影像分析</p></div>
+            </div>
+            <div class="section">
+                <h2>📊 架构图解</h2>
+                <div class="diagram-gallery">
+                    <div class="diagram-item"><img src="CNN架构图.png" alt="CNN架构图" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">CNN架构图</div></div>
+                    <div class="diagram-item"><img src="卷积操作.png" alt="卷积操作" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">卷积操作</div></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>卷积操作</h3>
+                    <div class="math-formula">
+                        <p>二维离散卷积公式：</p>
+                        <p>$$(I * K)(i, j) = \sum_{m} \sum_{n} I(i-m, j-n) \cdot K(m, n)$$</p>
+                        <p>其中 $I$ 是输入特征图，$K$ 是卷积核（滤波器）</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>输出尺寸计算</h3>
+                    <div class="math-formula">
+                        <p>卷积后输出尺寸：</p>
+                        <p>$$H_{out} = \frac{H_{in} + 2P - K}{S} + 1$$</p>
+                        <p>$$W_{out} = \frac{W_{in} + 2P - K}{S} + 1$$</p>
+                        <p>其中：</p>
+                        <ul style="list-style: none; padding-left: 20px;">
+                            <li>$H_{in}, W_{in}$ 是输入的高度和宽度</li>
+                            <li>$K$ 是卷积核大小</li>
+                            <li>$P$ 是填充（padding）</li>
+                            <li>$S$ 是步长（stride）</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>池化操作</h3>
+                    <div class="math-formula">
+                        <p><strong>最大池化（Max Pooling）：</strong></p>
+                        <p>$$y_{i,j} = \max_{(m,n) \in R_{i,j}} x_{m,n}$$</p>
+                        <p><strong>平均池化（Average Pooling）：</strong></p>
+                        <p>$$y_{i,j} = \frac{1}{|R_{i,j}|} \sum_{(m,n) \in R_{i,j}} x_{m,n}$$</p>
+                        <p>其中 $R_{i,j}$ 是池化窗口区域</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 PyTorch 实现 CNN</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class SimpleCNN(nn.Module):
+    """简单的CNN实现（用于图像分类）"""
+    def __init__(self, num_classes=10):
+        super(SimpleCNN, self).__init__()
+        
+        # 第一个卷积块
+        self.conv1 = nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, padding=1)
+        self.bn1 = nn.BatchNorm2d(32)
+        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
+        
+        # 第二个卷积块
+        self.conv2 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1)
+        self.bn2 = nn.BatchNorm2d(64)
+        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
+        
+        # 第三个卷积块
+        self.conv3 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1)
+        self.bn3 = nn.BatchNorm2d(128)
+        self.pool3 = nn.MaxPool2d(kernel_size=2, stride=2)
+        
+        # 全连接层
+        self.fc1 = nn.Linear(128 * 4 * 4, 512)
+        self.dropout = nn.Dropout(0.5)
+        self.fc2 = nn.Linear(512, num_classes)
+    
+    def forward(self, x):
+        # 卷积块1: 32x32 -> 16x16
+        x = F.relu(self.bn1(self.conv1(x)))
+        x = self.pool1(x)
+        
+        # 卷积块2: 16x16 -> 8x8
+        x = F.relu(self.bn2(self.conv2(x)))
+        x = self.pool2(x)
+        
+        # 卷积块3: 8x8 -> 4x4
+        x = F.relu(self.bn3(self.conv3(x)))
+        x = self.pool3(x)
+        
+        # 展平
+        x = x.view(x.size(0), -1)
+        
+        # 全连接层
+        x = F.relu(self.fc1(x))
+        x = self.dropout(x)
+        x = self.fc2(x)
+        
+        return x
+
+# 使用示例
+if __name__ == "__main__":
+    # 创建模型
+    model = SimpleCNN(num_classes=10)
+    
+    # 模拟输入 (batch_size=4, channels=3, height=32, width=32)
+    x = torch.randn(4, 3, 32, 32)
+    
+    # 前向传播
+    output = model(x)
+    print(f"输出形状: {output.shape}")  # [4, 10]
+    
+    # 计算参数量
+    total_params = sum(p.numel() for p in model.parameters())
+    print(f"总参数量: {total_params:,}")</code></pre>
+                </div>
+                <div class="code-box">
+                    <h3>使用 NumPy 手动实现卷积操作</h3>
+                    <pre><code class="language-python">import numpy as np
+
+def conv2d(input_img, kernel, stride=1, padding=0):
+    """
+    手动实现2D卷积操作
+    
+    参数:
+        input_img: 输入图像 (H, W) 或 (C, H, W)
+        kernel: 卷积核 (K, K) 或 (C, K, K)
+        stride: 步长
+        padding: 填充
+    """
+    # 处理输入维度
+    if input_img.ndim == 2:
+        input_img = input_img[np.newaxis, :, :]
+    
+    if kernel.ndim == 2:
+        kernel = kernel[np.newaxis, :, :]
+    
+    C, H, W = input_img.shape
+    K = kernel.shape[-1]
+    
+    # 添加padding
+    if padding > 0:
+        input_img = np.pad(input_img, ((0, 0), (padding, padding), (padding, padding)), mode='constant')
+    
+    # 计算输出尺寸
+    out_h = (H + 2 * padding - K) // stride + 1
+    out_w = (W + 2 * padding - K) // stride + 1
+    
+    # 初始化输出
+    output = np.zeros((C, out_h, out_w))
+    
+    # 执行卷积
+    for c in range(C):
+        for i in range(0, out_h):
+            for j in range(0, out_w):
+                h_start = i * stride
+                h_end = h_start + K
+                w_start = j * stride
+                w_end = w_start + K
+                
+                output[c, i, j] = np.sum(
+                    input_img[c, h_start:h_end, w_start:w_end] * kernel[c]
+                )
+    
+    return output.squeeze() if output.shape[0] == 1 else output
+
+def max_pooling(input_img, pool_size=2, stride=2):
+    """最大池化操作"""
+    if input_img.ndim == 2:
+        input_img = input_img[np.newaxis, :, :]
+    
+    C, H, W = input_img.shape
+    out_h = (H - pool_size) // stride + 1
+    out_w = (W - pool_size) // stride + 1
+    
+    output = np.zeros((C, out_h, out_w))
+    
+    for c in range(C):
+        for i in range(out_h):
+            for j in range(out_w):
+                h_start = i * stride
+                h_end = h_start + pool_size
+                w_start = j * stride
+                w_end = w_start + pool_size
+                
+                output[c, i, j] = np.max(
+                    input_img[c, h_start:h_end, w_start:w_end]
+                )
+    
+    return output.squeeze() if output.shape[0] == 1 else output
+
+# 使用示例
+if __name__ == "__main__":
+    # 创建测试图像 (3通道, 8x8)
+    img = np.random.randn(3, 8, 8)
+    
+    # 创建卷积核 (3x3)
+    kernel = np.ones((3, 3, 3)) * 0.1
+    
+    # 执行卷积
+    conv_output = conv2d(img, kernel, stride=1, padding=1)
+    print(f"卷积输出形状: {conv_output.shape}")
+    
+    # 执行池化
+    pooled_output = max_pooling(conv_output, pool_size=2, stride=2)
+    print(f"池化输出形状: {pooled_output.shape}")</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 图片放大弹窗 -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal()">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+            modalImg.onclick = function(e) { e.stopPropagation(); };
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

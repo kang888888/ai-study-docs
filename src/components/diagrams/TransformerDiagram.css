@@ -1,0 +1,58 @@
+.transformer-diagram-container {
+  width: 100%;
+  display: block;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.transformer-diagram-svg {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  min-height: 700px;
+  background: white;
+  border-radius: 8px;
+  display: block;
+  overflow: visible;
+}
+
+/* 交互效果 */
+.encoder-layer rect,
+.decoder-layer rect {
+  transition: opacity 0.3s, transform 0.3s;
+  cursor: pointer;
+}
+
+.encoder-layer rect:hover,
+.decoder-layer rect:hover {
+  transform: scale(1.02);
+}
+
+/* 选中状态 */
+.encoder-layer.selected rect,
+.decoder-layer.selected rect {
+  stroke-width: 3;
+  stroke: #667eea;
+  filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.5));
+}
+
+/* 数据流动粒子样式 */
+.data-particle,
+.vertical-particle,
+.input-particle,
+.output-particle {
+  filter: drop-shadow(0 0 3px rgba(102, 126, 234, 0.6));
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}

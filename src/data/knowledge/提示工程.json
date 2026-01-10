@@ -1,0 +1,67 @@
+{
+  "title": "提示工程（Prompt Engineering）",
+  "subtitle": "设计和优化提示以获得更好生成结果的技术，是文本生成的核心技术之一。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "提示工程方法",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "提示工程方法",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "提示工程对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "提示工程对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "零样本提示示例",
+          "language": "python",
+          "code": "# 零样本提示\nprompt = \"\"\"\n请对以下文本进行情感分析，输出积极、消极或中性：\n\n文本：这部电影真的很棒！\n情感：\n\"\"\"\n\nresponse = model.generate(prompt)\nprint(response)  # 输出：积极"
+        },
+        {
+          "type": "code-box",
+          "title": "少样本提示示例",
+          "language": "python",
+          "code": "# 少样本提示\nprompt = \"\"\"\n将以下句子翻译成英文：\n\n中文：你好\n英文：Hello\n\n中文：谢谢\n英文：Thank you\n\n中文：再见\n英文：\n\"\"\"\n\nresponse = model.generate(prompt)\nprint(response)  # 输出：Goodbye"
+        },
+        {
+          "type": "code-box",
+          "title": "思维链提示示例",
+          "language": "python",
+          "code": "# 思维链提示\nprompt = \"\"\"\n解决以下数学问题，请展示你的推理过程：\n\n问题：小明有10个苹果，吃了3个，又买了5个，现在有多少个？\n\n推理过程：\n1. 开始有10个苹果\n2. 吃了3个，剩余：10 - 3 = 7个\n3. 买了5个，现在有：7 + 5 = 12个\n\n答案：12个\n\"\"\"\n\nresponse = model.generate(prompt)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "title": "DoRA (Weight-Decomposed Low-Rank Adaptation) 权重分解低秩适配",
+  "subtitle": "将权重分解为幅度与方向分别优化的微调方法",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "DoRA是LoRA的改进版本，将权重矩阵分解为幅度（magnitude）和方向（direction）两个部分，分别进行优化。通过这种分解，DoRA能够更精细地控制权重更新，在保持LoRA参数效率的同时，获得更好的微调效果。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "权重分解：将权重分解为幅度和方向，分别优化",
+            "性能提升：相比LoRA在多个任务上表现更好",
+            "参数高效：保持LoRA的参数效率优势",
+            "灵活控制：可以独立控制权重的幅度和方向",
+            "易于实现：在LoRA基础上简单修改即可实现"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "权重分解、幅度优化、方向优化、低秩适配、参数高效微调"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "模型微调、任务适配、资源受限环境、需要精细控制权重更新的场景"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "DoRA权重分解",
+          "formulas": [
+            {
+              "text": "权重分解：W = m · V / ||V||_c"
+            },
+            {
+              "text": "其中m是幅度向量，V是方向矩阵，||V||_c是列范数"
+            },
+            {
+              "text": "通过分别优化m和V，实现更精细的权重控制"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

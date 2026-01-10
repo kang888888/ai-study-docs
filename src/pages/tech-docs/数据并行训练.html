@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据并行训练</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>数据并行训练（Data Parallelism）</h1>
+        <p class="tagline">每个设备保存完整的模型副本，不同设备处理不同的数据批次。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card"><h3>核心原理</h3><p>每个设备保存完整模型，处理不同数据批次，同步梯度。</p></div>
+            <div class="meta-card"><h3>工作流程</h3><p>加载模型 → 处理数据 → 计算梯度 → 同步梯度 → 更新参数。</p></div>
+            <div class="meta-card"><h3>优势</h3><p>实现简单、通信开销小、适合中小模型。</p></div>
+            <div class="meta-card"><h3>局限</h3><p>需要足够内存、不适合超大模型。</p></div>
+        </div>
+
+        <div class="section">
+            <h2>⚙️ 工作原理</h2>
+            <ul>
+                <li><strong>模型复制</strong>：每个设备保存完整的模型副本</li>
+                <li><strong>数据分片</strong>：不同设备处理不同的数据批次</li>
+                <li><strong>梯度计算</strong>：每个设备独立计算梯度</li>
+                <li><strong>梯度同步</strong>：使用AllReduce操作同步梯度</li>
+                <li><strong>参数更新</strong>：所有设备使用相同的梯度更新参数</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>💻 代码示例</h2>
+            <div class="code-box">
+                <h3>PyTorch数据并行训练</h3>
+                <pre><code class="language-python">import torch
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+
+# 初始化分布式环境
+dist.init_process_group(backend='nccl')
+
+# 创建模型
+model = MyModel()
+model = model.to(device)
+model = DDP(model, device_ids=[rank])
+
+# 训练循环
+for epoch in range(num_epochs):
+    for batch in dataloader:
+        outputs = model(batch)
+        loss = criterion(outputs, targets)
+        loss.backward()
+        optimizer.step()
+        optimizer.zero_grad()</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📊 性能特点</h2>
+            <ul>
+                <li><strong>通信开销</strong>：每个训练步骤需要同步梯度，通信量 = 模型参数量</li>
+                <li><strong>内存占用</strong>：每个设备需要存储完整模型和优化器状态</li>
+                <li><strong>扩展性</strong>：适合模型能放入单卡内存的情况</li>
+                <li><strong>适用场景</strong>：中小规模模型（< 10B参数）</li>
+            </ul>
+        </div>
+    </div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

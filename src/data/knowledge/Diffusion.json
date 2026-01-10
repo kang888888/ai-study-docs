@@ -1,0 +1,183 @@
+{
+  "title": "Diffusion Model (扩散模型)",
+  "subtitle": "当前最先进的生成模型",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "通过模拟数据逐渐添加噪声变成纯噪声的前向扩散过程，并训练神经网络学习反向去噪过程。是当前生成质量最高、训练最稳定的生成模型。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "前向扩散：逐步向数据添加高斯噪声，T步后变成纯噪声",
+            "反向去噪：训练U-Net网络预测每一步的噪声，逐步恢复数据",
+            "生成质量极高：细节丰富，远超GAN和VAE",
+            "训练稳定：不像GAN需要平衡生成器和判别器",
+            "潜在扩散（LDM）：在潜在空间进行扩散，大幅降低计算成本"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "DDPM、DDIM加速采样、Classifier-Free Guidance、U-Net去噪网络、噪声调度（Noise Schedule）"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "文生图（Stable Diffusion、DALL-E 2）、图像编辑、视频生成（Sora）、音频生成"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "DiffusionDiagram",
+              "caption": "扩散过程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "扩散过程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "DiffusionDiagram",
+              "caption": "采样过程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "采样过程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "DiffusionDiagram",
+              "caption": "噪声调度",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "噪声调度",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "前向扩散过程",
+          "formulas": [
+            {
+              "text": "逐步向数据添加高斯噪声："
+            },
+            {
+              "display": "q(x_t | x_{t-1}) = \\mathcal{N}(x_t; \\sqrt{1-\\beta_t} x_{t-1}, \\beta_t I)"
+            },
+            {
+              "text": "可以简化为直接从 $x_0$ 采样：",
+              "inline": "x_0"
+            },
+            {
+              "display": "q(x_t | x_0) = \\mathcal{N}(x_t; \\sqrt{\\bar{\\alpha}_t} x_0, (1-\\bar{\\alpha}_t) I)"
+            },
+            {
+              "text": "其中 $\\bar{\\alpha}_t = \\prod_{s=1}^{t}(1-\\beta_s)$",
+              "inline": "\\bar{\\alpha}_t = \\prod_{s=1}^{t}(1-\\beta_s)"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "反向去噪过程",
+          "formulas": [
+            {
+              "text": "学习去噪分布："
+            },
+            {
+              "display": "p_\\theta(x_{t-1} | x_t) = \\mathcal{N}(x_{t-1}; \\mu_\\theta(x_t, t), \\Sigma_\\theta(x_t, t))"
+            },
+            {
+              "text": "训练目标：预测噪声"
+            },
+            {
+              "display": "L = \\mathbb{E}_{t,x_0,\\epsilon} \\left[||\\epsilon - \\epsilon_\\theta(x_t, t)||^2\\right]"
+            },
+            {
+              "text": "其中 $x_t = \\sqrt{\\bar{\\alpha}_t} x_0 + \\sqrt{1-\\bar{\\alpha}_t} \\epsilon$",
+              "inline": "x_t = \\sqrt{\\bar{\\alpha}_t} x_0 + \\sqrt{1-\\bar{\\alpha}_t} \\epsilon"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "DDPM 采样",
+          "formulas": [
+            {
+              "text": "从噪声逐步去噪生成："
+            },
+            {
+              "display": "x_{t-1} = \\frac{1}{\\sqrt{\\alpha_t}}\\left(x_t - \\frac{\\beta_t}{\\sqrt{1-\\bar{\\alpha}_t}} \\epsilon_\\theta(x_t, t)\\right) + \\sigma_t z"
+            },
+            {
+              "text": "其中 $z \\sim \\mathcal{N}(0, I)$，$\\sigma_t$ 是噪声方差",
+              "inline": "z \\sim \\mathcal{N}(0, I)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 PyTorch 实现简单 Diffusion 模型",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nimport numpy as np\n\nclass DiffusionModel(nn.Module):\n    \"\"\"简单的 Diffusion 模型\"\"\"\n    def __init__(self, timesteps=1000, beta_start=0.0001, beta_end=0.02):\n        super(DiffusionModel, self).__init__()\n        self.timesteps = timesteps\n        \n        # 线性噪声调度\n        self.betas = torch.linspace(beta_start, beta_end, timesteps)\n        self.alphas = 1.0 - self.betas\n        self.alphas_cumprod = torch.cumprod(self.alphas, dim=0)\n        self.alphas_cumprod_prev = F.pad(self.alphas_cumprod[:-1], (1, 0), value=1.0)\n        \n        # 去噪网络（简化版，实际使用U-Net）\n        self.denoise_net = nn.Sequential(\n            nn.Linear(784, 512),\n            nn.ReLU(),\n            nn.Linear(512, 512),\n            nn.ReLU(),\n            nn.Linear(512, 784)\n        )\n    \n    def q_sample(self, x_start, t, noise=None):\n        \"\"\"前向扩散：添加噪声\"\"\"\n        if noise is None:\n            noise = torch.randn_like(x_start)\n        \n        sqrt_alphas_cumprod_t = torch.sqrt(self.alphas_cumprod[t])\n        sqrt_one_minus_alphas_cumprod_t = torch.sqrt(1.0 - self.alphas_cumprod[t])\n        \n        return sqrt_alphas_cumprod_t * x_start + sqrt_one_minus_alphas_cumprod_t * noise\n    \n    def p_sample(self, x, t):\n        \"\"\"反向去噪：单步采样\"\"\"\n        # 预测噪声\n        predicted_noise = self.denoise_net(x)\n        \n        # 计算均值\n        alpha_t = self.alphas[t]\n        alpha_cumprod_t = self.alphas_cumprod[t]\n        beta_t = self.betas[t]\n        \n        pred_x_start = (x - torch.sqrt(1.0 - alpha_cumprod_t) * predicted_noise) / torch.sqrt(alpha_cumprod_t)\n        \n        # 计算 x_{t-1}\n        pred_x_prev = (1.0 / torch.sqrt(alpha_t)) * (x - (beta_t / torch.sqrt(1.0 - alpha_cumprod_t)) * predicted_noise)\n        \n        if t[0] > 0:\n            noise = torch.randn_like(x)\n            pred_x_prev += torch.sqrt(beta_t) * noise\n        \n        return pred_x_prev\n    \n    def p_sample_loop(self, shape):\n        \"\"\"完整采样过程\"\"\"\n        device = next(self.parameters()).device\n        b = shape[0]\n        \n        # 从纯噪声开始\n        img = torch.randn(shape, device=device)\n        \n        for i in reversed(range(0, self.timesteps)):\n            t = torch.full((b,), i, device=device, dtype=torch.long)\n            img = self.p_sample(img, t)\n        \n        return img\n    \n    def forward(self, x_start, t):\n        \"\"\"训练时的前向传播\"\"\"\n        noise = torch.randn_like(x_start)\n        x_noisy = self.q_sample(x_start, t, noise)\n        predicted_noise = self.denoise_net(x_noisy)\n        return predicted_noise\n\n# 使用示例\nif __name__ == \"__main__\":\n    model = DiffusionModel(timesteps=1000)\n    \n    # 模拟输入 (batch_size=4, 展平的图像 28x28=784)\n    x_start = torch.randn(4, 784)\n    \n    # 随机时间步\n    t = torch.randint(0, 1000, (4,))\n    \n    # 训练：预测噪声\n    predicted_noise = model(x_start, t)\n    print(f\"预测噪声形状: {predicted_noise.shape}\")  # [4, 784]\n    \n    # 采样：从噪声生成\n    generated = model.p_sample_loop((4, 784))\n    print(f\"生成图像形状: {generated.shape}\")  # [4, 784]"
+        }
+      ]
+    }
+  ]
+}

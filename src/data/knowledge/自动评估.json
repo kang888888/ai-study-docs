@@ -1,0 +1,61 @@
+{
+  "title": "自动评估",
+  "subtitle": "参考答案类、模型裁判、规则检查等自动评估方法。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "自动评估流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "自动评估流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "自动评估方法",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "自动评估方法",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "参考答案类评估",
+          "language": "python",
+          "code": "def evaluate_with_reference(predictions, references, metric='bleu'):\n    \"\"\"使用参考答案进行评估\"\"\"\n    from nltk.translate.bleu_score import sentence_bleu\n    from rouge_score import rouge_scorer\n    \n    scores = []\n    \n    if metric == 'bleu':\n        for pred, ref in zip(predictions, references):\n            score = sentence_bleu([ref.split()], pred.split())\n            scores.append(score)\n    elif metric == 'rouge':\n        scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'])\n        for pred, ref in zip(predictions, references):\n            score = scorer.score(ref, pred)\n            scores.append(score['rougeL'].fmeasure)\n    \n    return sum(scores) / len(scores) if scores else 0.0\n\n# 使用示例\npredictions = [\"the cat is on the mat\", \"a dog runs\"]\nreferences = [\"the cat sat on the mat\", \"a dog is running\"]\nprint(f\"BLEU: {evaluate_with_reference(predictions, references, 'bleu'):.4f}\")\nprint(f\"ROUGE: {evaluate_with_reference(predictions, references, 'rouge'):.4f}\")"
+        },
+        {
+          "type": "code-box",
+          "title": "模型裁判评估",
+          "language": "python",
+          "code": "from transformers import pipeline\n\n# 使用更强的模型作为裁判\njudge_model = pipeline(\"text-classification\", model=\"distilbert-base-uncased-finetuned-sst-2-english\")\n\ndef judge_with_model(prediction, reference, question):\n    \"\"\"使用模型裁判评估生成质量\"\"\"\n    # 构建评估提示\n    prompt = f\"Question: {question}\\nReference: {reference}\\nPrediction: {prediction}\\nIs the prediction good?\"\n    \n    # 获取模型评分\n    result = judge_model(prompt)\n    \n    # 返回评分（0-1之间）\n    if result[0]['label'] == 'POSITIVE':\n        return result[0]['score']\n    else:\n        return 1 - result[0]['score']\n\n# 使用示例\nquestion = \"What is the capital of France?\"\nreference = \"Paris\"\nprediction = \"The capital of France is Paris\"\nscore = judge_with_model(prediction, reference, question)\nprint(f\"Judge Score: {score:.4f}\")"
+        }
+      ]
+    }
+  ]
+}

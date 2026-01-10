@@ -1,0 +1,61 @@
+{
+  "title": "代码生成基准",
+  "subtitle": "HumanEval、MBPP等代码生成与执行正确性评估基准。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "代码生成基准分类",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "代码生成基准分类",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Pass@k评估流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "Pass@k评估流程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用HumanEval基准",
+          "language": "python",
+          "code": "from datasets import load_dataset\nimport subprocess\nimport tempfile\nimport os\n\n# 加载HumanEval数据集\nhuman_eval = load_dataset(\"openai_humaneval\")\n\nprint(f\"HumanEval包含 {len(human_eval['test'])} 个编程问题\")\n\n# 查看示例\n example = human_eval['test'][0]\nprint(f\"任务ID: {example['task_id']}\")\nprint(f\"提示: {example['prompt']}\")\nprint(f\"测试用例: {example['test']}\")\n\ndef evaluate_code_execution(code, test_cases):\n    \"\"\"评估代码执行是否正确\"\"\"\n    # 创建临时文件\n    with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:\n        f.write(code)\n        temp_file = f.name\n    \n    try:\n        # 执行测试用例\n        result = subprocess.run(\n            ['python', temp_file],\n            input=test_cases,\n            capture_output=True,\n            text=True,\n            timeout=5\n        )\n        \n        # 检查是否通过\n        return result.returncode == 0\n    except subprocess.TimeoutExpired:\n        return False\n    finally:\n        os.unlink(temp_file)\n\ndef pass_at_k(n, c, k):\n    \"\"\"计算Pass@k指标\"\"\"\n    if n - c < k:\n        return 1.0\n    \n    numerator = 1.0\n    denominator = 1.0\n    for i in range(k):\n        numerator *= (n - c - i)\n        denominator *= (n - i)\n    \n    return 1.0 - numerator / denominator\n\nprint(f\"HumanEval评估完成\")"
+        },
+        {
+          "type": "code-box",
+          "title": "使用MBPP基准",
+          "language": "python",
+          "code": "from datasets import load_dataset\n\n# MBPP (Mostly Basic Python Problems)\nmbpp = load_dataset(\"mbpp\")\n\nprint(f\"MBPP训练集: {len(mbpp['train'])} 问题\")\nprint(f\"MBPP测试集: {len(mbpp['test'])} 问题\")\nprint(f\"MBPP验证集: {len(mbpp['validation'])} 问题\")\n\n# 查看示例\n example = mbpp['test'][0]\nprint(f\"任务: {example['text']}\")\nprint(f\"代码: {example['code']}\")\nprint(f\"测试用例: {example['test_list']}\")\n\ndef evaluate_mbpp(model, dataset):\n    \"\"\"评估模型在MBPP上的表现\"\"\"\n    passed = 0\n    total = 0\n    \n    for example in dataset['test']:\n        prompt = example['text']\n        test_cases = example['test_list']\n        \n        # 模型生成代码\n        generated_code = model.generate_code(prompt)\n        \n        # 执行测试用例\n        if evaluate_code_execution(generated_code, test_cases):\n            passed += 1\n        total += 1\n    \n    pass_rate = passed / total if total > 0 else 0.0\n    return pass_rate\n\nprint(f\"MBPP评估完成\")"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,177 @@
+{
+  "title": "归一化 (Normalization)",
+  "subtitle": "稳定训练和加速收敛的关键技术",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "归一化是一类用于标准化神经网络中间层激活值分布的技术，通过将激活值转换为均值为0、方差为1的分布，稳定训练过程，加速收敛，并允许使用更大的学习率。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 主要类型",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "Batch Normalization (BN)：在batch维度上归一化，适用于CNN",
+            "Layer Normalization (LN)：在特征维度上归一化，适用于RNN/Transformer",
+            "Group Normalization (GN)：将通道分组后归一化，适用于小batch",
+            "Instance Normalization (IN)：对每个样本的每个通道独立归一化",
+            "Weight Normalization：归一化权重而非激活值",
+            "RMSNorm：简化版LayerNorm，只归一化不中心化"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "BatchNorm、LayerNorm、GroupNorm、InstanceNorm、RMSNorm、权重归一化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "CNN训练（BatchNorm）、Transformer（LayerNorm）、小batch训练（GroupNorm）、风格迁移（InstanceNorm）、现代LLM（RMSNorm）"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "归一化方法对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "归一化方法对比",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "归一化效果",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "归一化效果",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "Batch Normalization",
+          "formulas": [
+            {
+              "text": "BatchNorm在batch维度上计算均值和方差："
+            },
+            {
+              "display": "\\mu_B = \\frac{1}{m} \\sum_{i=1}^{m} x_i"
+            },
+            {
+              "display": "\\sigma_B^2 = \\frac{1}{m} \\sum_{i=1}^{m} (x_i - \\mu_B)^2"
+            },
+            {
+              "text": "归一化并加入可学习的缩放和偏移："
+            },
+            {
+              "display": "\\hat{x}_i = \\frac{x_i - \\mu_B}{\\sqrt{\\sigma_B^2 + \\epsilon}}"
+            },
+            {
+              "display": "y_i = \\gamma \\hat{x}_i + \\beta"
+            },
+            {
+              "text": "其中 $\\gamma$ 和 $\\beta$ 是可学习参数，$\\epsilon$ 是防止除零的小常数",
+              "inline": "\\gamma, \\beta, \\epsilon"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Layer Normalization",
+          "formulas": [
+            {
+              "text": "LayerNorm在特征维度上归一化："
+            },
+            {
+              "display": "\\mu = \\frac{1}{d} \\sum_{i=1}^{d} x_i"
+            },
+            {
+              "display": "\\sigma^2 = \\frac{1}{d} \\sum_{i=1}^{d} (x_i - \\mu)^2"
+            },
+            {
+              "display": "y = \\gamma \\frac{x - \\mu}{\\sqrt{\\sigma^2 + \\epsilon}} + \\beta"
+            },
+            {
+              "text": "LayerNorm不依赖batch统计，适合变长序列和推理"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "RMSNorm（Root Mean Square Normalization）",
+          "formulas": [
+            {
+              "text": "RMSNorm只归一化不中心化，计算更简单："
+            },
+            {
+              "display": "RMS(x) = \\sqrt{\\frac{1}{d} \\sum_{i=1}^{d} x_i^2}"
+            },
+            {
+              "display": "y = \\frac{x}{RMS(x) + \\epsilon} \\cdot \\gamma"
+            },
+            {
+              "text": "去除了均值计算，在Transformer中效果与LayerNorm相当但更高效"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "PyTorch 实现各种归一化",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\n# 1. Batch Normalization（CNN常用）\nclass CNNWithBN(nn.Module):\n    def __init__(self):\n        super(CNNWithBN, self).__init__()\n        self.conv1 = nn.Conv2d(3, 64, 3, padding=1)\n        self.bn1 = nn.BatchNorm2d(64)  # 2D BN用于图像\n        self.conv2 = nn.Conv2d(64, 128, 3, padding=1)\n        self.bn2 = nn.BatchNorm2d(128)\n    \n    def forward(self, x):\n        x = F.relu(self.bn1(self.conv1(x)))\n        x = F.relu(self.bn2(self.conv2(x)))\n        return x\n\n# 2. Layer Normalization（Transformer常用）\nclass TransformerBlockWithLN(nn.Module):\n    def __init__(self, d_model, nhead, dim_feedforward):\n        super(TransformerBlockWithLN, self).__init__()\n        self.self_attn = nn.MultiheadAttention(d_model, nhead)\n        self.ffn = nn.Sequential(\n            nn.Linear(d_model, dim_feedforward),\n            nn.ReLU(),\n            nn.Linear(dim_feedforward, d_model)\n        )\n        self.norm1 = nn.LayerNorm(d_model)  # LayerNorm\n        self.norm2 = nn.LayerNorm(d_model)\n    \n    def forward(self, x):\n        # Pre-norm架构（更常用）\n        x = x + self.self_attn(self.norm1(x), self.norm1(x), self.norm1(x))[0]\n        x = x + self.ffn(self.norm2(x))\n        return x\n\n# 3. Group Normalization\nclass CNNWithGN(nn.Module):\n    def __init__(self, num_groups=32):\n        super(CNNWithGN, self).__init__()\n        self.conv1 = nn.Conv2d(3, 64, 3, padding=1)\n        self.gn1 = nn.GroupNorm(num_groups, 64)  # 将64个通道分成num_groups组\n        self.conv2 = nn.Conv2d(64, 128, 3, padding=1)\n        self.gn2 = nn.GroupNorm(num_groups, 128)\n    \n    def forward(self, x):\n        x = F.relu(self.gn1(self.conv1(x)))\n        x = F.relu(self.gn2(self.conv2(x)))\n        return x\n\n# 4. RMSNorm实现\nclass RMSNorm(nn.Module):\n    \"\"\"Root Mean Square Layer Normalization\"\"\"\n    def __init__(self, dim, eps=1e-8):\n        super(RMSNorm, self).__init__()\n        self.eps = eps\n        self.weight = nn.Parameter(torch.ones(dim))  # 可学习的缩放参数\n    \n    def forward(self, x):\n        \"\"\"\n        Args:\n            x: [batch_size, seq_len, dim] 或 [batch_size, dim]\n        \"\"\"\n        # 计算RMS\n        rms = torch.sqrt(torch.mean(x ** 2, dim=-1, keepdim=True) + self.eps)\n        # 归一化并缩放\n        return x / rms * self.weight\n\n# 5. 使用RMSNorm的Transformer块\nclass TransformerBlockWithRMSNorm(nn.Module):\n    def __init__(self, d_model, nhead, dim_feedforward):\n        super(TransformerBlockWithRMSNorm, self).__init__()\n        self.self_attn = nn.MultiheadAttention(d_model, nhead)\n        self.ffn = nn.Sequential(\n            nn.Linear(d_model, dim_feedforward),\n            nn.ReLU(),\n            nn.Linear(dim_feedforward, d_model)\n        )\n        self.norm1 = RMSNorm(d_model)  # 使用RMSNorm\n        self.norm2 = RMSNorm(d_model)\n    \n    def forward(self, x):\n        x = x + self.self_attn(self.norm1(x), self.norm1(x), self.norm1(x))[0]\n        x = x + self.ffn(self.norm2(x))\n        return x\n\n# 6. 对比不同归一化方法\nif __name__ == \"__main__\":\n    # BatchNorm示例（图像）\n    x_img = torch.randn(32, 3, 224, 224)  # [batch, channels, H, W]\n    model_bn = CNNWithBN()\n    out_bn = model_bn(x_img)\n    print(f\"BatchNorm输出形状: {out_bn.shape}\")\n    \n    # LayerNorm示例（序列）\n    x_seq = torch.randn(32, 100, 512)  # [batch, seq_len, d_model]\n    model_ln = TransformerBlockWithLN(d_model=512, nhead=8, dim_feedforward=2048)\n    out_ln = model_ln(x_seq)\n    print(f\"LayerNorm输出形状: {out_ln.shape}\")\n    \n    # GroupNorm示例\n    model_gn = CNNWithGN(num_groups=32)\n    out_gn = model_gn(x_img)\n    print(f\"GroupNorm输出形状: {out_gn.shape}\")\n    \n    # RMSNorm示例\n    model_rms = TransformerBlockWithRMSNorm(d_model=512, nhead=8, dim_feedforward=2048)\n    out_rms = model_rms(x_seq)\n    print(f\"RMSNorm输出形状: {out_rms.shape}\")\n    \n    # 测试RMSNorm\n    rms_norm = RMSNorm(dim=512)\n    x_test = torch.randn(32, 100, 512)\n    out_test = rms_norm(x_test)\n    print(f\"RMSNorm单独测试输出形状: {out_test.shape}\")"
+        }
+      ]
+    }
+  ]
+}

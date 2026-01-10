@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEFT（Parameter-Efficient Fine-Tuning）- 技术详解</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>PEFT：参数高效微调方法族</h1>
+        <p class="tagline">通过 Adapter、Prefix-Tuning、LoRA、IA3、BitFit 等方法冻结大部分参数，仅训练小型附加模块，实现“低资源可扩展”。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card">
+                <h3>目标</h3>
+                <p>在有限算力下快速迭代多个任务/领域的定制模型，便于部署与版本化。</p>
+            </div>
+            <div class="meta-card">
+                <h3>常见手段</h3>
+                <p>LoRA/QLoRA、Adapter、Prefix-Tuning、P-Tuning v2、Prompt Tuning、BitFit、IA3。</p>
+            </div>
+            <div class="meta-card">
+                <h3>优势</h3>
+                <p>显存占用低、训练稳定、参数可组合、支持多任务共享。</p>
+            </div>
+            <div class="meta-card">
+                <h3>生态</h3>
+                <p>Hugging Face PEFT 库统一了 API，兼容 Transformers/TRL/Axolotl。</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🧩 技术要点</h2>
+            <ul>
+                <li><strong>模块化注入：</strong>在注意力或前馈层插入可训练模块，主干保持冻结。</li>
+                <li><strong>Prompt 参数化：</strong>将任务知识编码为可训练 prompt 向量，不修改模型权重。</li>
+                <li><strong>Adapter 组合：</strong>同一模型可加载多个适配器，按需切换领域。</li>
+                <li><strong>权重合并/拆分：</strong>LoRA/Adapter 可以在导出时合并进原模型，或以增量形式分发。</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>📊 图解</h2>
+            <div class="diagram-gallery">
+                <div class="diagram-item">
+                    <img src="./assets/PEFT家族.png" alt="PEFT 方法家族" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">方法家族</div>
+                </div>
+                <div class="diagram-item">
+                    <img src="./assets/Adapter结构.png" alt="Adapter 结构" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">Adapter 结构</div>
+                </div>
+                <div class="diagram-item">
+                    <img src="./assets/PromptTuning.png" alt="Prompt Tuning" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'">
+                    <div class="caption">Prompt Tuning</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📐 数学原理</h2>
+            <div class="math-box">
+                <h3>Adapter</h3>
+                <div class="math-formula">
+                    <p>Adapter 在层内添加瓶颈结构：</p>
+                    <p>$$h' = h + W_{up} \sigma(W_{down} h)$$</p>
+                    <p>$W_{down} \in \mathbb{R}^{d \times r}, W_{up} \in \mathbb{R}^{r \times d}$，仅训练这两层。</p>
+                </div>
+            </div>
+            <div class="math-box">
+                <h3>Prefix/Prompt Tuning</h3>
+                <div class="math-formula">
+                    <p>在多头注意力前注入虚拟 token：</p>
+                    <p>$$\text{Attention}(Q, K, V) \Rightarrow \text{Attention}([Q; Q_p], [K; K_p], [V; V_p])$$</p>
+                    <p>$Q_p,K_p,V_p$ 为可训练前缀向量。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💻 代码示例</h2>
+            <div class="code-box">
+                <h3>PEFT 统一接口</h3>
+                <pre><code class="language-python">from peft import (LoraConfig, PrefixTuningConfig, PromptTuningConfig,
+                   get_peft_model, TaskType)
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+
+base_model = "google/flan-t5-large"
+model = AutoModelForSeq2SeqLM.from_pretrained(base_model)
+
+lora_cfg = LoraConfig(
+    task_type=TaskType.SEQ_2_SEQ_LM,
+    r=8,
+    lora_alpha=32,
+    lora_dropout=0.05,
+    target_modules=["q", "v"]
+)
+model = get_peft_model(model, lora_cfg)
+
+# 也可切换为 Prefix Tuning
+# prefix_cfg = PrefixTuningConfig(task_type=TaskType.SEQ_2_SEQ_LM, num_virtual_tokens=30)
+# model = get_peft_model(model, prefix_cfg)
+</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal();">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+{
+  "title": "流式生成（Streaming Generation）",
+  "subtitle": "实时逐token生成和返回文本的技术，显著提升用户体验。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "流式生成原理",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "流式生成原理",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "流式生成对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "流式生成对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用生成器实现流式生成",
+          "language": "python",
+          "code": "from transformers import AutoTokenizer, AutoModelForCausalLM\n\ndef generate_stream(model, tokenizer, prompt, max_length=100):\n    \"\"\"流式生成文本\"\"\"\n    inputs = tokenizer(prompt, return_tensors=\"pt\")\n    input_ids = inputs.input_ids\n    \n    for _ in range(max_length):\n        # 生成下一个token\n        with torch.no_grad():\n            outputs = model(input_ids)\n            logits = outputs.logits[:, -1, :]\n            next_token = torch.argmax(logits, dim=-1)\n        \n        # 解码并返回token\n        token_text = tokenizer.decode(next_token, skip_special_tokens=True)\n        yield token_text\n        \n        # 更新input_ids\n        input_ids = torch.cat([input_ids, next_token.unsqueeze(-1)], dim=-1)\n        \n        # 检查是否结束\n        if next_token.item() == tokenizer.eos_token_id:\n            break\n\n# 使用示例\nfor token in generate_stream(model, tokenizer, \"Hello\"):\n    print(token, end=\"\", flush=True)"
+        },
+        {
+          "type": "code-box",
+          "title": "FastAPI流式响应",
+          "language": "python",
+          "code": "from fastapi import FastAPI\nfrom fastapi.responses import StreamingResponse\n\napp = FastAPI()\n\n@app.post(\"/stream\")\nasync def stream_generate(prompt: str):\n    \"\"\"流式生成API\"\"\"\n    def generate():\n        for token in generate_stream(model, tokenizer, prompt):\n            yield f\"data: {token}\\n\\n\"\n    \n    return StreamingResponse(\n        generate(),\n        media_type=\"text/event-stream\"\n    )"
+        }
+      ]
+    }
+  ]
+}

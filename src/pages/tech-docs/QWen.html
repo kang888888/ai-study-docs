@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QWen (通义千问) 阿里云大模型 - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>QWen (通义千问) 阿里云大模型</h1>
+            <p>阿里云开源的大语言模型系列</p>
+        </div>
+        <div class="content">
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>阿里云开源的大语言模型系列，从0.5B到72B多个规模。在中文、代码、数学等任务上表现优异，支持32K长上下文，并提供多模态版本。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>多规模：从0.5B到72B，覆盖不同场景需求</li>
+                    <li>长上下文：支持32K tokens，适合长文档理解</li>
+                    <li>GQA优化：使用分组查询注意力，提升推理效率</li>
+                    <li>多模态：QWen-VL支持图像，QWen-Audio支持音频</li>
+                    <li>代码能力强：在代码生成任务上表现突出</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box"><p><strong>Grouped-Query Attention、RoPE、SwiGLU、Flash Attention</strong></p></div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box"><p>中文对话、代码生成、长文档理解、多模态理解、数学推理</p></div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>Grouped-Query Attention (GQA)</h3>
+                    <div class="math-formula">
+                        <p>GQA 将多个查询头分组共享键值：</p>
+                        <p>$$\text{GQA}(Q, K, V) = \text{Concat}(\text{head}_1, ..., \text{head}_h)W^O$$</p>
+                        <p>$$\text{head}_i = \text{Attention}(Q_i, K_{group}, V_{group})$$</p>
+                        <p>相比MHA，GQA减少了KV Cache，提升推理效率</p>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>RoPE 位置编码</h3>
+                    <div class="math-formula">
+                        <p>QWen使用旋转位置编码（RoPE），与LLaMA相同：</p>
+                        <p>$$R_{\Theta, m}^d = \text{Rotary}(m, \theta)$$</p>
+                        <p>支持长上下文扩展，可以处理32K tokens</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 Transformers 库加载 QWen</h3>
+                    <pre><code class="language-python">from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+
+# 加载模型和分词器
+model_path = "Qwen/Qwen-7B-Chat"
+tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
+model = AutoModelForCausalLM.from_pretrained(
+    model_path,
+    trust_remote_code=True,
+    torch_dtype=torch.float16,
+    device_map="auto"
+)
+
+# 对话
+messages = [
+    {"role": "user", "content": "你好"}
+]
+text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+inputs = tokenizer([text], return_tensors="pt").to(model.device)
+
+with torch.no_grad():
+    outputs = model.generate(**inputs, max_new_tokens=100)
+    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    print(response)</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

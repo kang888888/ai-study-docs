@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大模型部署与运维知识图谱</title>
+    
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+    
+    <!-- 页面特定样式 -->
+    <style>
+        body {
+            background: radial-gradient(circle at top, var(--bg-primary) 0%, #030712 60%, #010409 100%);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- 知识图谱容器 -->
+        <div id="chart"></div>
+        
+        <!-- 标题栏 -->
+        <div class="title-bar">
+            <h1>大模型部署与运维知识图谱</h1>
+            <p>从LLMOps全生命周期管理到性能分析优化，全面掌握大模型部署与运维技术。</p>
+            <div class="legend">
+                <span><i style="background:#06b6d4"></i>LLMOps</span>
+            <span><i style="background:#8b5cf6"></i>性能分析</span>
+            </div>
+        </div>
+        
+        <!-- 控制栏 -->
+        <div class="control-bar">
+            <button class="control-btn" onclick="resetView()">重新布局</button>
+            <button class="control-btn" onclick="toggleAnimation()">暂停/继续动画</button>
+        </div>
+        
+        <!-- 侧边栏 -->
+        <div class="sidebar" id="sidebar">
+            <button class="close-btn" onclick="closeSidebar()">×</button>
+            <div class="sidebar-header">
+                <h2 class="sidebar-title" id="sidebar-title">大模型部署与运维知识图谱</h2>
+                <div class="sidebar-tag" id="sidebar-tag">指南</div>
+            </div>
+            <div class="sidebar-body" id="sidebar-content">
+                <div class="sidebar-placeholder">
+                    <p>👇 在左侧图谱中选择一个节点即可查看详情。</p>
+                    <p>• 点击分类节点查看概览说明<br>• 点击具体技术节点，会在此侧边栏加载对应的 HTML 讲解页</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 公共脚本 -->
+    <script src="../common/knowledge-graph.js"></script>
+    
+    <!-- 页面特定数据 -->
+    <script>
+        // 页面配置
+        const pageConfig = {
+          "containerId": "chart",
+          "data": {
+                    "name": "大模型部署与运维",
+                    "value": "根节点",
+                    "symbolSize": 70,
+                    "itemStyle": {
+                              "color": "#06b6d4",
+                              "borderColor": "#f8fafc",
+                              "borderWidth": 4
+                    },
+                    "children": [
+                              {
+                                        "name": "LLMOps",
+                                        "value": "大语言模型全生命周期运维管理。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "LLMOps",
+                                        "children": [
+                                                  {
+                                                            "name": "部署策略矩阵",
+                                                            "value": "本地/演示/服务器/边缘部署方案与适用场景。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Deployment"
+                                                  },
+                                                  {
+                                                            "name": "Kubernetes实践",
+                                                            "value": "Operator、GPU 调度、Autoscaler、灰度路由等关键要素。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "K8s"
+                                                  },
+                                                  {
+                                                            "name": "版本与配置治理",
+                                                            "value": "权重/配置/Prompt 版本化、发布与回滚策略。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Versioning"
+                                                  },
+                                                  {
+                                                            "name": "监控与可观测性",
+                                                            "value": "性能/质量/安全/成本指标与日志、告警体系。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Monitoring"
+                                                  },
+                                                  {
+                                                            "name": "自动化与案例",
+                                                            "value": "扩缩容、A/B、蓝绿、灰度及典型企业落地经验。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Practice"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "LLM性能分析",
+                                        "value": "大语言模型性能分析和优化工具。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Performance",
+                                        "children": [
+                                                  {
+                                                            "name": "分析路线图",
+                                                            "value": "PyTorch Profiler → Nsight Systems → Nsight Compute 的分层分析流程。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Roadmap"
+                                                  },
+                                                  {
+                                                            "name": "PyTorch Profiler",
+                                                            "value": "算子耗时、内存、数据加载瓶颈定位。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Profiler"
+                                                  },
+                                                  {
+                                                            "name": "Nsight Systems",
+                                                            "value": "CPU/GPU 时间线、通信/IO、NVTX 标记。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Nsight"
+                                                  },
+                                                  {
+                                                            "name": "Nsight Compute",
+                                                            "value": "SM Occupancy、内存带宽、Warp Stall 指标。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Kernel"
+                                                  },
+                                                  {
+                                                            "name": "优化手册",
+                                                            "value": "计算/通信/内存/IO 手段与 LLaMA-65B 案例。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Optimization"
+                                                  }
+                                        ]
+                              }
+                    ]
+          },
+          "techPages": {
+                    "LLMOps": "../tech-docs/LLMOps.html",
+                    "LLM性能分析": "../tech-docs/LLM性能分析.html"
+          },
+          "categoryDescriptions": {
+                    "LLMOps": "覆盖部署策略矩阵、Kubernetes 实践、版本/监控治理以及灰度与自动化案例，构建生产级 LLM 运维体系。",
+                    "LLM性能分析": "梳理 PyTorch Profiler、Nsight Systems/Compute 与常见优化手段，帮助快速定位训练与推理瓶颈。"
+          },
+          "force": {
+                    "repulsion": 1800,
+                    "gravity": 0.15,
+                    "edgeLength": [
+                              80,
+                              240
+                    ],
+                    "friction": 0.2
+          }
+};
+        
+        // 初始化页面
+        initKnowledgeGraph(pageConfig);
+        
+        // 窗口大小改变时重新调整
+        window.addEventListener('resize', function() {
+            if (typeof chart !== 'undefined' && chart) {
+                chart.resize();
+            }
+        });
+    </script>
+</body>
+</html>

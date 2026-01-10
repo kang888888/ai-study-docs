@@ -1,0 +1,61 @@
+{
+  "title": "梯度累积与检查点（Gradient Accumulation & Checkpointing）",
+  "subtitle": "梯度累积模拟更大批次，检查点技术节省内存。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "梯度累积原理",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "梯度累积原理",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "梯度检查点原理",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "梯度检查点原理",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "梯度累积示例",
+          "language": "python",
+          "code": "accumulation_steps = 4\noptimizer.zero_grad()\n\nfor i, batch in enumerate(dataloader):\n    outputs = model(batch)\n    loss = criterion(outputs, targets) / accumulation_steps\n    loss.backward()\n    \n    if (i + 1) % accumulation_steps == 0:\n        optimizer.step()\n        optimizer.zero_grad()"
+        },
+        {
+          "type": "code-box",
+          "title": "检查点技术示例",
+          "language": "python",
+          "code": "from torch.utils.checkpoint import checkpoint\n\n# 启用检查点\nmodel.gradient_checkpointing_enable()\n\n# 或自定义检查点\ndef forward_with_checkpoint(self, x):\n    x = checkpoint(self.layer1, x)\n    x = checkpoint(self.layer2, x)\n    return x"
+        }
+      ]
+    }
+  ]
+}

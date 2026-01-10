@@ -1,0 +1,55 @@
+{
+  "title": "数据质量评估",
+  "subtitle": "通过多维度评估数据质量，确保训练数据的高质量。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据质量评估方法",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "数据质量评估方法",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据质量评估指标",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "数据质量评估指标",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "质量评分",
+          "language": "python",
+          "code": "def evaluate_quality(example):\n    scores = {\n        \"length\": len(example[\"text\"].split()),\n        \"diversity\": calculate_diversity(example[\"text\"]),\n        \"relevance\": calculate_relevance(example[\"text\"]),\n    }\n    return scores\n\ndef calculate_diversity(text):\n    words = text.split()\n    unique_words = set(words)\n    return len(unique_words) / len(words) if words else 0"
+        }
+      ]
+    }
+  ]
+}

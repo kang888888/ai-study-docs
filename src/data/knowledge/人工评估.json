@@ -1,0 +1,61 @@
+{
+  "title": "人工评估",
+  "subtitle": "单点评估、对比评估、多维面板等人工评估方法。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "人工评估流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "人工评估流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "人工评估方法",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "人工评估方法",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "单点评估系统",
+          "language": "python",
+          "code": "class SinglePointEvaluation:\n    \"\"\"单点评估：对单个回答进行多维度评分\"\"\"\n    def __init__(self):\n        self.dimensions = [\n            'usefulness',  # 有用性\n            'accuracy',    # 准确性\n            'relevance',   # 相关性\n            'fluency',     # 流畅性\n            'safety'       # 安全性\n        ]\n    \n    def evaluate(self, response, question, context=None):\n        \"\"\"评估单个回答\"\"\"\n        scores = {}\n        \n        for dimension in self.dimensions:\n            # 这里应该是人工评分，示例中使用模拟评分\n            score = self._get_human_score(response, question, dimension)\n            scores[dimension] = score\n        \n        return scores\n    \n    def _get_human_score(self, response, question, dimension):\n        \"\"\"获取人工评分（实际应用中应该调用标注接口）\"\"\"\n        # 模拟评分逻辑\n        return 0.85  # 实际应该从标注系统获取\n\n# 使用示例\nevaluator = SinglePointEvaluation()\nquestion = \"What is the capital of France?\"\nresponse = \"The capital of France is Paris.\"\nscores = evaluator.evaluate(response, question)\nprint(scores)"
+        },
+        {
+          "type": "code-box",
+          "title": "对比评估系统",
+          "language": "python",
+          "code": "class ComparativeEvaluation:\n    \"\"\"对比评估：比较多个模型的回答\"\"\"\n    def __init__(self):\n        self.comparisons = []\n    \n    def compare_responses(self, responses, question):\n        \"\"\"对比多个回答\"\"\"\n        # responses: [{'model': 'model1', 'response': '...'}, ...]\n        \n        # 获取人工对比评分\n        ranking = self._get_human_ranking(responses, question)\n        \n        return {\n            'question': question,\n            'ranking': ranking,\n            'best_model': ranking[0]['model'] if ranking else None\n        }\n    \n    def _get_human_ranking(self, responses, question):\n        \"\"\"获取人工排序结果（实际应用中应该调用标注接口）\"\"\"\n        # 模拟排序逻辑\n        # 实际应该从标注系统获取人工排序结果\n        return sorted(responses, key=lambda x: x.get('score', 0.5), reverse=True)\n\n# 使用示例\nevaluator = ComparativeEvaluation()\nquestion = \"Explain quantum computing\"\nresponses = [\n    {'model': 'GPT-4', 'response': '...'},\n    {'model': 'Claude', 'response': '...'},\n    {'model': 'LLaMA', 'response': '...'}\n]\nresult = evaluator.compare_responses(responses, question)\nprint(f\"Best model: {result['best_model']}\")"
+        }
+      ]
+    }
+  ]
+}

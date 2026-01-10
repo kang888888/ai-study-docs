@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>应用开发知识图谱</title>
+    
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+    
+    <!-- 页面特定样式 -->
+    <style>
+        body {
+            background: radial-gradient(circle at top, var(--bg-primary) 0%, #030712 60%, #010409 100%);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- 知识图谱容器 -->
+        <div id="chart"></div>
+        
+        <!-- 标题栏 -->
+        <div class="title-bar">
+            <h1>应用开发知识图谱</h1>
+            <p>从开发核心组件到HuggingFace生态系统，全面掌握LLM应用开发技术栈。</p>
+            <div class="legend">
+                <span><i style="background:#f59e0b"></i>核心开发技术</span>
+            <span><i style="background:#3b82f6"></i>HuggingFace工具链</span>
+            <span><i style="background:#10b981"></i>实用工具</span>
+            </div>
+        </div>
+        
+        <!-- 控制栏 -->
+        <div class="control-bar">
+            <button class="control-btn" onclick="resetView()">重新布局</button>
+            <button class="control-btn" onclick="toggleAnimation()">暂停/继续动画</button>
+        </div>
+        
+        <!-- 侧边栏 -->
+        <div class="sidebar" id="sidebar">
+            <button class="close-btn" onclick="closeSidebar()">×</button>
+            <div class="sidebar-header">
+                <h2 class="sidebar-title" id="sidebar-title">应用开发知识图谱</h2>
+                <div class="sidebar-tag" id="sidebar-tag">指南</div>
+            </div>
+            <div class="sidebar-body" id="sidebar-content">
+                <div class="sidebar-placeholder">
+                    <p>👇 在左侧图谱中选择一个节点即可查看详情。</p>
+                    <p>• 点击分类节点查看概览说明<br>• 点击具体技术节点，会在此侧边栏加载对应的 HTML 讲解页</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 公共脚本 -->
+    <script src="../common/knowledge-graph.js"></script>
+    
+    <!-- 页面特定数据 -->
+    <script>
+        // 页面配置
+        const pageConfig = {
+          "containerId": "chart",
+          "data": {
+                    "name": "LLM应用开发技术地图",
+                    "value": "根节点",
+                    "symbolSize": 70,
+                    "itemStyle": {
+                              "color": "#06b6d4",
+                              "borderColor": "#f8fafc",
+                              "borderWidth": 4
+                    },
+                    "children": [
+                              {
+                                        "name": "核心开发技术",
+                                        "value": "RAG、Agent、LangChain、向量数据库等核心开发技术。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Core Tech",
+                                        "children": [
+                                                  {
+                                                            "name": "RAG系统",
+                                                            "value": "检索增强生成系统，结合检索和生成解决大模型幻觉问题。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "RAG"
+                                                  },
+                                                  {
+                                                            "name": "AI智能体",
+                                                            "value": "能够自主决策和行动的AI系统，具备工具使用和多步推理能力。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Agent"
+                                                  },
+                                                  {
+                                                            "name": "LangChain框架",
+                                                            "value": "最流行的LLM应用编排框架，提供组件和工具链。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Framework"
+                                                  },
+                                                  {
+                                                            "name": "向量数据库",
+                                                            "value": "存储和检索高维向量的数据库系统，RAG的基础设施。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Vector DB"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "HuggingFace工具链",
+                                        "value": "Transformers、Datasets、Accelerate等HuggingFace工具链。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "HF Tools",
+                                        "children": [
+                                                  {
+                                                            "name": "Transformers库",
+                                                            "value": "加载和使用预训练模型的标准库，提供Pipeline和模型接口。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Models"
+                                                  },
+                                                  {
+                                                            "name": "Datasets库",
+                                                            "value": "高效处理海量数据集的库，支持多种数据格式和流式处理。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Data"
+                                                  },
+                                                  {
+                                                            "name": "Tokenizers库",
+                                                            "value": "高性能文本分词库，支持BPE、WordPiece等多种分词算法。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Tokenization"
+                                                  },
+                                                  {
+                                                            "name": "Accelerate库",
+                                                            "value": "简化分布式训练和混合精度训练的加速库。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Training"
+                                                  },
+                                                  {
+                                                            "name": "HuggingFace Hub",
+                                                            "value": "模型、数据集和Spaces的管理平台，支持协作和部署。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Hub"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "实用工具",
+                                        "value": "各类提高开发效率的实用工具和资源。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Tools"
+                              }
+                    ]
+          },
+          "techPages": {
+                    "向量数据库": "../tech-docs/向量数据库.html",
+                    "LangChain框架": "../tech-docs/LangChain框架.html",
+                    "AI智能体": "../tech-docs/AI智能体.html",
+                    "RAG系统": "../tech-docs/RAG系统.html",
+                    "Transformers库": "../tech-docs/Pipeline使用.html",
+                    "Datasets库": "../tech-docs/README.html",
+                    "Tokenizers库": "../tech-docs/README.html",
+                    "Accelerate库": "../tech-docs/README.html",
+                    "HuggingFace Hub": "../tech-docs/README.html"
+          },
+          "categoryDescriptions": {
+                    "核心开发技术": "RAG系统、AI智能体、LangChain框架、向量数据库等核心开发技术，是构建LLM应用的基础。",
+                    "HuggingFace工具链": "Transformers、Datasets、Tokenizers、Accelerate等HuggingFace工具链，是LLM开发的标准工具集。",
+                    "实用工具": "各类提高开发效率的CLI工具、可视化面板、实践项目等实用工具和资源。"
+          },
+          "force": {
+                    "repulsion": 1800,
+                    "gravity": 0.15,
+                    "edgeLength": [
+                              80,
+                              240
+                    ],
+                    "friction": 0.2
+          }
+};
+        
+        // 初始化页面
+        initKnowledgeGraph(pageConfig);
+        
+        // 窗口大小改变时重新调整
+        window.addEventListener('resize', function() {
+            if (typeof chart !== 'undefined' && chart) {
+                chart.resize();
+            }
+        });
+    </script>
+</body>
+</html>

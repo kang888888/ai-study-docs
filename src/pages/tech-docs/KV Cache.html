@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KV Cache（注意力缓存）推理优化</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>KV Cache：注意力缓存与长序列推理</h1>
+        <p class="tagline">通过缓存历史 Key/Value 张量，让自回归推理从 O(T²) 降为 O(T)，是流式生成的关键优化。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card"><h3>核心作用</h3><p>避免重复计算历史 token 的自注意力，显著提升 token/s。</p></div>
+            <div class="meta-card"><h3>应用场景</h3><p>Chatbot、语音字幕、代码补全、Agent 长上下文。</p></div>
+            <div class="meta-card"><h3>挑战</h3><p>显存占用、KV 复制、跨批次共享、缓存失效。</p></div>
+            <div class="meta-card"><h3>典型方案</h3><p>PagedAttention、Ring Attention、StreamingLLM、Chunked KV。</p></div>
+        </div>
+
+        <div class="section">
+            <h2>🔥 技术要点</h2>
+            <ul>
+                <li><strong>Prefill vs Decode：</strong>首次输入全量计算；之后每个 token 只追加一列 K/V。</li>
+                <li><strong>Paged 缓存：</strong>将 KV 分块存储在虚拟内存，动态复用，解决长对话 OOM。</li>
+                <li><strong>Cache Quantization：</strong>用 FP8/INT8 存储 KV，提升吞吐。</li>
+                <li><strong>并行批处理：</strong>多会话共享 KV Buffer，通过指针表定位。</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>📊 图解</h2>
+            <div class="diagram-gallery">
+                <div class="diagram-item"><img src="./assets/KVCache基本.png" alt="KV Cache 基本流程" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">基本流程</div></div>
+                <div class="diagram-item"><img src="./assets/PagedAttention.png" alt="PagedAttention" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">PagedAttention</div></div>
+                <div class="diagram-item"><img src="./assets/KV量化.png" alt="KV 量化" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">KV 量化</div></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📐 数学与复杂度</h2>
+            <div class="math-box">
+                <h3>自注意力复杂度</h3>
+                <div class="math-formula">
+                    <p>无缓存：$\mathcal{O}(T^2 d)$；有缓存：$\mathcal{O}(T d^2)$。</p>
+                    <p>Prefill 成本仍为 $T^2$，但 decode 阶段变为常数。</p>
+                </div>
+            </div>
+            <div class="math-box">
+                <h3>缓存内存</h3>
+                <div class="math-formula">
+                    <p>$$\text{Mem} = 2 \times L \times H \times d_{head} \times bytes$$</p>
+                    <p>两个因子来自 Key/Value，常见优化：FP8、压缩、共享。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💻 Python 代码示例</h2>
+            <div class="code-box">
+                <h3>使用 vLLM API 自动管理 KV Cache</h3>
+<pre><code class="language-python">from vllm import LLM, SamplingParams
+
+llm = LLM(model="meta-llama/Llama-3-8b-instruct", gpu_memory_utilization=0.9)
+params = SamplingParams(temperature=0.7, max_tokens=256)
+
+prompts = [
+    "说明 KV Cache 如何提高推理效率?",
+    "给出一个带 KV Cache 的推理伪代码"
+]
+
+outputs = llm.generate(prompts, params)
+for out in outputs:
+    print(out.outputs[0].text)
+</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal();">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+
+    <script>
+        function openImageModal(img){const modal=document.getElementById('imageModal');modal.classList.add('active');document.getElementById('modalImage').src=img.src;document.getElementById('modalCaption').textContent=img.alt||'';}
+        function closeImageModal(){document.getElementById('imageModal').classList.remove('active');}
+        document.addEventListener('keydown',e=>{if(e.key==='Escape')closeImageModal();});
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

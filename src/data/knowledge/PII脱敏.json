@@ -1,0 +1,54 @@
+{
+  "title": "PII脱敏 (Personally Identifiable Information)",
+  "subtitle": "个人身份信息脱敏，保护用户隐私",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "PII脱敏是一种数据隐私保护技术，通过识别和脱敏个人身份信息（如姓名、身份证号、电话号码、邮箱等），保护用户隐私。在AI模型训练中，PII脱敏确保训练数据不包含可识别的个人信息，符合隐私保护法规要求。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "信息识别：自动识别文本中的PII信息",
+            "脱敏处理：使用掩码、替换等方式脱敏",
+            "隐私保护：确保个人信息不被泄露",
+            "法规合规：符合GDPR、CCPA等隐私法规",
+            "数据可用：在保护隐私的同时保持数据可用性"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "NER识别、正则匹配、掩码替换、哈希加密、差分隐私"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "数据预处理、模型训练、数据共享、隐私合规、数据治理"
+        }
+      ]
+    }
+  ]
+}

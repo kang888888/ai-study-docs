@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>解码策略（Decoding Strategies）</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>解码策略（Decoding Strategies）</h1>
+        <p class="tagline">大语言模型中文本生成的关键技术，直接影响生成文本的质量、多样性和可控性。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card"><h3>核心特点</h3><p>多种策略、性能优化、多样性控制、参数调优。</p></div>
+            <div class="meta-card"><h3>策略分类</h3><p>确定性策略、随机性策略、混合策略。</p></div>
+            <div class="meta-card"><h3>主要策略</h3><p>贪心搜索、束搜索、随机采样、核采样。</p></div>
+            <div class="meta-card"><h3>应用场景</h3><p>文本生成、质量控制、多样性调节、任务特化。</p></div>
+        </div>
+
+        <div class="section">
+            <h2>⚙️ 解码策略分类</h2>
+            <ul>
+                <li><strong>确定性策略</strong>：贪心搜索、束搜索</li>
+                <li><strong>随机性策略</strong>：随机采样、核采样</li>
+                <li><strong>混合策略</strong>：温度采样、top-k采样</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>🔧 主要策略</h2>
+            
+            <h3 style="color:#fbbf24; margin-top:20px;">1. 贪心搜索（Greedy Search）</h3>
+            <ul>
+                <li><strong>特点</strong>：每次选择概率最高的token</li>
+                <li><strong>优势</strong>：简单快速</li>
+                <li><strong>劣势</strong>：多样性低</li>
+            </ul>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">2. 束搜索（Beam Search）</h3>
+            <ul>
+                <li><strong>特点</strong>：保留多个候选序列</li>
+                <li><strong>优势</strong>：质量高</li>
+                <li><strong>劣势</strong>：计算成本高</li>
+            </ul>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">3. 核采样（Nucleus Sampling / Top-p）</h3>
+            <ul>
+                <li><strong>特点</strong>：从累积概率达到阈值的token中采样</li>
+                <li><strong>优势</strong>：平衡质量和多样性</li>
+                <li><strong>劣势</strong>：参数调优复杂</li>
+            </ul>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">4. Top-k采样</h3>
+            <ul>
+                <li><strong>特点</strong>：从概率最高的k个token中采样</li>
+                <li><strong>优势</strong>：控制多样性范围</li>
+                <li><strong>劣势</strong>：固定k值可能不够灵活</li>
+            </ul>
+
+            <h3 style="color:#fbbf24; margin-top:20px;">5. 温度采样（Temperature Sampling）</h3>
+            <ul>
+                <li><strong>特点</strong>：通过温度参数调节概率分布的平滑度</li>
+                <li><strong>优势</strong>：灵活控制多样性和确定性</li>
+                <li><strong>劣势</strong>：需要仔细调优温度参数</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>📊 策略对比</h2>
+            <table style="width:100%; border-collapse:collapse; margin-top:20px;">
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                    <th style="padding:12px; text-align:left; color:#fcd34d;">策略</th>
+                    <th style="padding:12px; text-align:left; color:#fcd34d;">确定性</th>
+                    <th style="padding:12px; text-align:left; color:#fcd34d;">多样性</th>
+                    <th style="padding:12px; text-align:left; color:#fcd34d;">质量</th>
+                    <th style="padding:12px; text-align:left; color:#fcd34d;">计算成本</th>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                    <td style="padding:12px;">贪心搜索</td>
+                    <td style="padding:12px;">高</td>
+                    <td style="padding:12px;">低</td>
+                    <td style="padding:12px;">中等</td>
+                    <td style="padding:12px;">低</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                    <td style="padding:12px;">束搜索</td>
+                    <td style="padding:12px;">高</td>
+                    <td style="padding:12px;">低</td>
+                    <td style="padding:12px;">高</td>
+                    <td style="padding:12px;">高</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                    <td style="padding:12px;">随机采样</td>
+                    <td style="padding:12px;">低</td>
+                    <td style="padding:12px;">高</td>
+                    <td style="padding:12px;">中等</td>
+                    <td style="padding:12px;">低</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                    <td style="padding:12px;">核采样</td>
+                    <td style="padding:12px;">中</td>
+                    <td style="padding:12px;">中</td>
+                    <td style="padding:12px;">高</td>
+                    <td style="padding:12px;">中</td>
+                </tr>
+                <tr>
+                    <td style="padding:12px;">温度采样</td>
+                    <td style="padding:12px;">可调</td>
+                    <td style="padding:12px;">可调</td>
+                    <td style="padding:12px;">高</td>
+                    <td style="padding:12px;">低</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>⚙️ 参数调优建议</h2>
+            <ul>
+                <li><strong>温度（Temperature）</strong>：0.7-1.0 适合大多数任务</li>
+                <li><strong>Top-k</strong>：50-100 通常效果较好</li>
+                <li><strong>Top-p</strong>：0.9-0.95 平衡质量和多样性</li>
+                <li><strong>重复惩罚</strong>：1.1-1.2 减少重复</li>
+                <li><strong>束搜索宽度</strong>：3-5 平衡质量和效率</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>💻 代码示例</h2>
+            <div class="code-box">
+                <h3>使用不同解码策略生成文本</h3>
+                <pre><code class="language-python">from transformers import AutoTokenizer, AutoModelForCausalLM
+
+model_name = "microsoft/DialoGPT-medium"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name)
+
+prompt = "Hello, how are you?"
+
+# 贪心搜索
+outputs_greedy = model.generate(
+    tokenizer(prompt, return_tensors="pt")["input_ids"],
+    max_length=100,
+    do_sample=False,
+    num_beams=1
+)
+
+# 束搜索
+outputs_beam = model.generate(
+    tokenizer(prompt, return_tensors="pt")["input_ids"],
+    max_length=100,
+    do_sample=False,
+    num_beams=4
+)
+
+# 核采样
+outputs_nucleus = model.generate(
+    tokenizer(prompt, return_tensors="pt")["input_ids"],
+    max_length=100,
+    do_sample=True,
+    top_p=0.9,
+    temperature=0.7
+)</code></pre>
+            </div>
+        </div>
+    </div>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

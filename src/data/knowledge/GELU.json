@@ -1,0 +1,125 @@
+{
+  "title": "GELU (Gaussian Error Linear Unit)",
+  "subtitle": "Transformer中常用的平滑激活函数",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "GELU（Gaussian Error Linear Unit）是Transformer架构中常用的激活函数。它结合了ReLU的线性特性和Sigmoid的平滑特性，在负值区域也有非零输出，有助于梯度传播。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学表达",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "GELU函数定义",
+          "formulas": [
+            {
+              "text": "GELU函数定义为："
+            },
+            {
+              "display": "\\text{GELU}(x) = x \\cdot \\Phi(x)"
+            },
+            {
+              "text": "其中 $\\Phi(x)$ 是标准正态分布的累积分布函数："
+            },
+            {
+              "display": "\\Phi(x) = \\frac{1}{2}\\left[1 + \\text{erf}\\left(\\frac{x}{\\sqrt{2}}\\right)\\right]"
+            },
+            {
+              "text": "常用近似（计算更快）："
+            },
+            {
+              "display": "\\text{GELU}(x) \\approx 0.5x\\left(1 + \\tanh\\left[\\sqrt{\\frac{2}{\\pi}}\\left(x + 0.044715x^3\\right)\\right]\\right)"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "导数",
+          "formulas": [
+            {
+              "text": "GELU的导数："
+            },
+            {
+              "display": "\\frac{d}{dx}\\text{GELU}(x) = \\Phi(x) + x \\cdot \\phi(x)"
+            },
+            {
+              "text": "其中 $\\phi(x) = \\frac{1}{\\sqrt{2\\pi}}e^{-x^2/2}$ 是标准正态分布的概率密度函数"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "平滑性：处处可导，梯度连续",
+            "非零负值：负值区域也有输出，有助于梯度传播",
+            "自正则化：结合了ReLU和Sigmoid的优点",
+            "计算开销：近似计算相对较快",
+            "Transformer标准：BERT、GPT等模型的标准激活函数"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 函数图像",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "MathFunctionDiagram",
+              "caption": "GELU函数图像",
+              "width": 1000,
+              "height": 600,
+              "interactive": true,
+              "props": {
+                "type": "activation",
+                "title": "GELU函数图像",
+                "function": "gelu"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "Transformer的FFN层、BERT、GPT系列模型、需要平滑激活的场景"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "GELU实现与使用",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nimport numpy as np\nfrom scipy.special import erf\n\n# 1. 精确实现（使用erf）\ndef gelu_exact(x):\n    return 0.5 * x * (1 + erf(x / np.sqrt(2)))\n\n# 2. 近似实现（PyTorch默认）\ndef gelu_approx(x):\n    return 0.5 * x * (1 + np.tanh(np.sqrt(2/np.pi) * (x + 0.044715 * x**3)))\n\n# 3. PyTorch实现\nx = torch.tensor([-2.0, -1.0, 0.0, 1.0, 2.0])\ngelu_output = F.gelu(x)\nprint(f\"GELU输出: {gelu_output}\")\n\n# 4. 在Transformer中使用\nclass TransformerFFN(nn.Module):\n    def __init__(self, d_model, d_ff):\n        super(TransformerFFN, self).__init__()\n        self.linear1 = nn.Linear(d_model, d_ff)\n        self.gelu = nn.GELU()  # GELU激活\n        self.linear2 = nn.Linear(d_ff, d_model)\n    \n    def forward(self, x):\n        x = self.linear1(x)\n        x = self.gelu(x)  # 应用GELU\n        x = self.linear2(x)\n        return x"
+        }
+      ]
+    }
+  ]
+}

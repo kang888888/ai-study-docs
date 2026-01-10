@@ -1,0 +1,326 @@
+{
+  "title": "Transformer",
+  "subtitle": "基于Self-Attention机制的革命性架构",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "基于Self-Attention机制的革命性架构，完全摒弃了循环和卷积结构。通过注意力机制直接建模序列中任意两个位置的关系，是当前所有大语言模型（GPT、BERT、LLaMA）的基石。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "Self-Attention：直接计算序列中任意位置之间的关系，O(n²)复杂度",
+            "并行计算：所有位置同时计算，训练速度远超RNN/LSTM",
+            "位置编码：通过正弦/余弦或可学习的位置编码保留序列顺序信息",
+            "多头注意力：从多个子空间捕捉不同的语义关系",
+            "Encoder-Decoder结构：编码器理解输入，解码器生成输出"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "Multi-Head Attention、位置编码、残差连接、Layer Normalization、Feed-Forward Network"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "机器翻译、文本生成、大语言模型（GPT/BERT）、图像分类（ViT）、语音识别"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "TransformerDiagram",
+              "caption": "Transformer 架构动态图解（交互式 SVG + D3.js）",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Transformer 架构动态图解（交互式 SVG + D3.js）"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "TransformerDiagram",
+              "caption": "Transformer架构图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Transformer架构图",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "TransformerDiagram",
+              "caption": "注意力机制",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "注意力机制",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "TransformerDiagram",
+              "caption": "位置编码",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "位置编码",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "TransformerDiagram",
+              "caption": "Attention变体可视化",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Attention变体可视化",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "TransformerDiagram",
+              "caption": "RoPE位置编码",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "RoPE位置编码",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "TransformerDiagram",
+              "caption": "RoPE对各序列位置、各维度的作用",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "RoPE对各序列位置、各维度的作用",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "TransformerDiagram",
+              "caption": "MHA、GQA、MQA、MLA对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "MHA、GQA、MQA、MLA对比",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "TransformerDiagram",
+              "caption": "RMSNorm归一化",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "RMSNorm归一化",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "TransformerDiagram",
+              "caption": "SwiGLU激活函数",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "SwiGLU激活函数",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "TransformerDiagram",
+              "caption": "ALiBi位置编码",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "ALiBi位置编码",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "TransformerDiagram",
+              "caption": "BatchNorm和LayerNorm对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "BatchNorm和LayerNorm对比",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "TransformerDiagram",
+              "caption": "Pre-norm和Post-norm",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Pre-norm和Post-norm",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "Scaled Dot-Product Attention",
+          "formulas": [
+            {
+              "text": "注意力机制的核心公式："
+            },
+            {
+              "display": "\\text{Attention}(Q, K, V) = \\text{softmax}\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V"
+            },
+            {
+              "text": "其中："
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Multi-Head Attention",
+          "formulas": [
+            {
+              "text": "多头注意力机制："
+            },
+            {
+              "display": "\\text{MultiHead}(Q, K, V) = \\text{Concat}(\\text{head}_1, ..., \\text{head}_h)W^O"
+            },
+            {
+              "display": "\\text{head}_i = \\text{Attention}(QW_i^Q, KW_i^K, VW_i^V)"
+            },
+            {
+              "text": "其中 $h$ 是注意力头的数量，每个头有独立的权重矩阵 $W_i^Q, W_i^K, W_i^V$",
+              "inline": "h"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "位置编码（Positional Encoding）",
+          "formulas": [
+            {
+              "text": "正弦位置编码："
+            },
+            {
+              "display": "PE_{(pos, 2i)} = \\sin\\left(\\frac{pos}{10000^{2i/d_{model}}}\\right)"
+            },
+            {
+              "display": "PE_{(pos, 2i+1)} = \\cos\\left(\\frac{pos}{10000^{2i/d_{model}}}\\right)"
+            },
+            {
+              "text": "其中 $pos$ 是位置，$i$ 是维度索引，$d_{model}$ 是模型维度",
+              "inline": "pos"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Feed-Forward Network",
+          "formulas": [
+            {
+              "text": "前馈网络："
+            },
+            {
+              "display": "\\text{FFN}(x) = \\max(0, xW_1 + b_1)W_2 + b_2"
+            },
+            {
+              "text": "通常 $d_{ff} = 4 \\times d_{model}$",
+              "inline": "d_{ff} = 4 \\times d_{model}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 PyTorch 实现 Transformer",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nimport math\n\nclass MultiHeadAttention(nn.Module):\n    \"\"\"多头注意力机制\"\"\"\n    def __init__(self, d_model, num_heads):\n        super(MultiHeadAttention, self).__init__()\n        assert d_model % num_heads == 0\n        \n        self.d_model = d_model\n        self.num_heads = num_heads\n        self.d_k = d_model // num_heads\n        \n        # 线性变换层\n        self.W_q = nn.Linear(d_model, d_model)\n        self.W_k = nn.Linear(d_model, d_model)\n        self.W_v = nn.Linear(d_model, d_model)\n        self.W_o = nn.Linear(d_model, d_model)\n    \n    def scaled_dot_product_attention(self, Q, K, V, mask=None):\n        \"\"\"缩放点积注意力\"\"\"\n        # Q, K, V shape: (batch_size, num_heads, seq_len, d_k)\n        scores = torch.matmul(Q, K.transpose(-2, -1)) / math.sqrt(self.d_k)\n        \n        if mask is not None:\n            scores = scores.masked_fill(mask == 0, -1e9)\n        \n        attention_weights = F.softmax(scores, dim=-1)\n        output = torch.matmul(attention_weights, V)\n        \n        return output, attention_weights\n    \n    def forward(self, query, key, value, mask=None):\n        batch_size = query.size(0)\n        \n        # 线性变换并重塑为多头\n        Q = self.W_q(query).view(batch_size, -1, self.num_heads, self.d_k).transpose(1, 2)\n        K = self.W_k(key).view(batch_size, -1, self.num_heads, self.d_k).transpose(1, 2)\n        V = self.W_v(value).view(batch_size, -1, self.num_heads, self.d_k).transpose(1, 2)\n        \n        # 注意力计算\n        attention_output, attention_weights = self.scaled_dot_product_attention(Q, K, V, mask)\n        \n        # 拼接多头\n        attention_output = attention_output.transpose(1, 2).contiguous().view(\n            batch_size, -1, self.d_model\n        )\n        \n        # 输出投影\n        output = self.W_o(attention_output)\n        \n        return output\n\nclass PositionalEncoding(nn.Module):\n    \"\"\"位置编码\"\"\"\n    def __init__(self, d_model, max_len=5000):\n        super(PositionalEncoding, self).__init__()\n        \n        pe = torch.zeros(max_len, d_model)\n        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)\n        div_term = torch.exp(torch.arange(0, d_model, 2).float() * \n                           (-math.log(10000.0) / d_model))\n        \n        pe[:, 0::2] = torch.sin(position * div_term)\n        pe[:, 1::2] = torch.cos(position * div_term)\n        pe = pe.unsqueeze(0).transpose(0, 1)\n        \n        self.register_buffer('pe', pe)\n    \n    def forward(self, x):\n        # x shape: (seq_len, batch_size, d_model)\n        x = x + self.pe[:x.size(0), :]\n        return x\n\nclass TransformerBlock(nn.Module):\n    \"\"\"Transformer 编码器块\"\"\"\n    def __init__(self, d_model, num_heads, d_ff, dropout=0.1):\n        super(TransformerBlock, self).__init__()\n        \n        self.attention = MultiHeadAttention(d_model, num_heads)\n        self.norm1 = nn.LayerNorm(d_model)\n        self.norm2 = nn.LayerNorm(d_model)\n        \n        self.feed_forward = nn.Sequential(\n            nn.Linear(d_model, d_ff),\n            nn.ReLU(),\n            nn.Linear(d_ff, d_model)\n        )\n        \n        self.dropout = nn.Dropout(dropout)\n    \n    def forward(self, x, mask=None):\n        # 自注意力 + 残差连接\n        attn_output = self.attention(x, x, x, mask)\n        x = self.norm1(x + self.dropout(attn_output))\n        \n        # 前馈网络 + 残差连接\n        ff_output = self.feed_forward(x)\n        x = self.norm2(x + self.dropout(ff_output))\n        \n        return x\n\nclass Transformer(nn.Module):\n    \"\"\"完整的 Transformer 模型\"\"\"\n    def __init__(self, vocab_size, d_model, num_heads, num_layers, d_ff, max_len=5000, dropout=0.1):\n        super(Transformer, self).__init__()\n        \n        self.embedding = nn.Embedding(vocab_size, d_model)\n        self.pos_encoding = PositionalEncoding(d_model, max_len)\n        \n        self.layers = nn.ModuleList([\n            TransformerBlock(d_model, num_heads, d_ff, dropout)\n            for _ in range(num_layers)\n        ])\n        \n        self.dropout = nn.Dropout(dropout)\n        self.fc_out = nn.Linear(d_model, vocab_size)\n    \n    def forward(self, x, mask=None):\n        # 词嵌入\n        x = self.embedding(x) * math.sqrt(self.embedding.embedding_dim)\n        x = x.transpose(0, 1)  # (seq_len, batch_size, d_model)\n        \n        # 位置编码\n        x = self.pos_encoding(x)\n        x = self.dropout(x)\n        \n        # Transformer 层\n        for layer in self.layers:\n            x = layer(x, mask)\n        \n        # 转回 (batch_size, seq_len, d_model)\n        x = x.transpose(0, 1)\n        \n        # 输出层\n        output = self.fc_out(x)\n        \n        return output\n\n# 使用示例\nif __name__ == \"__main__\":\n    # 创建模型\n    model = Transformer(\n        vocab_size=10000,\n        d_model=512,\n        num_heads=8,\n        num_layers=6,\n        d_ff=2048\n    )\n    \n    # 模拟输入 (batch_size=32, seq_len=50)\n    x = torch.randint(0, 10000, (32, 50))\n    \n    # 前向传播\n    output = model(x)\n    print(f\"输出形状: {output.shape}\")  # [32, 50, 10000]"
+        },
+        {
+          "type": "code-box",
+          "title": "使用 NumPy 手动实现注意力机制",
+          "language": "python",
+          "code": "import numpy as np\n\ndef scaled_dot_product_attention(Q, K, V, mask=None):\n    \"\"\"\n    缩放点积注意力\n    \n    参数:\n        Q: 查询矩阵 (..., seq_len_q, d_k)\n        K: 键矩阵 (..., seq_len_k, d_k)\n        V: 值矩阵 (..., seq_len_v, d_v)\n        mask: 掩码矩阵\n    \"\"\"\n    d_k = Q.shape[-1]\n    \n    # 计算注意力分数\n    scores = np.matmul(Q, K.transpose(-2, -1)) / np.sqrt(d_k)\n    \n    # 应用掩码\n    if mask is not None:\n        scores = np.where(mask == 0, -1e9, scores)\n    \n    # Softmax\n    attention_weights = np.exp(scores - np.max(scores, axis=-1, keepdims=True))\n    attention_weights = attention_weights / np.sum(attention_weights, axis=-1, keepdims=True)\n    \n    # 加权求和\n    output = np.matmul(attention_weights, V)\n    \n    return output, attention_weights\n\ndef positional_encoding(max_len, d_model):\n    \"\"\"生成位置编码\"\"\"\n    pe = np.zeros((max_len, d_model))\n    \n    for pos in range(max_len):\n        for i in range(0, d_model, 2):\n            pe[pos, i] = np.sin(pos / (10000 ** (2 * i / d_model)))\n            if i + 1 < d_model:\n                pe[pos, i + 1] = np.cos(pos / (10000 ** (2 * i / d_model)))\n    \n    return pe\n\n# 使用示例\nif __name__ == \"__main__\":\n    # 创建 Q, K, V\n    batch_size, seq_len, d_k = 2, 10, 64\n    Q = np.random.randn(batch_size, seq_len, d_k)\n    K = np.random.randn(batch_size, seq_len, d_k)\n    V = np.random.randn(batch_size, seq_len, d_k)\n    \n    # 计算注意力\n    output, attention_weights = scaled_dot_product_attention(Q, K, V)\n    print(f\"注意力输出形状: {output.shape}\")  # (2, 10, 64)\n    print(f\"注意力权重形状: {attention_weights.shape}\")  # (2, 10, 10)\n    \n    # 生成位置编码\n    pe = positional_encoding(max_len=100, d_model=512)\n    print(f\"位置编码形状: {pe.shape}\")  # (100, 512)"
+        }
+      ]
+    }
+  ]
+}

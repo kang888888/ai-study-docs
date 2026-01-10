@@ -1,0 +1,143 @@
+{
+  "title": "交叉熵损失 (Cross-Entropy Loss)",
+  "subtitle": "分类任务的标准损失函数",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "交叉熵损失是分类任务中最常用的损失函数。它衡量模型预测的概率分布与真实标签分布之间的差异。对于多分类问题，使用多类交叉熵；对于二分类问题，使用二元交叉熵（BCE）。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学表达",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "多类交叉熵损失",
+          "formulas": [
+            {
+              "text": "对于多分类问题（C个类别）："
+            },
+            {
+              "display": "L_{\\text{CE}} = -\\frac{1}{N}\\sum_{i=1}^{N}\\sum_{c=1}^{C}y_{i,c} \\log(\\hat{y}_{i,c})"
+            },
+            {
+              "text": "其中："
+            },
+            {
+              "text": "- $N$ 是样本数量"
+            },
+            {
+              "text": "- $C$ 是类别数量"
+            },
+            {
+              "text": "- $y_{i,c}$ 是真实标签（one-hot编码）"
+            },
+            {
+              "text": "- $\\hat{y}_{i,c}$ 是模型预测的概率（softmax输出）"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "二元交叉熵损失",
+          "formulas": [
+            {
+              "text": "对于二分类问题："
+            },
+            {
+              "display": "L_{\\text{BCE}} = -\\frac{1}{N}\\sum_{i=1}^{N}[y_i \\log(\\hat{y}_i) + (1-y_i) \\log(1-\\hat{y}_i)]"
+            },
+            {
+              "text": "其中 $y_i \\in \\{0, 1\\}$ 是真实标签，$\\hat{y}_i \\in (0, 1)$ 是预测概率"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "梯度",
+          "formulas": [
+            {
+              "text": "交叉熵损失的梯度（与softmax结合）："
+            },
+            {
+              "display": "\\frac{\\partial L}{\\partial z_i} = \\hat{y}_i - y_i"
+            },
+            {
+              "text": "其中 $z_i$ 是logits（softmax前的值），这个梯度形式非常简洁"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "概率解释：直接优化概率分布",
+            "梯度简洁：与softmax结合时梯度形式简单",
+            "数值稳定：通常使用log_softmax避免数值问题",
+            "多分类标准：多分类问题的标准损失函数",
+            "信息论基础：基于信息论中的交叉熵概念"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 损失函数图像",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "MathFunctionDiagram",
+              "caption": "交叉熵损失函数图像",
+              "width": 1000,
+              "height": 600,
+              "interactive": true,
+              "props": {
+                "type": "loss",
+                "title": "交叉熵损失函数图像",
+                "function": "bce"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "多分类任务、二分类任务、语言模型、图像分类、自然语言处理"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "交叉熵损失实现与使用",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nimport numpy as np\n\n# 1. 多类交叉熵损失\n# 方法1：使用logits（推荐，数值稳定）\nlogits = torch.randn(32, 10)  # [batch_size, num_classes]\ntargets = torch.randint(0, 10, (32,))  # 类别索引\nloss1 = F.cross_entropy(logits, targets)\nprint(f\"Cross Entropy Loss: {loss1.item():.4f}\")\n\n# 方法2：手动计算（用于理解）\nprobs = F.softmax(logits, dim=1)\nlog_probs = torch.log(probs + 1e-8)  # 避免log(0)\nloss2 = F.nll_loss(log_probs, targets)\nprint(f\"Manual Loss: {loss2.item():.4f}\")\n\n# 2. 二元交叉熵损失\n# 二分类：输出单个概率值\nlogits_binary = torch.randn(32, 1)\ntargets_binary = torch.randint(0, 2, (32, 1)).float()\nprobs_binary = torch.sigmoid(logits_binary)\nloss_bce = F.binary_cross_entropy(probs_binary, targets_binary)\nprint(f\"Binary Cross Entropy: {loss_bce.item():.4f}\")\n\n# 使用logits（推荐）\nloss_bce_logits = F.binary_cross_entropy_with_logits(logits_binary, targets_binary)\nprint(f\"BCE with Logits: {loss_bce_logits.item():.4f}\")\n\n# 3. 在分类网络中使用\nclass Classifier(nn.Module):\n    def __init__(self, input_size, num_classes):\n        super(Classifier, self).__init__()\n        self.fc = nn.Linear(input_size, num_classes)\n        self.criterion = nn.CrossEntropyLoss()\n    \n    def forward(self, x):\n        logits = self.fc(x)\n        return logits\n    \n    def compute_loss(self, logits, targets):\n        return self.criterion(logits, targets)\n\n# 4. 带权重的交叉熵损失（处理类别不平衡）\nclass_weights = torch.tensor([1.0, 2.0, 0.5, 1.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])\ncriterion_weighted = nn.CrossEntropyLoss(weight=class_weights)\nloss_weighted = criterion_weighted(logits, targets)\nprint(f\"Weighted Loss: {loss_weighted.item():.4f}\")\n\n# 5. 标签平滑（Label Smoothing）\ndef label_smoothing_loss(logits, targets, num_classes, smoothing=0.1):\n    \"\"\"标签平滑的交叉熵损失\"\"\"\n    confidence = 1.0 - smoothing\n    log_probs = F.log_softmax(logits, dim=1)\n    nll_loss = F.nll_loss(log_probs, targets, reduction='none')\n    smooth_loss = -log_probs.mean(dim=1)\n    loss = confidence * nll_loss + smoothing * smooth_loss\n    return loss.mean()\n\nloss_smooth = label_smoothing_loss(logits, targets, num_classes=10, smoothing=0.1)\nprint(f\"Label Smoothing Loss: {loss_smooth.item():.4f}\")\n\n# 6. 对比不同损失值\n# 完美预测（概率=1）\nperfect_logits = torch.tensor([[10.0, 0.0, 0.0], [0.0, 10.0, 0.0]])\nperfect_targets = torch.tensor([0, 1])\nperfect_loss = F.cross_entropy(perfect_logits, perfect_targets)\nprint(f\"Perfect prediction loss: {perfect_loss.item():.4f}\")\n\n# 随机预测（概率均匀）\nrandom_logits = torch.tensor([[1.0, 1.0, 1.0], [1.0, 1.0, 1.0]])\nrandom_targets = torch.tensor([0, 1])\nrandom_loss = F.cross_entropy(random_logits, random_targets)\nprint(f\"Random prediction loss: {random_loss.item():.4f}\")\n\n# 7. 实际训练示例\nmodel = Classifier(input_size=784, num_classes=10)\noptimizer = torch.optim.Adam(model.parameters(), lr=0.001)\n\n# 模拟训练步骤\nfor epoch in range(5):\n    # 模拟数据\n    x = torch.randn(32, 784)\n    targets = torch.randint(0, 10, (32,))\n    \n    # 前向传播\n    logits = model(x)\n    loss = model.compute_loss(logits, targets)\n    \n    # 反向传播\n    optimizer.zero_grad()\n    loss.backward()\n    optimizer.step()\n    \n    print(f\"Epoch {epoch+1}, Loss: {loss.item():.4f}\")"
+        }
+      ]
+    }
+  ]
+}

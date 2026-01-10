@@ -1,0 +1,55 @@
+{
+  "title": "Pipeline并行训练（Pipeline Parallelism）",
+  "subtitle": "按层拆分模型，形成流水线提高设备利用率。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Pipeline并行训练原理",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "Pipeline并行训练原理",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Pipeline并行训练对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "Pipeline并行训练对比",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "Pipeline并行示例",
+          "language": "python",
+          "code": "# 将模型按层拆分\nclass PipelineModel(nn.Module):\n    def __init__(self, layers_per_device):\n        super().__init__()\n        self.device_layers = []\n        for device_id, layers in enumerate(layers_per_device):\n            device_layers = nn.ModuleList(layers).to(device_id)\n            self.device_layers.append(device_layers)\n    \n    def forward(self, x):\n        for device_layers in self.device_layers:\n            x = x.to(device_layers[0].weight.device)\n            for layer in device_layers:\n                x = layer(x)\n        return x"
+        }
+      ]
+    }
+  ]
+}

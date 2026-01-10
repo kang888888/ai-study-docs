@@ -1,0 +1,103 @@
+{
+  "title": "AI智能体",
+  "subtitle": "自主智能体（Autonomous Agents）的核心概念、框架选择、ReAct 工作流与实践案例。",
+  "content": [
+    {
+      "type": "section",
+      "title": "🧩 工具与记忆",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "from langchain.tools import StructuredTool\nfrom pydantic import BaseModel\n\nclass CalculatorInput(BaseModel):\n    expression: str\n\ncalc_tool = StructuredTool.from_function(\n    func=calculate,\n    name=\"Calculator\",\n    description=\"执行数学计算\",\n    args_schema=CalculatorInput\n)"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ ReAct 工作流",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "thought = \"需要了解AI最新进展\"\naction = \"Search[AI 最新进展]\"\nobservation = execute(action)\nthought = \"有了信息，生成回答\"\naction = \"Answer[...]\""
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🔧 开发流程示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "from langchain.agents import initialize_agent, Tool\nfrom langchain.memory import ConversationBufferMemory\n\n# 1. 定义工具\ntools = [Tool(name=\"Search\", func=search_web, description=\"网络搜索\")]\n\n# 2. 初始化 LLM 与记忆\nllm = ChatOpenAI()\nmemory = ConversationBufferMemory()\n\n# 3. 构建智能体\nagent = initialize_agent(\n    tools=tools,\n    llm=llm,\n    agent=\"zero-shot-react-description\",\n    memory=memory,\n    verbose=True\n)\n\n# 4. 运行\nagent.run(\"帮我整理本周 AI 大事件，并生成行动建议\")"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "AI智能体架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "AI智能体架构",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "AI智能体流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "AI智能体流程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🧪 实践案例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "def search_web(query):\n    return search_results\n\ntools = [Tool(name=\"Search\", func=search_web, description=\"搜索网络信息\")]\nagent = initialize_agent(tools=tools, llm=llm, agent=\"zero-shot-react-description\")\nagent.run(\"总结 2024 年 AI 的最新突破\")"
+        },
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "def generate_code(requirement):\n    return code\n\ntools = [Tool(name=\"CodeGenerator\", func=generate_code, description=\"生成代码\")]\nagent = initialize_agent(tools=tools, llm=llm)\nagent.run(\"生成一个 Python 函数计算斐波那契数列\")"
+        },
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "def analyze_data(data):\n    return analysis_result\n\ntools = [Tool(name=\"DataAnalyzer\", func=analyze_data, description=\"分析数据\")]\nagent = initialize_agent(tools=tools, llm=llm)\nagent.run(\"分析销售数据并给出趋势\")"
+        }
+      ]
+    }
+  ]
+}

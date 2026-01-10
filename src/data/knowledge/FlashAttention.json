@@ -1,0 +1,102 @@
+{
+  "title": "FlashAttention：IO 感知的注意力计算",
+  "subtitle": "通过块状 tiling、寄存器复用和融合 softmax，将注意力复杂度降低为 IO 最优，实现更快的长序列推理。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "流程"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Tiling",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Tiling"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Flash Decoding",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Flash Decoding"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "在线 Softmax",
+          "formulas": [
+            {
+              "display": "m_i = \\max(m_{i-1}, x_i), \\quad l_i = l_{i-1}\\, e^{m_{i-1}-m_i} + e^{x_i - m_i}"
+            },
+            {
+              "display": "\\text{softmax}(x)_i = \\frac{e^{x_i - m_n}}{l_n}"
+            },
+            {
+              "text": "无需存储全部 logits。"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "IO 最优",
+          "formulas": [
+            {
+              "text": "FlashAttention 将 IO 复杂度降至："
+            },
+            {
+              "display": "O\\Big(\\frac{n^2}{B} + n d\\Big)"
+            },
+            {
+              "text": "$B$ 为块大小，理论上已达 IO 下界。",
+              "inline": "B"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "PyTorch 2.x 启用 FlashAttention",
+          "language": "python",
+          "code": "import torch\nfrom torch.nn.functional import scaled_dot_product_attention\n\ndef flash_attention(q, k, v, is_causal=True):\n    return scaled_dot_product_attention(\n        q, k, v,\n        attn_mask=None,\n        dropout_p=0.0,\n        is_causal=is_causal\n    )\n\n# 在推理模型中替换原始 Attention\nwith torch.backends.cuda.sdp_kernel(enable_flash=True, enable_mem_efficient=True, enable_math=True):\n    y = flash_attention(q, k, v)"
+        }
+      ]
+    }
+  ]
+}

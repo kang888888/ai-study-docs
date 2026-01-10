@@ -1,0 +1,101 @@
+{
+  "title": "Speculative Decoding（推测解码）",
+  "subtitle": "使用轻量 Draft 模型一次生成多 token，再由大模型快速验证，显著提升长文本吞吐。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "SpeculativeDecodingDiagram",
+              "caption": "整体流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "Speculative Decoding 整体流程"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "SpeculativeDecodingDiagram",
+              "caption": "拒绝与回退",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "reject",
+                "title": "拒绝与回退机制"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "SpeculativeDecodingDiagram",
+              "caption": "并行调度",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "parallel",
+                "title": "并行调度机制"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "接受概率",
+          "formulas": [
+            {
+              "text": "给定 Draft 输出 $x_{1:K}$，接受条件：",
+              "inline": "x_{1:K}"
+            },
+            {
+              "display": "u < \\frac{p_T(x_i | x_{<i})}{p_D(x_i | x_{<i})}"
+            },
+            {
+              "text": "$u \\sim \\mathcal{U}(0,1)$，$p_T$ 为 Target 概率，$p_D$ 为 Draft。",
+              "inline": "u \\sim \\mathcal{U}(0,1)"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "加速比",
+          "formulas": [
+            {
+              "display": "\\text{Speedup} \\approx \\frac{K}{1 + r K}"
+            },
+            {
+              "text": "$r$ 为拒绝率。选择合适 K 以最大化加速比。",
+              "inline": "r"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例（vLLM）",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "",
+          "language": "python",
+          "code": "from vllm import SAMPLING_SPEC\n\nspec = SAMPLING_SPEC.from_dict({\n    \"draft_model\": \"meta-llama/Llama-2-7b\",\n    \"target_model\": \"meta-llama/Llama-3-8b\",\n    \"draft_k\": 4,\n    \"max_new_tokens\": 256\n})\n\noutputs = llm.generate([\"解释 speculative decoding\"], spec.to_sampling_params())\nprint(outputs[0].outputs[0].text)"
+        }
+      ]
+    }
+  ]
+}

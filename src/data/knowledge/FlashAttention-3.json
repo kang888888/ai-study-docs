@@ -1,0 +1,54 @@
+{
+  "title": "FlashAttention-3 第三代FlashAttention",
+  "subtitle": "进一步优化IO效率与计算性能的注意力加速技术",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "FlashAttention-3是FlashAttention的第三代优化版本，在保持内存效率的同时，进一步优化了IO操作和计算性能。通过更精细的内存管理和计算调度，实现了更高的训练和推理速度。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "IO优化：进一步减少内存读写，提升IO效率",
+            "计算加速：优化计算流程，提升计算吞吐",
+            "内存高效：保持O(N)内存复杂度",
+            "向后兼容：与FlashAttention-2兼容",
+            "性能提升：相比FlashAttention-2有显著性能提升"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "分块计算、在线Softmax、内存优化、IO调度优化、计算图优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "大规模模型训练、长序列处理、资源受限环境、高性能推理等需要极致性能的场景"
+        }
+      ]
+    }
+  ]
+}

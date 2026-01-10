@@ -1,0 +1,61 @@
+{
+  "title": "数据收集",
+  "subtitle": "大语言模型训练数据的收集方法和策略。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据收集流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "数据收集流程",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据收集方法",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "数据收集方法",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用Hugging Face Datasets",
+          "language": "python",
+          "code": "from datasets import load_dataset\n\n# 加载数据集\ndataset = load_dataset(\"wikitext\", \"wikitext-2-raw-v1\")\n\n# 查看数据集信息\nprint(dataset)\nprint(dataset['train'][0])\n\n# 保存为本地文件\ndataset.save_to_disk(\"./wikitext_data\")"
+        },
+        {
+          "type": "code-box",
+          "title": "网络爬取示例",
+          "language": "python",
+          "code": "import requests\nfrom bs4 import BeautifulSoup\n\ndef crawl_webpage(url):\n    response = requests.get(url)\n    soup = BeautifulSoup(response.content, 'html.parser')\n    \n    # 提取文本内容\n    text = soup.get_text()\n    \n    # 清洗文本\n    text = clean_text(text)\n    \n    return text"
+        }
+      ]
+    }
+  ]
+}

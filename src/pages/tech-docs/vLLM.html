@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vLLM：PagedAttention 推理引擎</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>vLLM：基于 PagedAttention 的高吞吐推理引擎</h1>
+        <p class="tagline">通过分页 KV Cache + 并行调度器，在单卡上即可实现数千 token/s 的生成能力。</p>
+
+        <div class="meta-grid">
+            <div class="meta-card"><h3>核心组件</h3><p>PagedAttention、异步调度器、连续批处理、Chunked Prefill。</p></div>
+            <div class="meta-card"><h3>优势</h3><p>高吞吐、低延迟、易集成、支持 OpenAI-API 兼容接口。</p></div>
+            <div class="meta-card"><h3>支持特性</h3><p>多模型并发、流式输出、LoRA 热加载、KV Cache 共享。</p></div>
+            <div class="meta-card"><h3>部署</h3><p>Python SDK、RESTful Server、K8s Operator、Ray Serve。</p></div>
+        </div>
+
+        <div class="section">
+            <h2>🚀 技术要点</h2>
+            <ul>
+                <li><strong>PagedAttention：</strong>将 KV Cache 分为固定大小 page，通过 page table 快速映射。</li>
+                <li><strong>Continuous batching：</strong>动态加入/移除请求，减少空闲计算。</li>
+                <li><strong>Chunked Prefill：</strong>按块加载长上下文，提升利用率。</li>
+                <li><strong>Memory manager：</strong>自动回收闲置 page，避免 OOM。</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>📊 图解</h2>
+            <div class="diagram-gallery">
+                <div class="diagram-item"><img src="./assets/vLLM架构.png" alt="架构" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">架构</div></div>
+                <div class="diagram-item"><img src="./assets/PagedAttention流程.png" alt="PagedAttention" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">PagedAttention</div></div>
+                <div class="diagram-item"><img src="./assets/vLLM调度.png" alt="调度器" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">调度器</div></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📐 数学/性能模型</h2>
+            <div class="math-box">
+                <h3>吞吐上界</h3>
+                <div class="math-formula">
+                    <p>$$TPS \approx \frac{B_{eff} \times d_{model} \times H}{\text{latency}_{\text{step}}}$$</p>
+                    <p>vLLM 通过提升有效批次 $B_{eff}$ 与降低 step 延迟来逼近上界。</p>
+                </div>
+            </div>
+            <div class="math-box">
+                <h3>分页命中率</h3>
+                <div class="math-formula">
+                    <p>$$\text{HitRate} = 1 - \frac{\text{page\_faults}}{\text{total\_access}}$$</p>
+                    <p>连续批处理能提高命中率，从而稳定延迟。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💻 代码示例</h2>
+            <div class="code-box">
+                <h3>启动 REST Server</h3>
+<pre><code class="language-bash">pip install vllm
+python -m vllm.entrypoints.openai.api_server \
+  --model meta-llama/Llama-3-8b-Instruct \
+  --gpu-memory-utilization 0.9 \
+  --port 8000
+</code></pre>
+                <h3>Python SDK</h3>
+<pre><code class="language-python">from vllm import LLM, SamplingParams
+
+llm = LLM("mistralai/Mixtral-8x7B-Instruct", tensor_parallel_size=2)
+params = SamplingParams(max_tokens=128, temperature=0.6)
+
+for output in llm.generate(["解释 PagedAttention 的优势"], params):
+    print(output.outputs[0].text)
+</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal();">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+
+    <script>
+        function openImageModal(img){const modal=document.getElementById('imageModal');modal.classList.add('active');document.getElementById('modalImage').src=img.src;document.getElementById('modalCaption').textContent=img.alt||'';}
+        function closeImageModal(){document.getElementById('imageModal').classList.remove('active');}
+        document.addEventListener('keydown',e=>{if(e.key==='Escape')closeImageModal();});
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>

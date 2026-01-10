@@ -1,0 +1,97 @@
+{
+  "title": "ExLlamaV2：面向 4bit LLaMA 的极致推理框架",
+  "subtitle": "专为 GPTQ/AWQ 模型打造的高性能后端，使用自研 CUDA kernel、KV cache 优化与流水线并行，推理速度领先 vLLM/vCUDA。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "架构"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "性能对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "性能对比"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "缓存策略",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "缓存策略"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学/性能模型",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "吞吐估算",
+          "formulas": [
+            {
+              "display": "TPS \\approx \\frac{B \\times H \\times d_{model}}{t_{kernel} + t_{io}}"
+            },
+            {
+              "text": "ExLlamaV2 通过减少 $t_{io}$（少解量化）和优化 $t_{kernel}$ 获得更高 TPS。",
+              "inline": "t_{io}"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "KV Cache 内存",
+          "formulas": [
+            {
+              "display": "\\text{Mem} = 2 \\times L \\times H \\times d_{head} \\times bytes_{dtype}"
+            },
+            {
+              "text": "Paged Cache 将 $L$ 切块，并复用释放的块减小 MEM 峰值。",
+              "inline": "L"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "Python 快速推理",
+          "language": "python",
+          "code": "from exllamav2 import ExLlamaV2, ExLlamaV2Config, ExLlamaV2Tokenizer\n\nconfig = ExLlamaV2Config(\"./llama-2-13b-gptq\")\nmodel = ExLlamaV2(config)\nmodel.load_autosplit()\n\ntokenizer = ExLlamaV2Tokenizer(config)\nprompt = \"### 用户: 解释 ExLlamaV2 的优势\\n### 助手:\"\noutput = model.generate(\n    tokenizer.encode(prompt),\n    max_new_tokens=256,\n    temperature=0.7,\n    top_p=0.9\n)\nprint(tokenizer.decode(output))"
+        }
+      ]
+    }
+  ]
+}

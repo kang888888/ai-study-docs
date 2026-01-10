@@ -1,0 +1,181 @@
+{
+  "title": "损失函数 (Loss Function)",
+  "subtitle": "衡量模型预测与真实值差异的函数",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "损失函数（Loss Function）用于衡量模型预测值与真实值之间的差异。训练过程的目标就是最小化损失函数，使模型的预测尽可能接近真实值。不同的任务需要选择不同的损失函数。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 主要类型",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "均方误差（MSE）：用于回归任务，计算预测值与真实值的平方差",
+            "交叉熵损失（Cross-Entropy）：用于分类任务，衡量概率分布差异",
+            "二元交叉熵（BCE）：用于二分类任务",
+            "Focal Loss：解决类别不平衡问题，降低易分类样本权重",
+            "Huber Loss：对异常值更鲁棒，结合MSE和MAE",
+            "KL散度：衡量两个概率分布的差异",
+            "Triplet Loss：用于度量学习，拉近同类样本，推远异类样本"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "MSE、MAE、交叉熵、Focal Loss、Huber Loss、Triplet Loss、标签平滑"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "回归任务（MSE）、分类任务（交叉熵）、目标检测（Focal Loss）、度量学习（Triplet Loss）、生成模型（KL散度）"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "损失函数对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "损失函数对比",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "损失函数曲线",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "损失函数曲线",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "均方误差（MSE）",
+          "formulas": [
+            {
+              "text": "MSE计算预测值与真实值的平方差："
+            },
+            {
+              "display": "L_{MSE} = \\frac{1}{n} \\sum_{i=1}^{n} (y_i - \\hat{y}_i)^2"
+            },
+            {
+              "text": "其中 $y_i$ 是真实值，$\\hat{y}_i$ 是预测值，$n$ 是样本数"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "交叉熵损失",
+          "formulas": [
+            {
+              "text": "多分类交叉熵："
+            },
+            {
+              "display": "L_{CE} = -\\sum_{i=1}^{n} \\sum_{c=1}^{C} y_{i,c} \\log(\\hat{y}_{i,c})"
+            },
+            {
+              "text": "其中 $C$ 是类别数，$y_{i,c}$ 是真实标签（one-hot），$\\hat{y}_{i,c}$ 是预测概率"
+            },
+            {
+              "text": "对于单个样本，简化为："
+            },
+            {
+              "display": "L_{CE} = -\\log(\\hat{y}_{true})"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Focal Loss",
+          "formulas": [
+            {
+              "text": "Focal Loss通过降低易分类样本的权重来解决类别不平衡："
+            },
+            {
+              "display": "L_{FL} = -\\alpha (1-p_t)^\\gamma \\log(p_t)"
+            },
+            {
+              "text": "其中 $p_t$ 是预测概率，$\\alpha$ 是平衡因子，$\\gamma$ 是聚焦参数（通常取2）",
+              "inline": "p_t, \\alpha, \\gamma"
+            },
+            {
+              "text": "当 $\\gamma=0$ 时，Focal Loss退化为标准交叉熵"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Huber Loss",
+          "formulas": [
+            {
+              "text": "Huber Loss对异常值更鲁棒："
+            },
+            {
+              "display": "L_{\\delta}(y, \\hat{y}) = \\begin{cases} \\frac{1}{2}(y-\\hat{y})^2 & \\text{if } |y-\\hat{y}| \\leq \\delta \\\\ \\delta|y-\\hat{y}| - \\frac{1}{2}\\delta^2 & \\text{otherwise} \\end{cases}"
+            },
+            {
+              "text": "当误差小于 $\\delta$ 时，使用MSE；否则使用MAE，对异常值更鲁棒"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "PyTorch 中的损失函数",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\n# 1. 均方误差（回归任务）\nmse_loss = nn.MSELoss()\npred = torch.tensor([1.0, 2.0, 3.0])\ntarget = torch.tensor([1.5, 2.5, 2.8])\nloss = mse_loss(pred, target)\nprint(f\"MSE Loss: {loss.item()}\")\n\n# 2. 交叉熵损失（分类任务）\nce_loss = nn.CrossEntropyLoss()\n# 预测值（未归一化，logits）\nlogits = torch.randn(32, 10)  # [batch_size, num_classes]\n# 真实标签（类别索引）\ntargets = torch.randint(0, 10, (32,))\nloss = ce_loss(logits, targets)\nprint(f\"Cross-Entropy Loss: {loss.item()}\")\n\n# 3. 二元交叉熵（二分类）\nbce_loss = nn.BCEWithLogitsLoss()  # 包含sigmoid，数值稳定\nlogits = torch.randn(32, 1)\ntargets = torch.randint(0, 2, (32, 1)).float()\nloss = bce_loss(logits, targets)\nprint(f\"BCE Loss: {loss.item()}\")\n\n# 4. 标签平滑的交叉熵\nclass LabelSmoothingCrossEntropy(nn.Module):\n    def __init__(self, smoothing=0.1):\n        super().__init__()\n        self.smoothing = smoothing\n    \n    def forward(self, logits, targets):\n        num_classes = logits.size(-1)\n        log_probs = F.log_softmax(logits, dim=-1)\n        \n        # 创建平滑标签\n        with torch.no_grad():\n            true_dist = torch.zeros_like(log_probs)\n            true_dist.fill_(self.smoothing / (num_classes - 1))\n            true_dist.scatter_(1, targets.unsqueeze(1), 1.0 - self.smoothing)\n        \n        return torch.mean(torch.sum(-true_dist * log_probs, dim=-1))\n\n# 5. Focal Loss实现\nclass FocalLoss(nn.Module):\n    def __init__(self, alpha=1, gamma=2):\n        super().__init__()\n        self.alpha = alpha\n        self.gamma = gamma\n    \n    def forward(self, inputs, targets):\n        ce_loss = F.cross_entropy(inputs, targets, reduction='none')\n        pt = torch.exp(-ce_loss)\n        focal_loss = self.alpha * (1 - pt) ** self.gamma * ce_loss\n        return focal_loss.mean()\n\n# 6. Huber Loss\nhuber_loss = nn.HuberLoss(delta=1.0)\npred = torch.tensor([1.0, 2.0, 3.0])\ntarget = torch.tensor([1.5, 2.5, 2.8])\nloss = huber_loss(pred, target)\nprint(f\"Huber Loss: {loss.item()}\")\n\n# 7. 实际训练示例\nmodel = nn.Linear(10, 3)\ncriterion = nn.CrossEntropyLoss()\noptimizer = torch.optim.SGD(model.parameters(), lr=0.01)\n\n# 模拟数据\nx = torch.randn(32, 10)\ny = torch.randint(0, 3, (32,))\n\n# 训练循环\nfor epoch in range(100):\n    # 前向传播\n    logits = model(x)\n    loss = criterion(logits, y)\n    \n    # 反向传播\n    optimizer.zero_grad()\n    loss.backward()\n    optimizer.step()\n    \n    if (epoch + 1) % 20 == 0:\n        print(f\"Epoch {epoch+1}, Loss: {loss.item():.4f}\")\n\n# 8. 多任务损失（组合多个损失）\ndef multi_task_loss(pred1, target1, pred2, target2, weight1=0.5, weight2=0.5):\n    loss1 = nn.MSELoss()(pred1, target1)\n    loss2 = nn.CrossEntropyLoss()(pred2, target2)\n    total_loss = weight1 * loss1 + weight2 * loss2\n    return total_loss, loss1, loss2"
+        }
+      ]
+    }
+  ]
+}

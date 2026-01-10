@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLIP (Contrastive Language-Image Pre-training) - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CLIP (Contrastive Language-Image Pre-training)</h1>
+            <p>多模态预训练模型</p>
+        </div>
+        <div class="content">
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p>OpenAI提出的多模态预训练模型，通过对比学习将图像和文本映射到同一个共享的特征空间。在4亿对图文数据上训练，具有强大的零样本分类能力。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心特点</h2>
+                <ul>
+                    <li>对比学习：最大化匹配图文对的相似度，最小化不匹配对的相似度</li>
+                    <li>双塔架构：Image Encoder（ResNet/ViT）+ Text Encoder（Transformer）</li>
+                    <li>零样本分类：无需微调即可进行图像分类（只需提供类别名称）</li>
+                    <li>语义对齐：打通视觉与语言的语义空间</li>
+                    <li>多模态基石：是DALL-E、Stable Diffusion等生成模型的Text Encoder</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 关键技术</h2>
+                <div class="tech-box"><p><strong>对比学习（Contrastive Learning）、余弦相似度、温度参数（Temperature）、对比损失</strong></p></div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box"><p>以文搜图、零样本图像分类、图像描述生成、多模态检索、文生图引导</p></div>
+            </div>
+            <div class="section">
+                <h2>📊 架构图解</h2>
+                <div class="diagram-gallery">
+                    <div class="diagram-item"><img src="CLIP_Matching_Visualization.png" alt="CLIP匹配可视化" onclick="openImageModal(this)" onerror="this.parentElement.style.display='none'"><div class="caption">CLIP匹配可视化</div></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📐 数学原理</h2>
+                <div class="math-box">
+                    <h3>对比学习损失</h3>
+                    <div class="math-formula">
+                        <p>CLIP 使用对称的对比损失：</p>
+                        <p>$$L = -\frac{1}{N}\sum_{i=1}^{N}\left[\log\frac{\exp(\text{sim}(I_i, T_i) / \tau)}{\sum_{j=1}^{N}\exp(\text{sim}(I_i, T_j) / \tau)} + \log\frac{\exp(\text{sim}(T_i, I_i) / \tau)}{\sum_{j=1}^{N}\exp(\text{sim}(T_i, I_j) / \tau)}\right]$$</p>
+                        <p>其中：</p>
+                        <ul style="list-style: none; padding-left: 20px;">
+                            <li>$I_i$ 是第 $i$ 个图像的嵌入</li>
+                            <li>$T_i$ 是第 $i$ 个文本的嵌入</li>
+                            <li>$\text{sim}(I, T) = I^T T / ||I|| ||T||$ 是余弦相似度</li>
+                            <li>$\tau$ 是温度参数</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="math-box">
+                    <h3>余弦相似度</h3>
+                    <div class="math-formula">
+                        <p>计算图像和文本嵌入的相似度：</p>
+                        <p>$$\text{sim}(I, T) = \frac{I \cdot T}{||I|| \cdot ||T||} = \cos(\theta)$$</p>
+                        <p>其中 $\theta$ 是向量之间的夹角</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>使用 CLIP 进行图像-文本匹配</h3>
+                    <pre><code class="language-python">import torch
+import clip
+from PIL import Image
+
+# 加载预训练模型
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model, preprocess = clip.load("ViT-B/32", device=device)
+
+# 准备图像和文本
+image = preprocess(Image.open("image.jpg")).unsqueeze(0).to(device)
+text = clip.tokenize(["a photo of a cat", "a photo of a dog"]).to(device)
+
+# 编码
+with torch.no_grad():
+    image_features = model.encode_image(image)
+    text_features = model.encode_text(text)
+    
+    # 归一化
+    image_features = image_features / image_features.norm(dim=-1, keepdim=True)
+    text_features = text_features / text_features.norm(dim=-1, keepdim=True)
+    
+    # 计算相似度
+    logits_per_image = (100.0 * image_features @ text_features.T)
+    probs = logits_per_image.softmax(dim=-1)
+
+print(f"图像与文本的相似度概率: {probs}")
+
+# 零样本分类
+class_names = ["cat", "dog", "bird", "car", "tree"]
+text_inputs = torch.cat([clip.tokenize(f"a photo of a {c}") for c in class_names]).to(device)
+
+with torch.no_grad():
+    text_features = model.encode_text(text_inputs)
+    text_features = text_features / text_features.norm(dim=-1, keepdim=True)
+    
+    logits_per_image = (100.0 * image_features @ text_features.T)
+    probs = logits_per_image.softmax(dim=-1)
+
+predicted_class = class_names[probs.argmax().item()]
+print(f"预测类别: {predicted_class}")</code></pre>
+                </div>
+                <div class="code-box">
+                    <h3>手动实现 CLIP 对比损失</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class CLIPLoss(nn.Module):
+    """CLIP 对比损失"""
+    def __init__(self, temperature=0.07):
+        super(CLIPLoss, self).__init__()
+        self.temperature = temperature
+    
+    def forward(self, image_features, text_features):
+        """
+        参数:
+            image_features: [batch_size, embed_dim]
+            text_features: [batch_size, embed_dim]
+        """
+        # 归一化
+        image_features = F.normalize(image_features, dim=-1)
+        text_features = F.normalize(text_features, dim=-1)
+        
+        # 计算相似度矩阵
+        logits = torch.matmul(image_features, text_features.T) / self.temperature
+        
+        # 创建标签（对角线为1，表示匹配）
+        labels = torch.arange(logits.size(0), device=logits.device)
+        
+        # 对称损失
+        loss_i2t = F.cross_entropy(logits, labels)
+        loss_t2i = F.cross_entropy(logits.T, labels)
+        
+        loss = (loss_i2t + loss_t2i) / 2
+        
+        return loss
+
+# 使用示例
+if __name__ == "__main__":
+    batch_size = 32
+    embed_dim = 512
+    
+    # 模拟图像和文本特征
+    image_features = torch.randn(batch_size, embed_dim)
+    text_features = torch.randn(batch_size, embed_dim)
+    
+    # 计算损失
+    criterion = CLIPLoss(temperature=0.07)
+    loss = criterion(image_features, text_features)
+    
+    print(f"CLIP 损失: {loss.item():.4f}")</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 图片放大弹窗 -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal()">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+            modalImg.onclick = function(e) { e.stopPropagation(); };
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

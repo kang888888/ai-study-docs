@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>强化学习与对齐技术知识图谱</title>
+    
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+    
+    <!-- 页面特定样式 -->
+    <style>
+        body {
+            background: radial-gradient(circle at top, var(--bg-primary) 0%, #030712 60%, #010409 100%);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- 知识图谱容器 -->
+        <div id="chart"></div>
+        
+        <!-- 标题栏 -->
+        <div class="title-bar">
+            <h1>强化学习与对齐技术知识图谱</h1>
+            <p>从强化学习基础到策略梯度算法，再到对齐技术与推理优化，全面掌握RL与对齐技术。</p>
+            <div class="legend">
+                <span><i style="background:#8b5cf6"></i>基础概念</span>
+            <span><i style="background:#ec4899"></i>策略梯度</span>
+            <span><i style="background:#10b981"></i>对齐技术</span>
+            <span><i style="background:#f59e0b"></i>推理优化</span>
+            </div>
+        </div>
+        
+        <!-- 控制栏 -->
+        <div class="control-bar">
+            <button class="control-btn" onclick="resetView()">重新布局</button>
+            <button class="control-btn" onclick="toggleAnimation()">暂停/继续动画</button>
+        </div>
+        
+        <!-- 侧边栏 -->
+        <div class="sidebar" id="sidebar">
+            <button class="close-btn" onclick="closeSidebar()">×</button>
+            <div class="sidebar-header">
+                <h2 class="sidebar-title" id="sidebar-title">强化学习与对齐技术知识图谱</h2>
+                <div class="sidebar-tag" id="sidebar-tag">指南</div>
+            </div>
+            <div class="sidebar-body" id="sidebar-content">
+                <div class="sidebar-placeholder">
+                    <p>👇 在左侧图谱中选择一个节点即可查看详情。</p>
+                    <p>• 点击分类节点查看概览说明<br>• 点击具体技术节点，会在此侧边栏加载对应的 HTML 讲解页</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 公共脚本 -->
+    <script src="../common/knowledge-graph.js"></script>
+    
+    <!-- 页面特定数据 -->
+    <script>
+        // 页面配置
+        const pageConfig = {
+          "containerId": "chart",
+          "data": {
+                    "name": "强化学习与对齐技术地图",
+                    "value": "根节点",
+                    "symbolSize": 70,
+                    "itemStyle": {
+                              "color": "#06b6d4",
+                              "borderColor": "#f8fafc",
+                              "borderWidth": 4
+                    },
+                    "children": [
+                              {
+                                        "name": "强化学习基础",
+                                        "value": "理解MDP、价值函数、策略等核心概念。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Foundation"
+                              },
+                              {
+                                        "name": "策略梯度算法",
+                                        "value": "直接优化策略参数的方法。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Policy Gradient",
+                                        "children": [
+                                                  {
+                                                            "name": "PPO",
+                                                            "value": "近端策略优化，RLHF的核心算法，通过裁剪约束保证稳定性。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Proximal"
+                                                  },
+                                                  {
+                                                            "name": "TRPO",
+                                                            "value": "置信域策略优化，PPO的前身，使用显式KL约束。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Trust Region"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "对齐技术",
+                                        "value": "使模型输出更符合人类偏好和价值观。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Alignment",
+                                        "children": [
+                                                  {
+                                                            "name": "RLHF",
+                                                            "value": "基于人类反馈的强化学习，三阶段训练流程。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Human Feedback"
+                                                  },
+                                                  {
+                                                            "name": "DPO",
+                                                            "value": "直接偏好优化，无需奖励模型，简化训练流程。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Direct Pref"
+                                                  },
+                                                  {
+                                                            "name": "ORPO",
+                                                            "value": "单阶段偏好优化，SFT和偏好对齐联合训练。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "One-Stage"
+                                                  },
+                                                  {
+                                                            "name": "RLAIF",
+                                                            "value": "基于AI反馈的强化学习，使用AI模型替代人类反馈。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "AI Feedback"
+                                                  }
+                                        ]
+                              },
+                              {
+                                        "name": "推理优化",
+                                        "value": "提升模型的推理能力和准确性。",
+                                        "symbolSize": 46,
+                                        "itemStyle": {
+                                                  "color": "#06b6d4",
+                                                  "borderColor": "#f8fafc",
+                                                  "borderWidth": 2
+                                        },
+                                        "tag": "Reasoning",
+                                        "children": [
+                                                  {
+                                                            "name": "CoT",
+                                                            "value": "思维链推理，引导模型逐步推理，提高复杂任务准确性。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Chain-of-Thought"
+                                                  },
+                                                  {
+                                                            "name": "逻辑推理优化",
+                                                            "value": "MCTS、A*等推理优化技术，提升逻辑推理能力。",
+                                                            "symbolSize": 34,
+                                                            "itemStyle": {
+                                                                      "color": "#06b6d4",
+                                                                      "borderColor": "#f8fafc",
+                                                                      "borderWidth": 2
+                                                            },
+                                                            "tag": "Logic"
+                                                  }
+                                        ]
+                              }
+                    ]
+          },
+          "techPages": {
+                    "强化学习基础": "../tech-docs/强化学习基础.html",
+                    "PPO": "../tech-docs/PPO.html",
+                    "TRPO": "../tech-docs/TRPO.html",
+                    "RLHF": "../tech-docs/RLHF.html",
+                    "DPO": "../tech-docs/DPO.html",
+                    "ORPO": "../tech-docs/ORPO.html",
+                    "RLAIF": "../tech-docs/RLAIF.html",
+                    "CoT": "../tech-docs/CoT.html",
+                    "逻辑推理优化": "../tech-docs/逻辑推理优化.html"
+          },
+          "categoryDescriptions": {
+                    "强化学习基础": "理解MDP、价值函数、策略等核心概念，是掌握强化学习与对齐技术的基础。",
+                    "策略梯度算法": "PPO、TRPO等策略梯度方法，是RLHF训练的核心算法，直接优化策略参数。",
+                    "对齐技术": "RLHF、DPO、ORPO、RLAIF等对齐方法，使模型输出更符合人类偏好和价值观。",
+                    "推理优化": "CoT思维链推理和逻辑推理优化技术，提升模型的推理能力和准确性。"
+          },
+          "force": {
+                    "repulsion": 1800,
+                    "gravity": 0.15,
+                    "edgeLength": [
+                              80,
+                              240
+                    ],
+                    "friction": 0.2
+          }
+};
+        
+        // 初始化页面
+        initKnowledgeGraph(pageConfig);
+        
+        // 窗口大小改变时重新调整
+        window.addEventListener('resize', function() {
+            if (typeof chart !== 'undefined' && chart) {
+                chart.resize();
+            }
+        });
+    </script>
+</body>
+</html>

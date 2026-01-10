@@ -1,0 +1,54 @@
+{
+  "title": "StreamingLLM 流式LLM",
+  "subtitle": "通过注意力池化实现无限长度处理",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "StreamingLLM是一种支持无限长度序列处理的LLM架构，通过注意力池化机制保留重要的历史信息，同时丢弃不重要的信息。它能够在保持固定显存占用的同时，处理任意长度的序列，突破了传统Transformer的序列长度限制。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "无限长度：支持处理任意长度的序列",
+            "固定显存：显存占用不随序列长度增长",
+            "注意力池化：通过池化保留重要信息",
+            "性能保持：在长序列任务上保持良好性能",
+            "实时处理：支持流式处理长文档"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "注意力池化、滑动窗口、重要token保留、显存优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "长文档处理、流式对话、实时文本分析、超长序列理解"
+        }
+      ]
+    }
+  ]
+}

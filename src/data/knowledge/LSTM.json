@@ -1,0 +1,168 @@
+{
+  "title": "LSTM (Long Short-Term Memory) 长短期记忆网络",
+  "subtitle": "解决长程依赖问题的RNN改进版本",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "RNN的改进版本，通过引入门控机制（遗忘门、输入门、输出门）和细胞状态（Cell State），有效解决了长程依赖问题和梯度消失问题。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "门控机制：通过三个门（遗忘、输入、输出）控制信息流动",
+            "细胞状态：长期记忆通道，梯度可以无损传播",
+            "长程依赖：能够捕捉序列中相距较远的依赖关系",
+            "参数量较大：相比RNN，参数量增加约4倍",
+            "训练稳定：梯度流动更加稳定"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "门控单元、细胞状态、Peephole连接（可选）、遗忘门偏置初始化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "机器翻译、文本生成、语音识别、时间序列预测、情感分析"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "LSTMDiagram",
+              "caption": "LSTM单元结构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "cell",
+                "title": "LSTM单元结构"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "LSTMDiagram",
+              "caption": "LSTM序列展开",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "unfolded",
+                "title": "LSTM序列展开"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "LSTMDiagram",
+              "caption": "LSTM门控机制",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "gates",
+                "title": "LSTM门控机制"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "LSTM 核心公式",
+          "formulas": [
+            {
+              "text": "在时间步 $t$，LSTM 的计算过程：",
+              "inline": "t"
+            },
+            {
+              "text": "遗忘门（Forget Gate）："
+            },
+            {
+              "display": "f_t = \\sigma(W_f \\cdot [h_{t-1}, x_t] + b_f)"
+            },
+            {
+              "text": "输入门（Input Gate）："
+            },
+            {
+              "display": "i_t = \\sigma(W_i \\cdot [h_{t-1}, x_t] + b_i)"
+            },
+            {
+              "display": "\\tilde{C}_t = \\tanh(W_C \\cdot [h_{t-1}, x_t] + b_C)"
+            },
+            {
+              "text": "细胞状态更新："
+            },
+            {
+              "display": "C_t = f_t * C_{t-1} + i_t * \\tilde{C}_t"
+            },
+            {
+              "text": "输出门（Output Gate）："
+            },
+            {
+              "display": "o_t = \\sigma(W_o \\cdot [h_{t-1}, x_t] + b_o)"
+            },
+            {
+              "display": "h_t = o_t * \\tanh(C_t)"
+            },
+            {
+              "text": "其中："
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用 PyTorch 实现 LSTM",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\n\nclass LSTMCell(nn.Module):\n    \"\"\"手动实现 LSTM 单元\"\"\"\n    def __init__(self, input_size, hidden_size):\n        super(LSTMCell, self).__init__()\n        self.hidden_size = hidden_size\n        \n        # 遗忘门参数\n        self.W_f = nn.Linear(input_size + hidden_size, hidden_size)\n        \n        # 输入门参数\n        self.W_i = nn.Linear(input_size + hidden_size, hidden_size)\n        self.W_C = nn.Linear(input_size + hidden_size, hidden_size)\n        \n        # 输出门参数\n        self.W_o = nn.Linear(input_size + hidden_size, hidden_size)\n    \n    def forward(self, x, h_prev, C_prev):\n        \"\"\"\n        前向传播\n        \n        参数:\n            x: 当前输入 (batch_size, input_size)\n            h_prev: 前一个隐藏状态 (batch_size, hidden_size)\n            C_prev: 前一个细胞状态 (batch_size, hidden_size)\n        \"\"\"\n        # 拼接输入和隐藏状态\n        combined = torch.cat([x, h_prev], dim=1)\n        \n        # 遗忘门\n        f_t = torch.sigmoid(self.W_f(combined))\n        \n        # 输入门\n        i_t = torch.sigmoid(self.W_i(combined))\n        C_tilde = torch.tanh(self.W_C(combined))\n        \n        # 更新细胞状态\n        C_t = f_t * C_prev + i_t * C_tilde\n        \n        # 输出门\n        o_t = torch.sigmoid(self.W_o(combined))\n        \n        # 计算隐藏状态\n        h_t = o_t * torch.tanh(C_t)\n        \n        return h_t, C_t\n\nclass LSTM_Model(nn.Module):\n    \"\"\"使用 PyTorch 内置 LSTM\"\"\"\n    def __init__(self, input_size, hidden_size, num_layers, num_classes):\n        super(LSTM_Model, self).__init__()\n        self.hidden_size = hidden_size\n        self.num_layers = num_layers\n        \n        # LSTM 层\n        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, \n                           batch_first=True, dropout=0.2)\n        \n        # 全连接层\n        self.fc = nn.Linear(hidden_size, num_classes)\n    \n    def forward(self, x):\n        # x shape: (batch_size, seq_length, input_size)\n        # 初始化隐藏状态和细胞状态\n        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)\n        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)\n        \n        # LSTM 前向传播\n        out, (h_n, c_n) = self.lstm(x, (h0, c0))\n        \n        # 使用最后一个时间步的输出\n        out = self.fc(out[:, -1, :])\n        \n        return out\n\n# 使用示例\nif __name__ == \"__main__\":\n    # 使用 PyTorch 内置 LSTM\n    model = LSTM_Model(input_size=128, hidden_size=256, \n                      num_layers=2, num_classes=10)\n    \n    # 模拟输入 (batch_size=32, seq_length=50, input_size=128)\n    x = torch.randn(32, 50, 128)\n    \n    # 前向传播\n    output = model(x)\n    print(f\"输出形状: {output.shape}\")  # [32, 10]\n    \n    # 手动实现 LSTM Cell\n    lstm_cell = LSTMCell(input_size=128, hidden_size=256)\n    \n    # 初始化状态\n    h = torch.zeros(32, 256)\n    C = torch.zeros(32, 256)\n    \n    # 处理序列\n    for t in range(50):\n        x_t = torch.randn(32, 128)\n        h, C = lstm_cell(x_t, h, C)\n    \n    print(f\"最终隐藏状态形状: {h.shape}\")"
+        },
+        {
+          "type": "code-box",
+          "title": "使用 NumPy 手动实现 LSTM",
+          "language": "python",
+          "code": "import numpy as np\n\nclass LSTM_Numpy:\n    \"\"\"使用 NumPy 手动实现 LSTM\"\"\"\n    def __init__(self, input_size, hidden_size):\n        self.input_size = input_size\n        self.hidden_size = hidden_size\n        \n        # 初始化权重矩阵\n        # 权重形状: (input_size + hidden_size, hidden_size)\n        scale = 1.0 / np.sqrt(input_size + hidden_size)\n        \n        # 遗忘门权重\n        self.W_f = np.random.randn(input_size + hidden_size, hidden_size) * scale\n        self.b_f = np.zeros((1, hidden_size))\n        \n        # 输入门权重\n        self.W_i = np.random.randn(input_size + hidden_size, hidden_size) * scale\n        self.b_i = np.zeros((1, hidden_size))\n        \n        # 候选值权重\n        self.W_C = np.random.randn(input_size + hidden_size, hidden_size) * scale\n        self.b_C = np.zeros((1, hidden_size))\n        \n        # 输出门权重\n        self.W_o = np.random.randn(input_size + hidden_size, hidden_size) * scale\n        self.b_o = np.zeros((1, hidden_size))\n    \n    def sigmoid(self, x):\n        \"\"\"Sigmoid 激活函数\"\"\"\n        return 1 / (1 + np.exp(-np.clip(x, -250, 250)))\n    \n    def tanh(self, x):\n        \"\"\"Tanh 激活函数\"\"\"\n        return np.tanh(x)\n    \n    def forward_step(self, x_t, h_prev, C_prev):\n        \"\"\"\n        单个时间步的前向传播\n        \n        参数:\n            x_t: 当前输入 (batch_size, input_size)\n            h_prev: 前一个隐藏状态 (batch_size, hidden_size)\n            C_prev: 前一个细胞状态 (batch_size, hidden_size)\n        \"\"\"\n        # 拼接输入和隐藏状态\n        combined = np.concatenate([x_t, h_prev], axis=1)\n        \n        # 遗忘门\n        f_t = self.sigmoid(np.dot(combined, self.W_f) + self.b_f)\n        \n        # 输入门\n        i_t = self.sigmoid(np.dot(combined, self.W_i) + self.b_i)\n        C_tilde = self.tanh(np.dot(combined, self.W_C) + self.b_C)\n        \n        # 更新细胞状态\n        C_t = f_t * C_prev + i_t * C_tilde\n        \n        # 输出门\n        o_t = self.sigmoid(np.dot(combined, self.W_o) + self.b_o)\n        \n        # 计算隐藏状态\n        h_t = o_t * self.tanh(C_t)\n        \n        return h_t, C_t\n    \n    def forward(self, X):\n        \"\"\"\n        处理整个序列\n        \n        参数:\n            X: 输入序列 (batch_size, seq_length, input_size)\n        \"\"\"\n        batch_size, seq_length, _ = X.shape\n        \n        # 初始化状态\n        h = np.zeros((batch_size, self.hidden_size))\n        C = np.zeros((batch_size, self.hidden_size))\n        \n        # 存储所有时间步的隐藏状态\n        hidden_states = []\n        \n        for t in range(seq_length):\n            x_t = X[:, t, :]\n            h, C = self.forward_step(x_t, h, C)\n            hidden_states.append(h)\n        \n        # 返回所有隐藏状态和最终状态\n        return np.array(hidden_states), h, C\n\n# 使用示例\nif __name__ == \"__main__\":\n    # 创建 LSTM 模型\n    lstm = LSTM_Numpy(input_size=10, hidden_size=20)\n    \n    # 创建输入序列 (batch_size=5, seq_length=8, input_size=10)\n    X = np.random.randn(5, 8, 10)\n    \n    # 前向传播\n    hidden_states, final_h, final_C = lstm.forward(X)\n    \n    print(f\"隐藏状态序列形状: {hidden_states.shape}\")  # (8, 5, 20)\n    print(f\"最终隐藏状态形状: {final_h.shape}\")  # (5, 20)\n    print(f\"最终细胞状态形状: {final_C.shape}\")  # (5, 20)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titans 神经网络架构 - 架构详解</title>
+    <!-- MathJax for mathematical formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="../common/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Titans 神经网络架构</h1>
+            <p>仿生记忆架构，融合短期记忆、长期记忆和注意力机制</p>
+        </div>
+        <div class="content">
+            
+            <div class="section">
+                <h2>📖 核心概念</h2>
+                <div class="desc-box">
+                    <p><strong>Titans</strong> 是由 Google Research 在 2025 年 1 月发布的新型神经网络架构。该架构采用<strong>仿生设计</strong>，融合了短期记忆、长期记忆和注意力机制，能够处理超过 <strong>200 万个 Token</strong> 的上下文长度。</p>
+                </div>
+            </div>
+            <div class="section features">
+                <h2>🌟 核心创新</h2>
+                <ul>
+                    <li><strong>神经长期记忆模块</strong>：模拟人类记忆系统，结合短期记忆的快速反应与长期记忆的持久特性</li>
+                    <li><strong>超长上下文处理</strong>：突破传统 Transformer 的上下文窗口限制，能够处理超过 200 万 Token 的超长序列</li>
+                    <li><strong>三种设计变体</strong>：MAC（Memory as a Context）、MAG（Memory as a Gate）、MAL（Memory as a Layer）</li>
+                    <li><strong>语义连贯性</strong>：在多轮对话和长文本任务中保持上下文连贯</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>⚙️ 三种架构变体</h2>
+                <div class="tech-box">
+                    <p><strong>MAC（Memory as a Context）</strong></p>
+                    <p>将长期记忆作为上下文的一部分，允许注意力机制动态结合历史信息与当前数据。简单直接，易于实现，适合需要频繁访问历史信息的任务。</p>
+                </div>
+                <div class="tech-box">
+                    <p><strong>MAG（Memory as a Gate）</strong></p>
+                    <p>根据任务需求调整实时数据与历史信息的重要性比例，使用门控机制控制信息流。灵活控制信息融合比例，适合需要动态平衡当前和历史信息的任务。</p>
+                </div>
+                <div class="tech-box">
+                    <p><strong>MAL（Memory as a Layer）</strong></p>
+                    <p>将记忆模块设计为深度网络的一层，将用户的历史记录和当前输入的上下文内容进行固定压缩后交由模型的注意力模块处理。深度集成，端到端训练，适合需要深度记忆融合的复杂任务。</p>
+                </div>
+            </div>
+            <div class="section">
+                <h2>🚀 应用场景</h2>
+                <div class="app-box">
+                    <p><strong>长文本理解</strong>：文档分析、书籍理解、法律文档、技术文档处理（200万+ Token 上下文能力）</p>
+                    <p><strong>多轮对话</strong>：智能助手、客服系统、需要长期记忆的对话系统（内置长期记忆，无需外部记忆模块）</p>
+                    <p><strong>代码分析</strong>：大型代码库理解、跨文件的代码依赖分析（超长上下文，理解代码依赖关系）</p>
+                    <p><strong>科学计算</strong>：基因组序列分析、时间序列预测（长期记忆，识别历史模式）</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🧠 仿生记忆系统</h2>
+                <div class="tech-box">
+                    <p><strong>短期记忆（Short-Term Memory）</strong></p>
+                    <p>快速反应，对当前输入快速处理，保存最近的上下文信息，类似 Transformer 的注意力机制</p>
+                </div>
+                <div class="tech-box">
+                    <p><strong>长期记忆（Long-Term Memory）</strong></p>
+                    <p>持久存储，保存历史重要信息，压缩表示高效存储大量历史数据，选择性检索根据当前任务检索相关信息</p>
+                </div>
+                <div class="tech-box">
+                    <p><strong>注意力机制（Attention Mechanism）</strong></p>
+                    <p>动态聚焦，专注于当前最相关的信息，信息融合，结合短期和长期记忆</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔬 记忆模块设计</h2>
+                <div class="desc-box">
+                    <p><strong>1. 记忆编码器（Memory Encoder）</strong>：将历史信息编码为压缩表示，支持增量更新，高效存储大量历史数据</p>
+                    <p><strong>2. 记忆检索器（Memory Retriever）</strong>：根据当前上下文检索相关记忆，使用注意力机制进行检索，选择性检索相关信息</p>
+                    <p><strong>3. 记忆更新器（Memory Updater）</strong>：选择性更新长期记忆，遗忘不重要的信息，保持记忆的时效性和相关性</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Titans vs Transformer</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>特性</th>
+                            <th>Transformer</th>
+                            <th>Titans</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>上下文长度</strong></td>
+                            <td>通常 2K-32K</td>
+                            <td>200万+ Token</td>
+                        </tr>
+                        <tr>
+                            <td><strong>记忆机制</strong></td>
+                            <td>仅短期（注意力）</td>
+                            <td>短期+长期记忆</td>
+                        </tr>
+                        <tr>
+                            <td><strong>长距离依赖</strong></td>
+                            <td>受限</td>
+                            <td>强</td>
+                        </tr>
+                        <tr>
+                            <td><strong>多轮对话</strong></td>
+                            <td>需要外部记忆</td>
+                            <td>内置长期记忆</td>
+                        </tr>
+                        <tr>
+                            <td><strong>计算复杂度</strong></td>
+                            <td>O(L²)</td>
+                            <td>优化后降低</td>
+                        </tr>
+                        <tr>
+                            <td><strong>语义连贯性</strong></td>
+                            <td>长文本中受限</td>
+                            <td>强（长期记忆）</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h2>💡 性能表现</h2>
+                <div class="desc-box">
+                    <p><strong>语言建模</strong>：超越传统 Transformer，在长序列任务中表现卓越</p>
+                    <p><strong>常识推理</strong>：利用长期记忆进行复杂推理，保持推理的连贯性</p>
+                    <p><strong>基因组分析</strong>：处理超长生物序列，识别长距离依赖关系</p>
+                    <p><strong>时间序列预测</strong>：利用历史模式进行预测，处理长期依赖</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Python 代码示例</h2>
+                <div class="code-box">
+                    <h3>长期记忆模块的简化实现</h3>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class LongTermMemory(nn.Module):
+    """长期记忆模块"""
+    def __init__(self, d_model, memory_size):
+        super(LongTermMemory, self).__init__()
+        self.d_model = d_model
+        self.memory_size = memory_size
+        
+        # 记忆编码器
+        self.memory_encoder = nn.Linear(d_model, d_model)
+        
+        # 记忆存储（可学习的）
+        self.memory = nn.Parameter(torch.randn(memory_size, d_model))
+        
+        # 记忆检索器（注意力机制）
+        self.query_proj = nn.Linear(d_model, d_model)
+        self.key_proj = nn.Linear(d_model, d_model)
+        self.value_proj = nn.Linear(d_model, d_model)
+        
+        # 记忆更新器（门控机制）
+        self.update_gate = nn.Linear(d_model * 2, d_model)
+    
+    def encode(self, x):
+        """编码输入为记忆表示"""
+        return self.memory_encoder(x)
+    
+    def retrieve(self, query):
+        """检索相关记忆"""
+        batch_size = query.shape[0]
+        
+        # 计算查询、键、值
+        q = self.query_proj(query)  # [batch_size, d_model]
+        k = self.key_proj(self.memory)  # [memory_size, d_model]
+        v = self.value_proj(self.memory)  # [memory_size, d_model]
+        
+        # 计算注意力权重
+        scores = torch.matmul(q, k.t()) / (self.d_model ** 0.5)
+        attention = F.softmax(scores, dim=-1)  # [batch_size, memory_size]
+        
+        # 加权求和
+        retrieved = torch.matmul(attention, v)  # [batch_size, d_model]
+        
+        return retrieved, attention
+    
+    def update(self, new_info, retrieved_memory):
+        """更新记忆"""
+        # 合并新信息和检索到的记忆
+        combined = torch.cat([new_info, retrieved_memory], dim=-1)
+        
+        # 门控更新
+        gate = torch.sigmoid(self.update_gate(combined))
+        updated = gate * new_info + (1 - gate) * retrieved_memory
+        
+        return updated
+
+# 使用示例
+if __name__ == "__main__":
+    memory = LongTermMemory(d_model=512, memory_size=1000)
+    query = torch.randn(2, 512)
+    new_info = torch.randn(2, 512)
+    
+    # 检索记忆
+    retrieved, attention = memory.retrieve(query)
+    print(f"检索到的记忆形状: {retrieved.shape}")  # [2, 512]
+    
+    # 更新记忆
+    updated = memory.update(new_info, retrieved)
+    print(f"更新后的记忆形状: {updated.shape}")  # [2, 512]</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 图片放大弹窗 -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="event.stopPropagation(); closeImageModal()">&times;</span>
+        <img id="modalImage" class="image-modal-content" src="" alt="">
+        <div id="modalCaption" class="image-modal-caption"></div>
+    </div>
+    <script>
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalCaption.textContent = img.alt || '';
+            modalImg.onclick = function(e) { e.stopPropagation(); };
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+    </script>
+    <!-- 公共脚本 -->
+    <script src="../common/tech-document.js"></script>
+</body>
+</html>
+

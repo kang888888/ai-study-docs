@@ -1,0 +1,61 @@
+{
+  "title": "公开数据集",
+  "subtitle": "使用CommonCrawl、The Pile、C4等公开数据集进行模型训练。",
+  "content": [
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "公开数据集分类",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "公开数据集分类",
+                "data": null
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "数据集使用流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "数据集使用流程",
+                "data": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "加载CommonCrawl数据",
+          "language": "python",
+          "code": "from datasets import load_dataset\n\n# 加载CommonCrawl数据集\ndataset = load_dataset(\"c4\", \"en\", split=\"train\", streaming=True)\n\n# 查看数据样本\nfor i, example in enumerate(dataset):\n    print(example[\"text\"][:200])\n    if i >= 5:\n        break"
+        },
+        {
+          "type": "code-box",
+          "title": "使用The Pile数据集",
+          "language": "python",
+          "code": "from datasets import load_dataset\n\n# 加载The Pile数据集\ndataset = load_dataset(\"EleutherAI/pile\", split=\"train\", streaming=True)\n\n# 过滤和处理数据\ndef process_pile(example):\n    text = example[\"text\"]\n    # 过滤短文本\n    if len(text.split()) < 50:\n        return None\n    return {\"text\": text}\n\ndataset = dataset.map(process_pile, remove_columns=[col for col in dataset.column_names if col != \"text\"])"
+        }
+      ]
+    }
+  ]
+}
