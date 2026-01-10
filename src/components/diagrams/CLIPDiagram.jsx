@@ -28,12 +28,11 @@ const CLIPDiagram = ({
 
     const colors = {
       image: '#4facfe',
-      text: '#667eea',
+      text: '#2d3748',
       encoder: '#f093fb',
       embedding: '#43e97b',
       contrastive: '#764ba2',
-      output: '#fa709a',
-      text: '#2d3748'
+      output: '#fa709a'
     };
 
     switch (type) {
