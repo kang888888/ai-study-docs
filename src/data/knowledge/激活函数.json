@@ -61,28 +61,26 @@
           "images": [
             {
               "type": "svg-d3",
-              "component": "GenericDiagram",
+              "component": "MathFunctionDiagram",
               "caption": "激活函数对比",
               "width": 1000,
               "height": 800,
               "interactive": true,
               "props": {
-                "type": "concept",
-                "title": "激活函数对比",
-                "data": null
+                "type": "activation",
+                "title": "激活函数对比"
               }
             },
             {
               "type": "svg-d3",
-              "component": "GenericDiagram",
+              "component": "MathFunctionDiagram",
               "caption": "激活函数曲线",
               "width": 1000,
               "height": 800,
               "interactive": true,
               "props": {
-                "type": "concept",
-                "title": "激活函数曲线",
-                "data": null
+                "type": "activation",
+                "title": "激活函数曲线"
               }
             }
           ]
