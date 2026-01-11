@@ -66,21 +66,7 @@
               "interactive": true,
               "props": {
                 "type": "concept",
-                "title": "残差链接原理",
-                "data": null
-              }
-            },
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "残差链接效果",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "concept",
-                "title": "残差链接效果",
-                "data": null
+                "title": "残差链接原理"
               }
             }
           ]

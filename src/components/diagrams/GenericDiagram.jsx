@@ -216,7 +216,25 @@ const GenericDiagram = ({
 
   // 渲染概念图
   const renderConcept = (g, width, height, colors, interactive) => {
-    // 概念图实现
+    const titleLower = (title || '').toLowerCase();
+    
+    // 根据标题识别不同的概念并绘制相应的可视化
+    if (titleLower.includes('梯度') || titleLower.includes('gradient')) {
+      renderGradientConcept(g, width, height, colors, interactive);
+    } else if (titleLower.includes('反向传播') || titleLower.includes('backpropagation')) {
+      renderBackpropagationConcept(g, width, height, colors, interactive);
+    } else if (titleLower.includes('优化器') || titleLower.includes('optimizer')) {
+      renderOptimizerConcept(g, width, height, colors, interactive);
+    } else if (titleLower.includes('正则化') || titleLower.includes('regularization')) {
+      renderRegularizationConcept(g, width, height, colors, interactive);
+    } else if (titleLower.includes('残差') || titleLower.includes('residual')) {
+      renderResidualConcept(g, width, height, colors, interactive);
+    } else if (titleLower.includes('位置编码') || titleLower.includes('position')) {
+      renderPositionEncodingConcept(g, width, height, colors, interactive);
+    } else if (titleLower.includes('归一化') || titleLower.includes('normalization')) {
+      renderNormalizationConcept(g, width, height, colors, interactive);
+    } else {
+      // 默认显示简单的概念图
     const centerX = width / 2;
     const centerY = height / 2;
     
@@ -244,7 +262,544 @@ const GenericDiagram = ({
       .attr('font-size', '18px')
       .attr('fill', 'white')
       .text(title || '概念图解');
+    }
   };
+
+  // 渲染梯度概念图
+  function renderGradientConcept(g, width, height, colors, interactive) {
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    // 绘制损失函数曲线（简化的2D示例）
+    const xScale = d3.scaleLinear().domain([-3, 3]).range([100, width - 100]);
+    const yScale = d3.scaleLinear().domain([0, 10]).range([height - 100, 100]);
+    
+    // 损失函数曲线 y = x^2 + 2
+    const curveData = d3.range(-3, 3, 0.1).map(x => ({
+      x: x,
+      y: x * x + 2
+    }));
+    
+    const line = d3.line()
+      .x(d => xScale(d.x))
+      .y(d => yScale(d.y))
+      .curve(d3.curveBasis);
+    
+    g.append('path')
+      .datum(curveData)
+      .attr('d', line)
+      .attr('fill', 'none')
+      .attr('stroke', colors.primary)
+      .attr('stroke-width', 3);
+    
+    // 绘制梯度箭头（在x=1处）
+    const pointX = 1;
+    const pointY = pointX * pointX + 2;
+    const gradient = 2 * pointX; // dy/dx = 2x
+    
+    g.append('circle')
+      .attr('cx', xScale(pointX))
+      .attr('cy', yScale(pointY))
+      .attr('r', 5)
+      .attr('fill', colors.error);
+    
+    // 梯度箭头
+    const arrowLength = 50;
+    const arrowX = xScale(pointX);
+    const arrowY = yScale(pointY);
+    const angle = Math.atan(gradient);
+    
+    g.append('path')
+      .attr('d', `M ${arrowX} ${arrowY} L ${arrowX + arrowLength * Math.cos(angle)} ${arrowY - arrowLength * Math.sin(angle)}`)
+      .attr('stroke', colors.error)
+      .attr('stroke-width', 2)
+      .attr('marker-end', 'url(#gradient-arrow)');
+    
+    // 箭头标记
+    const defs = g.append('defs');
+    defs.append('marker')
+      .attr('id', 'gradient-arrow')
+      .attr('markerWidth', 10)
+      .attr('markerHeight', 10)
+      .attr('refX', 9)
+      .attr('refY', 3)
+      .attr('orient', 'auto')
+      .append('polygon')
+      .attr('points', '0 0, 10 3, 0 6')
+      .attr('fill', colors.error);
+    
+    // 标签
+    g.append('text')
+      .attr('x', xScale(pointX) + 60)
+      .attr('y', yScale(pointY) - 20)
+      .attr('font-size', '14px')
+      .attr('fill', colors.text)
+      .text('梯度方向');
+  }
+
+  // 渲染反向传播概念图
+  function renderBackpropagationConcept(g, width, height, colors, interactive) {
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    // 绘制简单的三层网络
+    const layers = [
+      { x: 150, nodes: 3, label: '输入层' },
+      { x: centerX, nodes: 4, label: '隐藏层' },
+      { x: width - 150, nodes: 2, label: '输出层' }
+    ];
+    
+    layers.forEach((layer, i) => {
+      const nodeSpacing = 80;
+      const startY = centerY - (layer.nodes - 1) * nodeSpacing / 2;
+      
+      for (let j = 0; j < layer.nodes; j++) {
+        const y = startY + j * nodeSpacing;
+        
+        g.append('circle')
+          .attr('cx', layer.x)
+          .attr('cy', y)
+          .attr('r', 20)
+          .attr('fill', i === 0 ? colors.primary : i === 1 ? colors.secondary : colors.success)
+          .attr('opacity', 0.8);
+        
+        // 连接线（仅显示反向传播方向）
+        if (i > 0) {
+          const prevLayer = layers[i - 1];
+          const prevStartY = centerY - (prevLayer.nodes - 1) * nodeSpacing / 2;
+          
+          for (let k = 0; k < prevLayer.nodes; k++) {
+            const prevY = prevStartY + k * nodeSpacing;
+            g.append('path')
+              .attr('d', `M ${layer.x - 20} ${y} L ${prevLayer.x + 20} ${prevY}`)
+              .attr('stroke', colors.error)
+              .attr('stroke-width', 1.5)
+              .attr('opacity', 0.3)
+              .attr('marker-end', 'url(#backward-arrow)');
+          }
+        }
+      }
+      
+      // 层标签
+      g.append('text')
+        .attr('x', layer.x)
+        .attr('y', centerY + (layer.nodes - 1) * nodeSpacing / 2 + 40)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '12px')
+        .attr('fill', colors.text)
+        .text(layer.label);
+    });
+    
+    // 反向箭头标记
+    const defs = g.append('defs');
+    defs.append('marker')
+      .attr('id', 'backward-arrow')
+      .attr('markerWidth', 8)
+      .attr('markerHeight', 8)
+      .attr('refX', 7)
+      .attr('refY', 2)
+      .attr('orient', 'auto')
+      .append('polygon')
+      .attr('points', '0 0, 8 2, 0 4')
+      .attr('fill', colors.error);
+    
+    // 说明文字
+    g.append('text')
+      .attr('x', centerX)
+      .attr('y', height - 30)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '14px')
+      .attr('fill', colors.text)
+      .text('反向传播：从输出层向输入层传播梯度');
+  }
+
+  // 渲染优化器概念图
+  function renderOptimizerConcept(g, width, height, colors, interactive) {
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    // 绘制优化器对比（简化的收敛曲线）
+    const optimizers = [
+      { name: 'SGD', color: colors.primary, path: [] },
+      { name: 'Adam', color: colors.success, path: [] },
+      { name: 'AdamW', color: colors.accent, path: [] }
+    ];
+    
+    const xScale = d3.scaleLinear().domain([0, 100]).range([100, width - 100]);
+    const yScale = d3.scaleLinear().domain([0, 5]).range([100, height - 200]);
+    
+    optimizers.forEach((opt, idx) => {
+      // 生成不同的收敛曲线
+      const pathData = [];
+      for (let i = 0; i <= 100; i += 2) {
+        let y;
+        if (opt.name === 'SGD') {
+          y = 5 * Math.exp(-i / 30) + 0.5 + Math.random() * 0.3;
+        } else if (opt.name === 'Adam') {
+          y = 5 * Math.exp(-i / 20) + 0.2 + Math.random() * 0.2;
+        } else {
+          y = 5 * Math.exp(-i / 18) + 0.1 + Math.random() * 0.15;
+        }
+        pathData.push({ x: i, y: Math.max(0, y) });
+      }
+      
+      const line = d3.line()
+        .x(d => xScale(d.x))
+        .y(d => yScale(d.y))
+        .curve(d3.curveBasis);
+      
+      g.append('path')
+        .datum(pathData)
+        .attr('d', line)
+        .attr('fill', 'none')
+        .attr('stroke', opt.color)
+        .attr('stroke-width', 2);
+      
+      // 图例
+      g.append('circle')
+        .attr('cx', 120)
+        .attr('cy', 150 + idx * 30)
+        .attr('r', 5)
+        .attr('fill', opt.color);
+      
+      g.append('text')
+        .attr('x', 135)
+        .attr('y', 155 + idx * 30)
+        .attr('font-size', '12px')
+        .attr('fill', colors.text)
+        .text(opt.name);
+    });
+    
+    // 坐标轴标签
+    g.append('text')
+      .attr('x', centerX)
+      .attr('y', height - 50)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '12px')
+      .attr('fill', colors.text)
+      .text('迭代次数');
+    
+    g.append('text')
+      .attr('x', 50)
+      .attr('y', centerY)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '12px')
+      .attr('fill', colors.text)
+      .attr('transform', `rotate(-90, 50, ${centerY})`)
+      .text('损失值');
+  }
+
+  // 渲染正则化概念图
+  function renderRegularizationConcept(g, width, height, colors, interactive) {
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    // 绘制过拟合 vs 正则化对比
+    const xScale = d3.scaleLinear().domain([0, 10]).range([100, width - 100]);
+    const yScale = d3.scaleLinear().domain([0, 10]).range([height - 100, 100]);
+    
+    // 过拟合曲线（复杂）
+    const overfitData = d3.range(0, 10, 0.1).map(x => ({
+      x: x,
+      y: 5 + 2 * Math.sin(x * 2) + 1.5 * Math.cos(x * 3)
+    }));
+    
+    // 正则化曲线（平滑）
+    const regularizedData = d3.range(0, 10, 0.1).map(x => ({
+      x: x,
+      y: 5 + 0.5 * x
+    }));
+    
+    const line = d3.line()
+      .x(d => xScale(d.x))
+      .y(d => yScale(d.y))
+      .curve(d3.curveBasis);
+    
+    g.append('path')
+      .datum(overfitData)
+      .attr('d', line)
+      .attr('fill', 'none')
+      .attr('stroke', colors.error)
+      .attr('stroke-width', 2)
+      .attr('stroke-dasharray', '5,5');
+    
+    g.append('path')
+      .datum(regularizedData)
+      .attr('d', line)
+      .attr('fill', 'none')
+      .attr('stroke', colors.success)
+      .attr('stroke-width', 2);
+    
+    // 图例
+    g.append('text')
+      .attr('x', 120)
+      .attr('y', 150)
+      .attr('font-size', '12px')
+      .attr('fill', colors.error)
+      .text('过拟合（无正则化）');
+    
+    g.append('text')
+      .attr('x', 120)
+      .attr('y', 180)
+      .attr('font-size', '12px')
+      .attr('fill', colors.success)
+      .text('正则化后（平滑）');
+  }
+
+  // 渲染残差链接概念图
+  function renderResidualConcept(g, width, height, colors, interactive) {
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    // 绘制残差块
+    const blockWidth = 200;
+    const blockHeight = 80;
+    
+    // 输入
+    g.append('rect')
+      .attr('x', centerX - blockWidth / 2)
+      .attr('y', centerY - blockHeight / 2 - 100)
+      .attr('width', blockWidth)
+      .attr('height', blockHeight)
+      .attr('fill', colors.primary)
+      .attr('stroke', colors.text)
+      .attr('stroke-width', 2)
+      .attr('rx', 5);
+    
+    g.append('text')
+      .attr('x', centerX)
+      .attr('y', centerY - 60)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '14px')
+      .attr('fill', 'white')
+      .text('x');
+    
+    // 残差块
+    g.append('rect')
+      .attr('x', centerX - blockWidth / 2)
+      .attr('y', centerY - blockHeight / 2)
+      .attr('width', blockWidth)
+      .attr('height', blockHeight)
+      .attr('fill', colors.secondary)
+      .attr('stroke', colors.text)
+      .attr('stroke-width', 2)
+      .attr('rx', 5);
+    
+    g.append('text')
+      .attr('x', centerX)
+      .attr('y', centerY + 5)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '14px')
+      .attr('fill', 'white')
+      .text('F(x)');
+    
+    // 输出
+    g.append('rect')
+      .attr('x', centerX - blockWidth / 2)
+      .attr('y', centerY - blockHeight / 2 + 100)
+      .attr('width', blockWidth)
+      .attr('height', blockHeight)
+      .attr('fill', colors.success)
+      .attr('stroke', colors.text)
+      .attr('stroke-width', 2)
+      .attr('rx', 5);
+    
+    g.append('text')
+      .attr('x', centerX)
+      .attr('y', centerY + 160)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '14px')
+      .attr('fill', 'white')
+      .text('x + F(x)');
+    
+    // 前向箭头
+    g.append('path')
+      .attr('d', `M ${centerX} ${centerY - 60} L ${centerX} ${centerY - 40}`)
+      .attr('stroke', colors.text)
+      .attr('stroke-width', 2)
+      .attr('marker-end', 'url(#residual-arrow)');
+    
+    g.append('path')
+      .attr('d', `M ${centerX} ${centerY + 40} L ${centerX} ${centerY + 100}`)
+      .attr('stroke', colors.text)
+      .attr('stroke-width', 2)
+      .attr('marker-end', 'url(#residual-arrow)');
+    
+    // 跳跃连接
+    g.append('path')
+      .attr('d', `M ${centerX - blockWidth / 2} ${centerY - 60} Q ${centerX - blockWidth / 2 - 30} ${centerY} ${centerX - blockWidth / 2} ${centerY + 60}`)
+      .attr('fill', 'none')
+      .attr('stroke', colors.accent)
+      .attr('stroke-width', 3)
+      .attr('marker-end', 'url(#residual-arrow)');
+    
+    // 加号
+    g.append('circle')
+      .attr('cx', centerX - blockWidth / 2 - 15)
+      .attr('cy', centerY + 60)
+      .attr('r', 15)
+      .attr('fill', colors.accent);
+    
+    g.append('text')
+      .attr('x', centerX - blockWidth / 2 - 15)
+      .attr('y', centerY + 65)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '16px')
+      .attr('fill', 'white')
+      .text('+');
+    
+    // 箭头标记
+    const defs = g.append('defs');
+    defs.append('marker')
+      .attr('id', 'residual-arrow')
+      .attr('markerWidth', 10)
+      .attr('markerHeight', 10)
+      .attr('refX', 9)
+      .attr('refY', 3)
+      .attr('orient', 'auto')
+      .append('polygon')
+      .attr('points', '0 0, 10 3, 0 6')
+      .attr('fill', colors.text);
+  }
+
+  // 渲染位置编码概念图
+  function renderPositionEncodingConcept(g, width, height, colors, interactive) {
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    // 绘制位置编码矩阵（简化）
+    const seqLength = 5;
+    const embedDim = 4;
+    const cellWidth = 40;
+    const cellHeight = 40;
+    const startX = centerX - (seqLength * cellWidth) / 2;
+    const startY = centerY - (embedDim * cellHeight) / 2;
+    
+    for (let i = 0; i < seqLength; i++) {
+      for (let j = 0; j < embedDim; j++) {
+        const x = startX + i * cellWidth;
+        const y = startY + j * cellHeight;
+        const value = Math.sin(i / Math.pow(10000, 2 * j / embedDim));
+        const intensity = (value + 1) / 2;
+        
+        g.append('rect')
+          .attr('x', x)
+          .attr('y', y)
+          .attr('width', cellWidth - 2)
+          .attr('height', cellHeight - 2)
+          .attr('fill', d3.interpolateRdYlBu(intensity))
+          .attr('stroke', colors.border)
+          .attr('stroke-width', 1);
+      }
+      
+      // 位置标签
+      g.append('text')
+        .attr('x', startX + i * cellWidth + cellWidth / 2)
+        .attr('y', startY - 10)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '12px')
+        .attr('fill', colors.text)
+        .text(`pos ${i}`);
+    }
+    
+    // 说明
+    g.append('text')
+      .attr('x', centerX)
+      .attr('y', height - 30)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '14px')
+      .attr('fill', colors.text)
+      .text('位置编码：为每个位置添加唯一的位置信息');
+  }
+
+  // 渲染归一化概念图
+  function renderNormalizationConcept(g, width, height, colors, interactive) {
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    // 绘制归一化前后对比
+    const methods = [
+      { name: 'BatchNorm', x: 200, color: colors.primary },
+      { name: 'LayerNorm', x: centerX, color: colors.secondary },
+      { name: 'GroupNorm', x: width - 200, color: colors.accent }
+    ];
+    
+    methods.forEach((method, idx) => {
+      // 归一化前的数据分布（分散）
+      for (let i = 0; i < 20; i++) {
+        const angle = (i / 20) * Math.PI * 2;
+        const radius = 30 + Math.random() * 20;
+        const x = method.x - 60 + radius * Math.cos(angle);
+        const y = centerY - 100 + radius * Math.sin(angle);
+        
+        g.append('circle')
+          .attr('cx', x)
+          .attr('cy', y)
+          .attr('r', 3)
+          .attr('fill', colors.error)
+          .attr('opacity', 0.6);
+      }
+      
+      // 归一化后的数据分布（集中）
+      for (let i = 0; i < 20; i++) {
+        const angle = (i / 20) * Math.PI * 2;
+        const radius = 10 + Math.random() * 10;
+        const x = method.x - 60 + radius * Math.cos(angle);
+        const y = centerY + 50 + radius * Math.sin(angle);
+        
+        g.append('circle')
+          .attr('cx', x)
+          .attr('cy', y)
+          .attr('r', 3)
+          .attr('fill', colors.success)
+          .attr('opacity', 0.6);
+      }
+      
+      // 箭头
+      g.append('path')
+        .attr('d', `M ${method.x - 60} ${centerY - 80} L ${method.x - 60} ${centerY + 30}`)
+        .attr('stroke', colors.text)
+        .attr('stroke-width', 2)
+        .attr('marker-end', 'url(#norm-arrow)');
+      
+      // 方法名称
+      g.append('text')
+        .attr('x', method.x - 60)
+        .attr('y', centerY + 100)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '12px')
+        .attr('fill', colors.text)
+        .text(method.name);
+    });
+    
+    // 箭头标记
+    const defs = g.append('defs');
+    defs.append('marker')
+      .attr('id', 'norm-arrow')
+      .attr('markerWidth', 10)
+      .attr('markerHeight', 10)
+      .attr('refX', 9)
+      .attr('refY', 3)
+      .attr('orient', 'auto')
+      .append('polygon')
+      .attr('points', '0 0, 10 3, 0 6')
+      .attr('fill', colors.text);
+    
+    // 标签
+    g.append('text')
+      .attr('x', 100)
+      .attr('y', centerY - 100)
+      .attr('font-size', '12px')
+      .attr('fill', colors.error)
+      .text('归一化前');
+    
+    g.append('text')
+      .attr('x', 100)
+      .attr('y', centerY + 50)
+      .attr('font-size', '12px')
+      .attr('fill', colors.success)
+      .text('归一化后');
+  }
 
   // 渲染占位符
   const renderPlaceholder = (g, width, height, colors, title) => {

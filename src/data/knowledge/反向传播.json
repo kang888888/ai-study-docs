@@ -66,21 +66,7 @@
               "interactive": true,
               "props": {
                 "type": "concept",
-                "title": "反向传播流程",
-                "data": null
-              }
-            },
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "反向传播示意图",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "concept",
-                "title": "反向传播示意图",
-                "data": null
+                "title": "反向传播流程"
               }
             }
           ]

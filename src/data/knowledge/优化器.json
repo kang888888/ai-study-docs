@@ -68,21 +68,7 @@
               "interactive": true,
               "props": {
                 "type": "concept",
-                "title": "优化器对比",
-                "data": null
-              }
-            },
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "优化器收敛曲线",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "concept",
-                "title": "优化器收敛曲线",
-                "data": null
+                "title": "优化器对比"
               }
             }
           ]

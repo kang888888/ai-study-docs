@@ -61,28 +61,14 @@
           "images": [
             {
               "type": "svg-d3",
-              "component": "GenericDiagram",
+              "component": "MathFunctionDiagram",
               "caption": "损失函数对比",
               "width": 1000,
               "height": 800,
               "interactive": true,
               "props": {
-                "type": "concept",
-                "title": "损失函数对比",
-                "data": null
-              }
-            },
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "损失函数曲线",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "concept",
-                "title": "损失函数曲线",
-                "data": null
+                "type": "loss",
+                "title": "损失函数对比"
               }
             }
           ]

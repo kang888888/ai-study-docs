@@ -67,21 +67,7 @@
               "interactive": true,
               "props": {
                 "type": "concept",
-                "title": "归一化方法对比",
-                "data": null
-              }
-            },
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "归一化效果",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "concept",
-                "title": "归一化效果",
-                "data": null
+                "title": "归一化方法对比"
               }
             }
           ]

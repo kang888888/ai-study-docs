@@ -68,21 +68,7 @@
               "interactive": true,
               "props": {
                 "type": "concept",
-                "title": "正则化方法对比",
-                "data": null
-              }
-            },
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "正则化效果",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "concept",
-                "title": "正则化效果",
-                "data": null
+                "title": "正则化方法对比"
               }
             }
           ]

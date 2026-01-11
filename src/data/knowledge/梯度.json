@@ -66,34 +66,7 @@
               "interactive": true,
               "props": {
                 "type": "concept",
-                "title": "梯度示意图",
-                "data": null
-              }
-            },
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "梯度下降",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "concept",
-                "title": "梯度下降",
-                "data": null
-              }
-            },
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "梯度流动",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "concept",
-                "title": "梯度流动",
-                "data": null
+                "title": "梯度示意图"
               }
             }
           ]
