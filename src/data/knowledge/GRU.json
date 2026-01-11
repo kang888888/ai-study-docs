@@ -66,8 +66,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "GRU单元结构",
-                "data": null
+                "title": "GRU单元结构"
               }
             },
             {
@@ -79,8 +78,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "GRU序列展开",
-                "data": null
+                "title": "GRU序列展开"
               }
             },
             {
@@ -92,8 +90,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "GRU vs LSTM对比",
-                "data": null
+                "title": "GRU vs LSTM对比"
               }
             }
           ]

@@ -69,8 +69,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "HuggingFace Hub架构",
-                "data": null
+                "title": "HuggingFace Hub架构"
               }
             },
             {
@@ -82,8 +81,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "HuggingFace Hub流程",
-                "data": null
+                "title": "HuggingFace Hub流程"
               }
             }
           ]

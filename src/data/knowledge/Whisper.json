@@ -1,0 +1,89 @@
+{
+  "title": "Whisper",
+  "subtitle": "OpenAI多语言语音识别模型",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Whisper是OpenAI开发的多语言语音识别模型，能够将语音转换为文本。该模型在大规模多语言音频数据上训练，支持多种语言和口音，具有高准确率和鲁棒性。Whisper采用编码器-解码器架构，能够处理各种音频质量和环境。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "多语言支持：支持多种语言和口音",
+            "高准确率：在多种任务上表现优秀",
+            "鲁棒性强：对噪声和口音有良好的鲁棒性",
+            "端到端：端到端的语音识别系统",
+            "开源免费：开源模型，易于使用"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "语音识别、多语言模型、编码器-解码器、Transformer、音频处理"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Whisper架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Whisper架构"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "语音转文字、实时转录、多语言翻译、语音助手、音频分析"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "Whisper使用",
+          "language": "python",
+          "code": "import whisper\n\n# 加载模型\nmodel = whisper.load_model(\"base\")\n\n# 转录音频\nresult = model.transcribe(\"audio.mp3\")\nprint(result[\"text\"])"
+        }
+      ]
+    }
+  ]
+}

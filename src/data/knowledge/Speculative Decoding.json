@@ -4,6 +4,54 @@
   "content": [
     {
       "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "推测解码使用较小的草稿模型生成候选序列，主模型并行验证，通过并行计算加速生成过程。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "并行加速：草稿模型和主模型并行",
+            "质量保证：主模型验证保证输出质量",
+            "吞吐提升：可提升2-3倍生成速度",
+            "资源需求：需要额外的草稿模型",
+            "适用场景：适合批量生成任务"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "草稿模型、并行验证、接受/拒绝机制、吞吐优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "批量生成、高吞吐推理、并行生成、加速推理、服务优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📊 图解",
       "content": [
         {

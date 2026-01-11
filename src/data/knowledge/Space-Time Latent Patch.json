@@ -1,0 +1,89 @@
+{
+  "title": "Space-Time Latent Patch",
+  "subtitle": "时空潜在补丁，高效视频表示学习",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Space-Time Latent Patch是一种高效的视频表示学习方法，通过将视频分解为时空潜在补丁，在潜在空间中进行表示和学习。这种方法能够有效捕获视频的时空特征，同时减少计算复杂度，适用于大规模视频理解任务。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "时空补丁：将视频分解为时空补丁",
+            "潜在表示：在潜在空间中进行表示",
+            "高效学习：减少计算复杂度",
+            "特征捕获：有效捕获时空特征",
+            "可扩展性：适用于大规模视频数据"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "时空补丁、潜在空间、视频编码、特征提取、表示学习"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Space-Time Latent Patch架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Space-Time Latent Patch架构"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "视频理解、视频分类、动作识别、视频检索、视频分析"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "视频编码示例",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\n\n# Space-Time Latent Patch编码\nclass STLPEncoder(nn.Module):\n    def __init__(self):\n        super().__init__()\n        self.patch_embed = nn.Conv3d(3, 768, kernel_size=(2, 16, 16))\n    \n    def forward(self, video):\n        # 提取时空补丁\n        patches = self.patch_embed(video)\n        return patches"
+        }
+      ]
+    }
+  ]
+}

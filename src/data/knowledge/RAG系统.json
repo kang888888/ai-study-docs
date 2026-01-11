@@ -4,6 +4,54 @@
   "content": [
     {
       "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "RAG（Retrieval-Augmented Generation）系统通过检索相关文档并增强生成过程，提高模型的准确性和时效性。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "知识增强：检索外部知识增强生成",
+            "时效性：可获取最新信息",
+            "准确性：基于真实文档生成",
+            "可追溯：可追溯信息来源",
+            "广泛应用：问答、文档生成等场景"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "文档检索、向量搜索、上下文增强、生成融合、检索优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "问答系统、文档生成、知识增强、信息检索、企业应用"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "🏗️ 基础架构",
       "content": [
         {
@@ -42,8 +90,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "RAG系统架构",
-                "data": null
+                "title": "RAG系统架构"
               }
             },
             {
@@ -55,8 +102,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "RAG系统流程",
-                "data": null
+                "title": "RAG系统流程"
               }
             },
             {
@@ -68,8 +114,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "RAG系统对比",
-                "data": null
+                "title": "RAG系统对比"
               }
             }
           ]

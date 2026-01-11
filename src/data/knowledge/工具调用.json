@@ -1,0 +1,89 @@
+{
+  "title": "工具调用",
+  "subtitle": "Function Calling、Tool Use、API调用等工具使用技术",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "工具调用是让语言模型调用外部工具和API的技术，包括Function Calling、Tool Use等。工具调用能够扩展模型的能力，使其能够访问外部资源、执行操作、获取实时信息，是构建智能体的关键技术。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "外部工具：调用外部工具和API",
+            "能力扩展：扩展模型能力",
+            "实时信息：获取实时信息",
+            "操作执行：执行各种操作",
+            "灵活集成：灵活集成各种工具"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "工具调用、Function Calling、Tool Use、API调用、工具集成"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "工具调用流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "flow",
+                "title": "工具调用流程"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "智能体开发、工具集成、API调用、实时信息获取、任务执行"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "Function Calling示例",
+          "language": "python",
+          "code": "from openai import OpenAI\n\nclient = OpenAI()\n\n# 定义工具\ntools = [{\n    \"type\": \"function\",\n    \"function\": {\n        \"name\": \"get_weather\",\n        \"description\": \"Get weather information\",\n        \"parameters\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"location\": {\"type\": \"string\"}\n            }\n        }\n    }\n}]\n\n# 调用模型\nresponse = client.chat.completions.create(\n    model=\"gpt-4\",\n    messages=[{\"role\": \"user\", \"content\": \"What's the weather in Beijing?\"}],\n    tools=tools\n)"
+        }
+      ]
+    }
+  ]
+}

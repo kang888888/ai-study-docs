@@ -79,6 +79,9 @@ import LMEvaluationHarness from './LM Evaluation Harness.json';
 import EvaluationTools from './评估工具链.json';
 
 // 导入优化理论相关文档
+import GradientDescent from './梯度下降.json';
+import OptimizerTheory from './优化器原理.json';
+import LRScheduler from './学习率调度.json';
 import SAM from './SAM.json';
 import SecondOrderOptimization from './二阶优化算法.json';
 
@@ -7920,13 +7923,45 @@ export const Knowledge29 = {
 };
 
 // 知识文档映射对象
+
+// 添加缺失的导入
+import GradientAccumulation from './梯度累积与检查点.json';
+import MixedPrecisionTraining from './混合精度训练.json';
+import RLBasics from './强化学习基础.json';
+import LogicalReasoning from './逻辑推理优化.json';
+import KnowledgeGraphEnhancement from './知识图谱增强.json';
+import VectorDatabase from './向量数据库.json';
+import LangChainFramework from './LangChain框架.json';
+import HardwareCluster from './硬件与集群.json';
+import AICompiler from './AI编译器.json';
+import DiT from './DiT.json';
+import SpaceTimeLatentPatch from './Space-Time Latent Patch.json';
+import Whisper from './Whisper.json';
+import AudioLM from './AudioLM.json';
+import GPT4oOmni from './GPT-4o Omni.json';
+import FormatConversion from './格式转换.json';
+import QualityAssessment from './质量评估.json';
+import DataManagement from './数据管理.json';
+import DataParallel from './数据并行.json';
+import ModelParallel from './模型并行.json';
+import PipelineParallel from './流水线并行.json';
+import GraphOptimization from './图优化.json';
+import QuantizationInference from './量化推理.json';
+import ModelPruning from './模型剪枝.json';
+import AgentFramework from './智能体框架.json';
+import ToolCalling from './工具调用.json';
+import MultiAgentSystem from './多智能体系统.json';
+import TransformersHF from './Transformers.json';
+import AccelerateHF from './Accelerate.json';
+import PerformanceAnalysis from './性能分析.json';
+
 export const knowledgeMap = {
   '智能体': AI,
   'AI智能体': AI,
   '层次化记忆': HierarchicalMemory,
   '向量数据库缓存': VectorDBCache,
   '编译器': AI_1,
-  'Accelerate': README,
+  'Accelerate': AccelerateHF,
   'AWQ': AWQ,
   'Axolotl': Axolotl,
   'BERT': BERT,
@@ -7958,7 +7993,7 @@ export const knowledgeMap = {
   'LangChain': LangChain,
   'LLaMA': LLaMA,
   'LLMOps': LLMOps,
-  '性能分析': LLM,
+  '性能分析': PerformanceAnalysis,
   'LoRA': LoRA,
   'LoRA+': LoRAPlus,
   'DoRA': DoRA,
@@ -8017,9 +8052,9 @@ export const knowledgeMap = {
   'ZeRO优化器': ZeRO,
   '专家混合': Knowledge1,
   '分布式训练': Knowledge2,
-  '数据并行': DataParallelBasics,
-  '模型并行': ModelParallelBasics,
-  '流水线并行': PipelineParallelBasics,
+  '数据并行': DataParallel,
+  '模型并行': ModelParallel,
+  '流水线并行': PipelineParallel,
   'Context Parallelism': ContextParallelism,
   'Expert Parallelism': ExpertParallelism,
   '通信优化': CommunicationOptimization,
@@ -8043,10 +8078,10 @@ export const knowledgeMap = {
   'Evol-Instruct': EvolInstruct,
   '算术合成数据': MathSyntheticData,
   '代码合成数据': CodeSyntheticData,
-  '格式转换': Knowledge15,
+  '格式转换': FormatConversion,
   '数据清洗': Knowledge16,
-  '质量评估': Knowledge17,
-  '数据管理': Knowledge18,
+  '质量评估': QualityAssessment,
+  '数据管理': DataManagement,
   '梯度累积': Knowledge19,
   '模型合并': Knowledge20,
   '线性合并': LinearMerge,
@@ -8102,6 +8137,9 @@ export const knowledgeMap = {
   '交叉熵损失': CrossEntropy,
   'MSE损失': MSE,
   '余弦相似度': CosineSimilarity,
+  '梯度下降': GradientDescent,
+  '优化器原理': OptimizerTheory,
+  '学习率调度': LRScheduler,
   'SAM': SAM,
   '二阶优化算法': SecondOrderOptimization,
   'BitNet': BitNet,
@@ -8117,6 +8155,36 @@ export const knowledgeMap = {
   'MTP': MTP,
   'FP8混合精度训练': FP8MixedPrecision,
   '高质量合成数据流': HighQualitySynthetic,
+  'StreamingLLM': StreamingLLM,
+  'Activation Beacon': ActivationBeacon,
+  'Ring Attention': RingAttention,
+  'PII脱敏': PIIDesensitization,
+  '去偏见': Debias,
+  '多语言平衡': MultilingualBalance,
+  '梯度累积与检查点': GradientAccumulation,
+  '混合精度训练': MixedPrecisionTraining,
+  'Loss Spike处理': LossSpikeHandling,
+  '权重衰减诊断': WeightDecayDiagnosis,
+  'Epsilon预测': EpsilonPrediction,
+  '强化学习基础': RLBasics,
+  '逻辑推理优化': LogicalReasoning,
+  '提示词注入防御': PromptInjectionDefense,
+  '对抗性攻击测试': AdversarialAttackTesting,
+  '红色对抗': RedTeaming,
+  '机器版权保护': MachineCopyrightProtection,
+  '水印技术': Watermarking,
+  'Executive': Executive,
+  '知识图谱增强': KnowledgeGraphEnhancement,
+  '向量数据库': VectorDatabase,
+  '记忆刷新机制': MemoryRefresh,
+  'LangChain框架': LangChainFramework,
+  '硬件与集群': HardwareCluster,
+  'AI编译器': AICompiler,
+  '昇腾CANN': AscendCANN,
+  '海光DCU': HygonDCU,
+  '摩尔线程MUSA': MooreThreadsMUSA,
+  '算力网络调度': ComputeNetworkScheduling,
+  '异构计算并行': HeterogeneousComputingParallelism,
 };
 
 // 节点名称映射表（处理名称不一致的情况）
@@ -8127,7 +8195,19 @@ const nodeNameMap = {
   'RLAIF': 'RLAIF',
   'CoT': 'CoT',
   'Accelerate': 'Accelerate',
-  'Transformers': 'Pipeline使用',  // Transformers 节点映射到 Pipeline使用 知识文档
+  'Transformers': 'Pipeline使用',
+  'DiT': DiT,
+  'Space-Time Latent Patch': SpaceTimeLatentPatch,
+  'Whisper': Whisper,
+  'AudioLM': AudioLM,
+  'GPT-4o Omni': GPT4oOmni,
+  '图优化': GraphOptimization,
+  '量化推理': QuantizationInference,
+  '模型剪枝': ModelPruning,
+  '智能体框架': AgentFramework,
+  '工具调用': ToolCalling,
+  '多智能体系统': MultiAgentSystem,
+  'Transformers': TransformersHF,  // Transformers 节点映射到 Pipeline使用 知识文档
 };
 
 // 获取实际的知识文档键名

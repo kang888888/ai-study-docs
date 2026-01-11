@@ -4,6 +4,51 @@
   "content": [
     {
       "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "AI反馈强化学习（Reinforcement Learning from AI Feedback）使用AI模型生成反馈，替代人类反馈。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "CAI（Constitutional AI）：基于宪法的强化学习",
+            "RBR（Rule-Based Reward）：基于规则的奖励"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "AI反馈、奖励模型、策略优化、对齐训练"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "AI反馈对齐、模型对齐、自动化训练"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📊 架构图解",
       "content": [
         {
@@ -18,8 +63,7 @@
               "interactive": true,
               "props": {
                 "type": "flow",
-                "title": "RLAIF流程",
-                "data": null
+                "title": "RLAIF流程"
               }
             },
             {
@@ -31,23 +75,9 @@
               "interactive": true,
               "props": {
                 "type": "flow",
-                "title": "RLAIF对比",
-                "data": null
+                "title": "RLAIF对比"
               }
             }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "section",
-      "title": "🌟 核心特点",
-      "content": [
-        {
-          "type": "features",
-          "items": [
-            "CAI（Constitutional AI）：基于宪法的强化学习",
-            "RBR（Rule-Based Reward）：基于规则的奖励"
           ]
         }
       ]

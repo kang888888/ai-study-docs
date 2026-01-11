@@ -66,8 +66,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "VAE架构图",
-                "data": null
+                "title": "VAE架构图"
               }
             },
             {
@@ -79,8 +78,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "VAE潜在空间",
-                "data": null
+                "title": "VAE潜在空间"
               }
             },
             {
@@ -92,8 +90,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "VAE训练过程",
-                "data": null
+                "title": "VAE训练过程"
               }
             }
           ]

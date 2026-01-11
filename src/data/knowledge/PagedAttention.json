@@ -4,6 +4,54 @@
   "content": [
     {
       "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "PagedAttention是vLLM提出的注意力机制优化技术，通过分页管理KV Cache，实现高效的内存管理和并行采样。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "内存高效：分页管理减少内存碎片",
+            "并行采样：支持多个序列并行生成",
+            "动态分配：按需分配内存页面",
+            "零拷贝：避免不必要的数据复制",
+            "高吞吐量：显著提高服务吞吐量"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "分页管理、内存分配、并行采样、零拷贝、动态批处理"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "LLM推理服务、批量生成、并行采样、高吞吐服务、vLLM框架"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📊 图解",
       "content": [
         {

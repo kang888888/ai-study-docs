@@ -1,0 +1,89 @@
+{
+  "title": "性能分析",
+  "subtitle": "PyTorch Profiler、Nsight、优化路线与案例",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "性能分析是对模型训练和推理性能进行分析和优化的过程，包括使用PyTorch Profiler、Nsight等工具进行性能分析，识别性能瓶颈，制定优化路线。性能分析是优化模型性能的重要环节，能够帮助提升训练和推理效率。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "性能分析：分析训练和推理性能",
+            "工具支持：PyTorch Profiler、Nsight等",
+            "瓶颈识别：识别性能瓶颈",
+            "优化路线：制定优化路线",
+            "案例学习：学习优化案例"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "性能分析、PyTorch Profiler、Nsight、性能优化、瓶颈识别"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "性能分析流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "性能分析流程"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "性能优化、训练加速、推理优化、系统优化、性能调优"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "PyTorch Profiler",
+          "language": "python",
+          "code": "import torch\nfrom torch.profiler import profile, record_function, ProfilerActivity\n\n# 使用Profiler\nwith profile(\n    activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA],\n    record_shapes=True\n) as prof:\n    with record_function(\"model_inference\"):\n        output = model(input)\n\n# 查看结果\nprint(prof.key_averages().table(sort_by=\"cuda_time_total\"))"
+        }
+      ]
+    }
+  ]
+}

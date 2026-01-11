@@ -4,6 +4,54 @@
   "content": [
     {
       "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "梯度累积通过多次前向传播累积梯度后再更新参数，允许使用更大的有效批次大小；检查点技术通过在前向传播时丢弃中间激活值，在反向传播时重新计算，大幅减少内存占用。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "内存优化：检查点技术可减少50-80%的激活内存",
+            "批次扩展：梯度累积允许使用更大的有效批次大小",
+            "计算权衡：检查点以计算时间换取内存空间",
+            "灵活配置：可根据硬件资源调整累积步数和检查点频率",
+            "训练稳定：不影响最终模型性能"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "梯度累积、激活检查点、梯度检查点、内存优化、批次扩展"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "大模型训练、内存优化、批次扩展、长序列训练、资源受限环境"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📊 架构图解",
       "content": [
         {
@@ -18,8 +66,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "梯度累积原理",
-                "data": null
+                "title": "梯度累积原理"
               }
             },
             {
@@ -31,8 +78,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "梯度检查点原理",
-                "data": null
+                "title": "梯度检查点原理"
               }
             }
           ]

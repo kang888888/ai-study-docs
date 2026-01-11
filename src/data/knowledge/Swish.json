@@ -16,6 +16,22 @@
     },
     {
       "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "自门控机制：输入作为门控信号",
+            "平滑激活：处处可导，无死神经元问题",
+            "性能优异：在多个任务上优于ReLU",
+            "计算开销：涉及Sigmoid运算，计算相对较慢",
+            "可调参数：Swish-β变体可调整门控强度"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📐 数学表达",
       "content": [
         {
@@ -108,6 +124,16 @@
               }
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "自门控激活、Sigmoid门控、Swish-β变体、平滑非线性"
         }
       ]
     },

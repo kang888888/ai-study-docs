@@ -4,6 +4,54 @@
   "content": [
     {
       "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "参数高效微调（Parameter-Efficient Fine-Tuning）是一类只训练少量参数的微调方法，包括LoRA、Adapter等。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "参数高效：只训练少量参数",
+            "方法多样：LoRA、Adapter等多种方法",
+            "灵活选择：可根据需求选择方法",
+            "成本降低：减少训练和存储成本",
+            "生态丰富：多种实现和工具"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "参数高效、LoRA、Adapter、Prefix Tuning、Prompt Tuning"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "参数高效微调、多方法选择、资源优化、快速适配"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📊 图解",
       "content": [
         {

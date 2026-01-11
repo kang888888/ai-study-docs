@@ -4,6 +4,51 @@
   "content": [
     {
       "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "硬件与集群是大模型训练和推理的基础设施，包括GPU集群、网络配置、存储系统等。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "生态：CUDA、cuDNN、TensorRT、NCCL、Megatron-LM、DeepSpeed、vLLM/Triton。",
+            "调优：混合精度、Tensor Core、计算/通信重叠、NVLink/NVSwitch。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "GPU集群、网络配置、存储系统、调度系统"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "大规模训练、分布式训练、高性能计算、基础设施"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📊 架构图解",
       "content": [
         {
@@ -18,8 +63,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "硬件与集群架构",
-                "data": null
+                "title": "硬件与集群架构"
               }
             },
             {
@@ -31,23 +75,9 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "硬件与集群拓扑",
-                "data": null
+                "title": "硬件与集群拓扑"
               }
             }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "section",
-      "title": "🌟 核心特点",
-      "content": [
-        {
-          "type": "features",
-          "items": [
-            "生态：CUDA、cuDNN、TensorRT、NCCL、Megatron-LM、DeepSpeed、vLLM/Triton。",
-            "调优：混合精度、Tensor Core、计算/通信重叠、NVLink/NVSwitch。"
           ]
         }
       ]

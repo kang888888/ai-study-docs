@@ -31,6 +31,16 @@
     },
     {
       "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "注意力优化、内存管理、KV Cache、推理加速"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "⚙️ 技术架构",
       "content": [
         {
@@ -93,8 +103,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "Yaad架构图",
-                "data": null
+                "title": "Yaad架构图"
               }
             },
             {
@@ -106,8 +115,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "Yaad组件详解",
-                "data": null
+                "title": "Yaad组件详解"
               }
             }
           ]

@@ -1,0 +1,89 @@
+{
+  "title": "数据并行",
+  "subtitle": "AllReduce、梯度同步、数据分片原理与实践",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "数据并行是将数据分片到多个设备上，每个设备处理不同的数据分片，然后同步梯度的并行训练方法。数据并行是最常用的并行训练方法，通过AllReduce等通信原语实现梯度同步，适用于模型参数可以完全复制的场景。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "数据分片：将数据分片到多个设备",
+            "梯度同步：使用AllReduce同步梯度",
+            "简单高效：实现简单，通信效率高",
+            "广泛适用：适用于大多数训练场景",
+            "易于扩展：易于扩展到更多设备"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "数据并行、AllReduce、梯度同步、数据分片、分布式训练"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "ParallelTrainingDiagram",
+              "caption": "数据并行原理",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "data",
+                "title": "数据并行原理"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "大规模训练、多GPU训练、分布式训练、训练加速、模型训练"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "PyTorch数据并行",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.distributed as dist\nfrom torch.nn.parallel import DistributedDataParallel as DDP\n\n# 初始化分布式环境\ndist.init_process_group(backend='nccl')\n\n# 创建模型\nmodel = nn.Linear(10, 1)\nmodel = model.cuda()\nmodel = DDP(model)\n\n# 训练循环\nfor epoch in range(num_epochs):\n    for batch in dataloader:\n        outputs = model(batch)\n        loss = criterion(outputs, targets)\n        loss.backward()\n        optimizer.step()"
+        }
+      ]
+    }
+  ]
+}

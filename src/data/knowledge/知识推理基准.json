@@ -4,6 +4,54 @@
   "content": [
     {
       "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "知识推理基准是评估模型知识推理能力的标准数据集，如CommonsenseQA、HellaSwag等。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "推理能力：评估推理能力",
+            "知识应用：评估知识应用",
+            "任务多样：涵盖多种推理任务",
+            "持续发展：不断改进",
+            "权威性：权威的评估基准"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "CommonsenseQA、HellaSwag、推理任务、评估数据集"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "推理能力评估、知识应用评估、模型测试"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📊 架构图解",
       "content": [
         {
@@ -18,8 +66,7 @@
               "interactive": true,
               "props": {
                 "type": "comparison",
-                "title": "知识推理基准分类",
-                "data": null
+                "title": "知识推理基准分类"
               }
             },
             {
@@ -31,8 +78,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "MMLU基准结构",
-                "data": null
+                "title": "MMLU基准结构"
               }
             }
           ]

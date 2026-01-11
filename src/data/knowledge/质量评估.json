@@ -1,0 +1,89 @@
+{
+  "title": "质量评估",
+  "subtitle": "准确性、相关性、多样性与一致性度量",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "质量评估是对数据集质量进行度量的过程，包括准确性、相关性、多样性与一致性等维度。质量评估是数据工程中的重要环节，能够帮助识别数据问题，指导数据清洗和优化，保证数据质量。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "多维度评估：评估准确性、相关性、多样性等",
+            "量化指标：使用量化指标度量质量",
+            "自动化评估：支持自动化质量评估",
+            "问题识别：识别数据质量问题",
+            "质量报告：生成详细的质量报告"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "数据质量、准确性评估、相关性度量、多样性分析、一致性检查"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "质量评估流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "质量评估流程"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "数据清洗、数据优化、质量监控、数据验证、数据集评估"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "数据质量评估",
+          "language": "python",
+          "code": "from datasets import load_dataset\nfrom evaluate import load\n\n# 加载数据集\ndataset = load_dataset(\"dataset_name\")\n\n# 评估质量\naccuracy = evaluate_accuracy(dataset)\ndiversity = evaluate_diversity(dataset)\nconsistency = evaluate_consistency(dataset)"
+        }
+      ]
+    }
+  ]
+}

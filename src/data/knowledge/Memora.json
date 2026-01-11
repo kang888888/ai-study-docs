@@ -31,6 +31,16 @@
     },
     {
       "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "记忆管理、KV Cache优化、长上下文支持"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "⚙️ 技术架构",
       "content": [
         {
@@ -65,8 +75,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "Memora架构图",
-                "data": null
+                "title": "Memora架构图"
               }
             },
             {
@@ -78,8 +87,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "Memora组件详解",
-                "data": null
+                "title": "Memora组件详解"
               }
             }
           ]

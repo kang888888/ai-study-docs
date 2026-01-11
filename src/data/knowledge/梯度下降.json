@@ -1,0 +1,146 @@
+{
+  "title": "梯度下降 (Gradient Descent)",
+  "subtitle": "通过沿着负梯度方向更新参数来最小化损失函数的基础优化算法",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "梯度下降是优化神经网络参数的基础算法。它通过计算损失函数对参数的梯度，沿着负梯度方向（损失下降最快的方向）更新参数，逐步逼近最优解。根据每次更新使用的样本数量，分为批量梯度下降（BGD）、随机梯度下降（SGD）和小批量梯度下降（Mini-batch GD）。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "批量梯度下降（BGD）：使用全部训练样本，收敛稳定但计算慢",
+            "随机梯度下降（SGD）：每次使用单个样本，计算快但波动大",
+            "小批量梯度下降（Mini-batch GD）：平衡稳定性和效率，最常用",
+            "学习率选择：学习率过大可能发散，过小收敛慢",
+            "收敛性：在凸函数上保证收敛到全局最优，非凸函数可能陷入局部最优"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "梯度计算、学习率调度、批量大小选择、收敛判断、学习率衰减"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "神经网络训练、线性回归、逻辑回归、所有基于梯度的优化问题"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "梯度下降示意图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "梯度下降"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "梯度下降更新规则",
+          "formulas": [
+            {
+              "text": "参数更新公式："
+            },
+            {
+              "display": "\\theta_{t+1} = \\theta_t - \\eta \\nabla_\\theta L(\\theta_t)"
+            },
+            {
+              "text": "其中 $\\eta$ 是学习率，$\\nabla_\\theta L$ 是损失函数对参数的梯度"
+            },
+            {
+              "text": "批量梯度下降：使用全部样本计算梯度"
+            },
+            {
+              "display": "\\nabla_\\theta L = \\frac{1}{m} \\sum_{i=1}^{m} \\nabla_\\theta L_i(\\theta)"
+            },
+            {
+              "text": "随机梯度下降：每次使用单个样本"
+            },
+            {
+              "display": "\\nabla_\\theta L = \\nabla_\\theta L_i(\\theta), \\quad i \\sim \\text{Uniform}(1, m)"
+            },
+            {
+              "text": "小批量梯度下降：使用小批量样本"
+            },
+            {
+              "display": "\\nabla_\\theta L = \\frac{1}{b} \\sum_{i \\in B} \\nabla_\\theta L_i(\\theta)"
+            },
+            {
+              "text": "其中 $b$ 是批量大小，$B$ 是当前批量"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "学习率的影响",
+          "formulas": [
+            {
+              "text": "学习率过大：可能导致参数更新过大，损失函数发散"
+            },
+            {
+              "text": "学习率过小：收敛速度慢，需要更多迭代次数"
+            },
+            {
+              "text": "最优学习率：需要根据具体问题调整，通常通过实验确定"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "梯度下降实现",
+          "language": "python",
+          "code": "import numpy as np\nimport matplotlib.pyplot as plt\n\n# 1. 批量梯度下降（BGD）\ndef batch_gradient_descent(X, y, learning_rate=0.01, epochs=1000):\n    \"\"\"批量梯度下降\"\"\"\n    m = len(y)\n    theta = np.zeros(X.shape[1])\n    cost_history = []\n    \n    for epoch in range(epochs):\n        # 计算梯度（使用全部样本）\n        predictions = X.dot(theta)\n        error = predictions - y\n        gradient = (1/m) * X.T.dot(error)\n        \n        # 更新参数\n        theta = theta - learning_rate * gradient\n        \n        # 记录损失\n        cost = (1/(2*m)) * np.sum(error**2)\n        cost_history.append(cost)\n        \n        if epoch % 100 == 0:\n            print(f\"Epoch {epoch}, Cost: {cost:.4f}\")\n    \n    return theta, cost_history\n\n# 2. 随机梯度下降（SGD）\ndef stochastic_gradient_descent(X, y, learning_rate=0.01, epochs=100):\n    \"\"\"随机梯度下降\"\"\"\n    m = len(y)\n    theta = np.zeros(X.shape[1])\n    cost_history = []\n    \n    for epoch in range(epochs):\n        epoch_cost = 0\n        \n        # 随机打乱数据\n        indices = np.random.permutation(m)\n        \n        for i in indices:\n            # 使用单个样本\n            x_i = X[i:i+1]\n            y_i = y[i]\n            \n            # 计算梯度\n            prediction = x_i.dot(theta)\n            error = prediction - y_i\n            gradient = x_i.T.dot(error)\n            \n            # 更新参数\n            theta = theta - learning_rate * gradient\n            \n            # 记录损失\n            epoch_cost += error**2 / 2\n        \n        cost_history.append(epoch_cost / m)\n        \n        if epoch % 10 == 0:\n            print(f\"Epoch {epoch}, Cost: {cost_history[-1]:.4f}\")\n    \n    return theta, cost_history\n\n# 3. 小批量梯度下降（Mini-batch GD）\ndef mini_batch_gradient_descent(X, y, learning_rate=0.01, batch_size=32, epochs=100):\n    \"\"\"小批量梯度下降\"\"\"\n    m = len(y)\n    theta = np.zeros(X.shape[1])\n    cost_history = []\n    \n    for epoch in range(epochs):\n        epoch_cost = 0\n        \n        # 随机打乱数据\n        indices = np.random.permutation(m)\n        \n        # 分批处理\n        for i in range(0, m, batch_size):\n            batch_indices = indices[i:i+batch_size]\n            X_batch = X[batch_indices]\n            y_batch = y[batch_indices]\n            \n            # 计算梯度\n            predictions = X_batch.dot(theta)\n            error = predictions - y_batch\n            gradient = (1/len(batch_indices)) * X_batch.T.dot(error)\n            \n            # 更新参数\n            theta = theta - learning_rate * gradient\n            \n            # 记录损失\n            epoch_cost += np.sum(error**2) / (2 * len(batch_indices))\n        \n        cost_history.append(epoch_cost / (m // batch_size))\n        \n        if epoch % 10 == 0:\n            print(f\"Epoch {epoch}, Cost: {cost_history[-1]:.4f}\")\n    \n    return theta, cost_history\n\n# 4. 使用示例\n# 生成示例数据\nnp.random.seed(42)\nm = 100\nX = np.random.randn(m, 2)\nX = np.column_stack([np.ones(m), X])  # 添加偏置项\ntrue_theta = np.array([2, 3, 4])\ny = X.dot(true_theta) + np.random.randn(m) * 0.1\n\n# 批量梯度下降\nprint(\"=== 批量梯度下降 ===\")\ntheta_bgd, cost_bgd = batch_gradient_descent(X, y, learning_rate=0.01, epochs=1000)\nprint(f\"学习到的参数: {theta_bgd}\")\nprint(f\"真实参数: {true_theta}\")\n\n# 随机梯度下降\nprint(\"\\n=== 随机梯度下降 ===\")\ntheta_sgd, cost_sgd = stochastic_gradient_descent(X, y, learning_rate=0.01, epochs=100)\nprint(f\"学习到的参数: {theta_sgd}\")\n\n# 小批量梯度下降\nprint(\"\\n=== 小批量梯度下降 ===\")\ntheta_mbgd, cost_mbgd = mini_batch_gradient_descent(X, y, learning_rate=0.01, batch_size=32, epochs=100)\nprint(f\"学习到的参数: {theta_mbgd}\")\n\n# 5. 可视化收敛过程\nplt.figure(figsize=(12, 4))\n\nplt.subplot(1, 3, 1)\nplt.plot(cost_bgd)\nplt.title('批量梯度下降')\nplt.xlabel('迭代次数')\nplt.ylabel('损失')\n\nplt.subplot(1, 3, 2)\nplt.plot(cost_sgd)\nplt.title('随机梯度下降')\nplt.xlabel('迭代次数')\nplt.ylabel('损失')\n\nplt.subplot(1, 3, 3)\nplt.plot(cost_mbgd)\nplt.title('小批量梯度下降')\nplt.xlabel('迭代次数')\nplt.ylabel('损失')\n\nplt.tight_layout()\nplt.savefig('gradient_descent_comparison.png')\nprint(\"\\n收敛曲线已保存\")\n\n# 6. PyTorch实现\nimport torch\nimport torch.nn as nn\nimport torch.optim as optim\n\n# 定义模型\nmodel = nn.Linear(10, 1)\ncriterion = nn.MSELoss()\n\n# 使用SGD优化器\noptimizer = optim.SGD(model.parameters(), lr=0.01)\n\n# 模拟数据\nX_torch = torch.randn(100, 10)\ny_torch = torch.randn(100, 1)\n\n# 训练循环\nfor epoch in range(100):\n    # 前向传播\n    outputs = model(X_torch)\n    loss = criterion(outputs, y_torch)\n    \n    # 反向传播\n    optimizer.zero_grad()\n    loss.backward()\n    optimizer.step()\n    \n    if (epoch + 1) % 20 == 0:\n        print(f\"Epoch {epoch+1}, Loss: {loss.item():.4f}\")"
+        }
+      ]
+    }
+  ]
+}

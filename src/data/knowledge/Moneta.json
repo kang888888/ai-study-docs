@@ -31,6 +31,16 @@
     },
     {
       "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "高效检索、快速更新、关联记忆、实时推理、KV Cache优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "⚙️ 技术架构",
       "content": [
         {
@@ -65,8 +75,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "Moneta架构图",
-                "data": null
+                "title": "Moneta架构图"
               }
             },
             {
@@ -78,8 +87,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "Moneta组件详解",
-                "data": null
+                "title": "Moneta组件详解"
               }
             }
           ]

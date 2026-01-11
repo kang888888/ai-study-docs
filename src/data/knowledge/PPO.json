@@ -4,6 +4,54 @@
   "content": [
     {
       "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "近端策略优化（Proximal Policy Optimization）是强化学习算法，通过限制策略更新幅度保证训练稳定。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "训练稳定：限制更新幅度保证稳定",
+            "易于实现：算法简单易实现",
+            "性能优异：在多种任务上表现优秀",
+            "广泛采用：RLHF标准算法",
+            "参数可调：可调整更新幅度"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "近端策略优化、策略梯度、重要性采样、裁剪"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "RLHF训练、策略优化、模型对齐、强化学习"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📐 数学原理",
       "content": [
         {
@@ -61,8 +109,7 @@
               "interactive": true,
               "props": {
                 "type": "flow",
-                "title": "PPO流程",
-                "data": null
+                "title": "PPO流程"
               }
             },
             {
@@ -74,8 +121,7 @@
               "interactive": true,
               "props": {
                 "type": "flow",
-                "title": "PPO对比",
-                "data": null
+                "title": "PPO对比"
               }
             },
             {
@@ -87,8 +133,7 @@
               "interactive": true,
               "props": {
                 "type": "flow",
-                "title": "PPO效果",
-                "data": null
+                "title": "PPO效果"
               }
             }
           ]

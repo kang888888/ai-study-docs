@@ -30,8 +30,7 @@
               "interactive": true,
               "props": {
                 "type": "flow",
-                "title": "MergeKit工作流程",
-                "data": null
+                "title": "MergeKit工作流程"
               }
             },
             {
@@ -43,8 +42,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "支持的合并策略",
-                "data": null
+                "title": "支持的合并策略"
               }
             },
             {
@@ -56,8 +54,7 @@
               "interactive": true,
               "props": {
                 "type": "comparison",
-                "title": "工具特性",
-                "data": null
+                "title": "工具特性"
               }
             }
           ]
@@ -145,6 +142,16 @@
           "title": "分层合并配置",
           "language": "python",
           "code": "from mergekit import MergeKit\n\nmerger = MergeKit()\n\n# 配置分层合并\nmerge_config = {\n    \"models\": [\n        {\"model\": \"model1-path\", \"weight\": 0.5},\n        {\"model\": \"model2-path\", \"weight\": 0.5}\n    ],\n    \"merge_method\": \"layer_wise\",\n    \"layer_strategy\": {\n        \"embeddings\": \"weighted_average\",\n        \"attention\": \"max\",\n        \"feedforward\": \"weighted_average\",\n        \"output\": \"weighted_average\"\n    },\n    \"output_path\": \"./merged_model\"\n}\n\n# 执行合并\nmerged_model = merger.merge(merge_config)"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "模型合并、多种策略、格式支持、配置管理、批量处理"
         }
       ]
     },

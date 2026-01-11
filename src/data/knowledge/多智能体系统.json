@@ -1,0 +1,89 @@
+{
+  "title": "多智能体系统",
+  "subtitle": "多智能体协作、通信、协调与竞争机制",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "多智能体系统是由多个智能体组成的系统，智能体之间通过协作、通信、协调与竞争机制完成任务。多智能体系统能够处理复杂的任务，通过分工协作提高效率和能力，是构建复杂AI系统的重要方法。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "多智能体：多个智能体协作",
+            "通信机制：智能体间通信",
+            "协调机制：任务协调和分配",
+            "竞争机制：智能体间竞争",
+            "复杂任务：处理复杂任务"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "多智能体系统、协作机制、通信协议、任务协调、竞争机制"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "多智能体系统架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "多智能体系统架构"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "复杂任务处理、智能协作、任务自动化、多智能体应用、系统构建"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "多智能体协作示例",
+          "language": "python",
+          "code": "from crewai import Agent, Task, Crew\n\n# 创建智能体\nresearcher = Agent(\n    role='Researcher',\n    goal='Research information',\n    backstory='Expert researcher'\n)\n\nwriter = Agent(\n    role='Writer',\n    goal='Write content',\n    backstory='Expert writer'\n)\n\n# 创建任务\ntask1 = Task(description='Research topic', agent=researcher)\ntask2 = Task(description='Write article', agent=writer)\n\n# 创建团队\ncrew = Crew(agents=[researcher, writer], tasks=[task1, task2])\nresult = crew.kickoff()"
+        }
+      ]
+    }
+  ]
+}

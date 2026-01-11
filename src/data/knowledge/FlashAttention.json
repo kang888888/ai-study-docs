@@ -4,6 +4,54 @@
   "content": [
     {
       "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "FlashAttention是优化的注意力计算算法，通过分块计算和在线softmax，在保持数值精度的同时大幅减少内存占用和计算时间。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "内存优化：分块计算减少内存占用",
+            "数值稳定：在线softmax保证精度",
+            "计算高效：减少内存访问次数",
+            "长序列支持：可处理更长序列",
+            "性能提升：训练和推理速度提升2-4倍"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "分块计算、在线softmax、内存优化、计算优化、长序列支持"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "长序列训练、大模型训练、注意力优化、内存受限训练、高性能推理"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📊 图解",
       "content": [
         {

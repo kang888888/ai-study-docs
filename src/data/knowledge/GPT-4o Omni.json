@@ -1,0 +1,89 @@
+{
+  "title": "GPT-4o Omni",
+  "subtitle": "GPT-4 Omni多模态机制，统一处理文本、图像、音频",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "GPT-4o Omni是GPT-4的多模态版本，能够统一处理文本、图像、音频等多种模态。该模型通过统一的架构和训练方法，实现了跨模态的理解和生成能力，能够处理复杂的多模态任务。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "多模态统一：统一处理文本、图像、音频",
+            "跨模态理解：理解不同模态之间的关系",
+            "统一架构：使用统一的模型架构",
+            "强大能力：在多种任务上表现优秀",
+            "灵活应用：适用于多种应用场景"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "多模态模型、统一架构、跨模态理解、多模态生成、模态融合"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "GPT-4o Omni架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "GPT-4o Omni架构"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "多模态对话、图像理解、音频理解、跨模态检索、多模态生成"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "多模态调用",
+          "language": "python",
+          "code": "from openai import OpenAI\n\nclient = OpenAI()\n\n# 多模态调用\nresponse = client.chat.completions.create(\n    model=\"gpt-4o\",\n    messages=[\n        {\"role\": \"user\", \"content\": [\n            {\"type\": \"text\", \"text\": \"What's in this image?\"},\n            {\"type\": \"image_url\", \"image_url\": {\"url\": \"image.jpg\"}}\n        ]}\n    ]\n)"
+        }
+      ]
+    }
+  ]
+}

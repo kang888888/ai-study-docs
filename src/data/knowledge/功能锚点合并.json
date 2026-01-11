@@ -30,8 +30,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "功能锚点识别",
-                "data": null
+                "title": "功能锚点识别"
               }
             },
             {
@@ -43,8 +42,7 @@
               "interactive": true,
               "props": {
                 "type": "flow",
-                "title": "功能空间映射",
-                "data": null
+                "title": "功能空间映射"
               }
             },
             {
@@ -56,8 +54,7 @@
               "interactive": true,
               "props": {
                 "type": "comparison",
-                "title": "基于锚点的合并",
-                "data": null
+                "title": "基于锚点的合并"
               }
             }
           ]
@@ -144,6 +141,16 @@
           "title": "基于功能锚点的合并",
           "language": "python",
           "code": "import torch\nfrom transformers import AutoModelForCausalLM\n\n# 加载基础模型和任务模型\nbase_model = AutoModelForCausalLM.from_pretrained(\"base-model-path\")\ntask_model = AutoModelForCausalLM.from_pretrained(\"task-model-path\")\n\n# 计算功能变化\nfunctional_deltas = {}\nfor key in base_model.state_dict():\n    if key in task_model.state_dict():\n        functional_deltas[key] = task_model.state_dict()[key] - base_model.state_dict()[key]\n\n# 基于功能锚点相似度进行合并\ndef compute_similarity(x, anchor):\n    # 计算输入与锚点的相似度\n    return F.cosine_similarity(x, anchor, dim=-1)\n\n# 合并参数（简化示例）\nmerged_state_dict = base_model.state_dict().copy()\nalpha = 0.5  # 合并权重\n\nfor key in merged_state_dict:\n    if key in functional_deltas:\n        # 基于功能锚点相似度调整合并权重\n        similarity = compute_similarity(\n            base_model.state_dict()[key],\n            functional_deltas[key]\n        )\n        adjusted_alpha = alpha * similarity\n        merged_state_dict[key] += adjusted_alpha * functional_deltas[key]\n\n# 创建合并后的模型\nmerged_model = AutoModelForCausalLM.from_pretrained(\"base-model-path\")\nmerged_model.load_state_dict(merged_state_dict)\nmerged_model.save_pretrained(\"./merged_model\")"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "功能锚点、锚点选择、功能对齐、合并策略、性能优化"
         }
       ]
     },

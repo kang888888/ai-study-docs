@@ -4,37 +4,12 @@
   "content": [
     {
       "type": "section",
-      "title": "📊 架构图解",
+      "title": "📖 核心概念",
       "content": [
         {
-          "type": "diagram-gallery",
-          "images": [
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "去审查化方法",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "architecture",
-                "title": "去审查化方法",
-                "data": null
-              }
-            },
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "去审查化流程",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "architecture",
-                "title": "去审查化流程",
-                "data": null
-              }
-            }
+          "type": "desc-box",
+          "content": [
+            "去审查化是移除模型中的安全限制和审查机制，使模型能够生成更自由的内容。"
           ]
         }
       ]
@@ -50,6 +25,61 @@
             "考虑伦理影响",
             "保留基本安全机制",
             "定期进行安全测试"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "安全移除、审查解除、模型修改"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "内容生成、研究用途、模型修改"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "去审查化方法",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "去审查化方法"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "去审查化流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "去审查化流程"
+              }
+            }
           ]
         }
       ]

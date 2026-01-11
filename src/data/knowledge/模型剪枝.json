@@ -1,0 +1,89 @@
+{
+  "title": "模型剪枝",
+  "subtitle": "结构化/非结构化剪枝、稀疏化",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "模型剪枝是通过移除不重要的参数或连接来减少模型大小的技术，包括结构化剪枝和非结构化剪枝。模型剪枝能够减少模型参数和计算量，提高推理速度，同时保持模型性能。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "参数移除：移除不重要的参数",
+            "结构化剪枝：移除整个结构",
+            "非结构化剪枝：移除单个参数",
+            "模型压缩：减少模型大小",
+            "性能保持：保持模型性能"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "模型剪枝、结构化剪枝、非结构化剪枝、稀疏化、模型压缩"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "模型剪枝流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "模型剪枝流程"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "模型压缩、推理优化、边缘推理、模型部署、资源受限场景"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "模型剪枝示例",
+          "language": "python",
+          "code": "import torch\nimport torch.nn.utils.prune as prune\n\n# 创建模型\nmodel = nn.Linear(10, 1)\n\n# 剪枝\nprune.l1_unstructured(model, name=\"weight\", amount=0.2)\n\n# 永久移除剪枝\nprune.remove(model, \"weight\")"
+        }
+      ]
+    }
+  ]
+}

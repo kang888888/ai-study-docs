@@ -1,0 +1,89 @@
+{
+  "title": "Accelerate",
+  "subtitle": "分布式训练、混合精度、设备管理",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Accelerate是HuggingFace提供的分布式训练框架，支持分布式训练、混合精度、设备管理等功能。Accelerate简化了分布式训练的配置和使用，支持多种训练策略，是进行大规模训练的重要工具。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "分布式训练：支持分布式训练",
+            "混合精度：支持混合精度训练",
+            "设备管理：自动设备管理",
+            "易于使用：简单的配置接口",
+            "灵活配置：灵活的配置选项"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "Accelerate、分布式训练、混合精度、设备管理、训练框架"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Accelerate架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Accelerate架构"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "大规模训练、分布式训练、训练加速、多GPU训练、模型训练"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "Accelerate使用",
+          "language": "python",
+          "code": "from accelerate import Accelerator\n\n# 初始化Accelerator\naccelerator = Accelerator()\n\n# 准备模型和数据\nmodel, optimizer, dataloader = accelerator.prepare(\n    model, optimizer, dataloader\n)\n\n# 训练循环\nfor epoch in range(num_epochs):\n    for batch in dataloader:\n        outputs = model(batch)\n        loss = criterion(outputs, targets)\n        accelerator.backward(loss)\n        optimizer.step()"
+        }
+      ]
+    }
+  ]
+}

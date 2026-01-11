@@ -66,8 +66,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "ChatGLM整体架构图",
-                "data": null
+                "title": "ChatGLM整体架构图"
               }
             },
             {
@@ -79,8 +78,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "ChatGLM关键组件详解（GLM架构、双向注意力）",
-                "data": null
+                "title": "ChatGLM关键组件详解（GLM架构、双向注意力）"
               }
             },
             {
@@ -92,8 +90,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "ChatGLM与其他模型对比",
-                "data": null
+                "title": "ChatGLM与其他模型对比"
               }
             }
           ]

@@ -52,6 +52,29 @@
     },
     {
       "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "SAM优化原理",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "SAM优化原理"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📐 数学原理",
       "content": [
         {
@@ -59,15 +82,36 @@
           "title": "SAM优化目标",
           "formulas": [
             {
-              "text": "SAM优化目标：min_w max_{||ε||≤ρ} L(w + ε)"
+              "text": "SAM优化目标："
             },
             {
-              "text": "其中L是损失函数，ρ是扰动半径，ε是参数扰动"
+              "display": "\\min_w \\max_{\\|\\epsilon\\| \\leq \\rho} L(w + \\epsilon)"
+            },
+            {
+              "text": "其中 $L$ 是损失函数，$\\rho$ 是扰动半径，$\\epsilon$ 是参数扰动"
             },
             {
               "text": "通过最大化扰动后的损失，找到平坦的最优解"
+            },
+            {
+              "text": "扰动方向近似为："
+            },
+            {
+              "display": "\\epsilon^*(w) \\approx \\rho \\frac{\\nabla_w L(w)}{\\|\\nabla_w L(w)\\|}"
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "SAM优化器实现",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.optim as optim\n\n# 1. 使用SAM库（需要安装：pip install sam-pytorch）\n# from sam import SAM\n\n# 2. 手动实现SAM优化器\nclass SAM(torch.optim.Optimizer):\n    def __init__(self, params, base_optimizer, rho=0.05, **kwargs):\n        assert rho >= 0.0, f\"Invalid rho, should be non-negative: {rho}\"\n        \n        defaults = dict(rho=rho, **kwargs)\n        super(SAM, self).__init__(params, defaults)\n        \n        self.base_optimizer = base_optimizer(self.param_groups, **kwargs)\n        self.param_groups = self.base_optimizer.param_groups\n    \n    @torch.no_grad()\n    def first_step(self, zero_grad=False):\n        \"\"\"第一步：计算扰动并更新参数\"\"\"\n        grad_norm = self._grad_norm()\n        for group in self.param_groups:\n            scale = group[\"rho\"] / (grad_norm + 1e-12)\n            \n            for p in group[\"params\"]:\n                if p.grad is None:\n                    continue\n                e_w = p.grad * scale\n                p.add_(e_w)  # 扰动参数\n                self.state[p][\"e_w\"] = e_w\n        \n        if zero_grad:\n            self.zero_grad()\n    \n    @torch.no_grad()\n    def second_step(self, zero_grad=False):\n        \"\"\"第二步：恢复参数并更新\"\"\"\n        for group in self.param_groups:\n            for p in group[\"params\"]:\n                if p.grad is None:\n                    continue\n                p.sub_(self.state[p][\"e_w\"])  # 恢复参数\n        \n        self.base_optimizer.step()  # 使用基础优化器更新\n        \n        if zero_grad:\n            self.zero_grad()\n    \n    @torch.no_grad()\n    def step(self, closure=None):\n        \"\"\"SAM不需要标准的step方法\"\"\"\n        raise NotImplementedError(\"SAM doesn't support step(), use first_step() and second_step()\")\n    \n    def _grad_norm(self):\n        \"\"\"计算梯度范数\"\"\"\n        shared_device = self.param_groups[0][\"params\"][0].device\n        norm = torch.norm(\n            torch.stack([\n                p.grad.norm(p=2).to(shared_device)\n                for group in self.param_groups for p in group[\"params\"]\n                if p.grad is not None\n            ]),\n            p=2\n        )\n        return norm\n    \n    def load_state_dict(self, state_dict):\n        super().load_state_dict(state_dict)\n        self.base_optimizer.param_groups = self.param_groups\n\n# 3. 使用SAM训练模型\nmodel = nn.Sequential(\n    nn.Linear(784, 128),\n    nn.ReLU(),\n    nn.Linear(128, 10)\n)\n\n# 创建SAM优化器（基于SGD）\nbase_optimizer = optim.SGD\noptimizer = SAM(model.parameters(), base_optimizer, lr=0.01, momentum=0.9, rho=0.05)\ncriterion = nn.CrossEntropyLoss()\n\n# 训练循环\nfor epoch in range(10):\n    # 模拟数据\n    x = torch.randn(32, 784)\n    y = torch.randint(0, 10, (32,))\n    \n    # 第一步：前向传播并计算扰动后的损失\n    def closure():\n        optimizer.zero_grad()\n        output = model(x)\n        loss = criterion(output, y)\n        loss.backward()\n        return loss\n    \n    # 计算梯度\n    loss = closure()\n    \n    # SAM第一步：扰动参数\n    optimizer.first_step(zero_grad=True)\n    \n    # 在扰动后的参数上计算损失\n    output = model(x)\n    loss = criterion(output, y)\n    loss.backward()\n    \n    # SAM第二步：恢复参数并更新\n    optimizer.second_step(zero_grad=True)\n    \n    print(f\"Epoch {epoch+1}, Loss: {loss.item():.4f}\")\n\n# 4. SAM vs 标准SGD对比\nprint(\"\\n=== SAM vs SGD 对比 ===\")\nprint(\"SAM通过优化损失景观的平坦度，能够提升模型的泛化能力\")\nprint(\"计算开销约为标准SGD的2倍（需要两次前向和反向传播）\")\nprint(\"适合需要强泛化能力的场景，如小数据集训练\")"
         }
       ]
     }

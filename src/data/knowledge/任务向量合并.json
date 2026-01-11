@@ -30,8 +30,7 @@
               "interactive": true,
               "props": {
                 "type": "flow",
-                "title": "任务向量提取",
-                "data": null
+                "title": "任务向量提取"
               }
             },
             {
@@ -43,8 +42,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "任务向量合并",
-                "data": null
+                "title": "任务向量合并"
               }
             },
             {
@@ -56,8 +54,7 @@
               "interactive": true,
               "props": {
                 "type": "comparison",
-                "title": "多任务能力融合",
-                "data": null
+                "title": "多任务能力融合"
               }
             }
           ]
@@ -141,6 +138,16 @@
           "title": "使用MergeKit进行任务向量合并",
           "language": "python",
           "code": "from mergekit import MergeKit\n\n# 配置任务向量合并\nmerge_config = {\n    \"base_model\": \"base-model-path\",\n    \"task_vectors\": [\n        {\n            \"model\": \"fine-tuned-model-1-path\",\n            \"alpha\": 0.4\n        },\n        {\n            \"model\": \"fine-tuned-model-2-path\",\n            \"alpha\": 0.3\n        }\n    ],\n    \"merge_method\": \"task_vector\",\n    \"output_path\": \"./merged_model\"\n}\n\n# 执行合并\nmerger = MergeKit()\nmerged_model = merger.merge(merge_config)\nprint(\"任务向量合并完成！\")"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "任务向量提取、向量合并、参数差异、多任务融合、alpha缩放"
         }
       ]
     },

@@ -1,0 +1,88 @@
+{
+  "title": "量化推理",
+  "subtitle": "推理时量化、INT8/INT4推理",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "量化推理是将模型参数从高精度（FP32/FP16）转换为低精度（INT8/INT4）进行推理的过程。量化推理能够大幅减少模型大小和推理时间，同时保持较高的精度，是推理优化的重要技术。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "精度转换：FP32/FP16转换为INT8/INT4",
+            "模型压缩：大幅减少模型大小",
+            "推理加速：显著提升推理速度",
+            "精度保持：保持较高的推理精度",
+            "广泛支持：支持多种模型和硬件"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "量化推理、INT8量化、INT4量化、推理优化、模型压缩"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "QuantizationDiagram",
+              "caption": "量化对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "title": "量化推理"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "推理加速、模型部署、边缘推理、移动端推理、生产推理"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "INT8量化推理",
+          "language": "python",
+          "code": "import torch\nfrom torch.quantization import quantize_dynamic\n\n# 加载模型\nmodel = torch.load(\"model.pth\")\n\n# 动态量化\nquantized_model = quantize_dynamic(\n    model, {torch.nn.Linear}, dtype=torch.qint8\n)\n\n# 推理\nwith torch.no_grad():\n    output = quantized_model(input)"
+        }
+      ]
+    }
+  ]
+}

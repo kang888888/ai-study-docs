@@ -4,6 +4,54 @@
   "content": [
     {
       "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "SmoothQuant通过平滑激活值分布，解决量化中的异常值问题，实现INT8量化。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "异常值处理：解决量化异常值问题",
+            "精度提升：提高INT8量化精度",
+            "推理加速：显著提升推理速度",
+            "广泛支持：支持多种模型",
+            "易于集成：与现有框架兼容"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "平滑激活、异常值处理、INT8量化、量化精度"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "INT8量化、推理加速、异常值处理、模型压缩"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📊 图解",
       "content": [
         {

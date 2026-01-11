@@ -4,6 +4,54 @@
   "content": [
     {
       "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "QLoRA是结合量化和LoRA的微调技术，使用4-bit量化模型和LoRA适配器，在保持性能的同时大幅减少内存占用。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "极致内存：4-bit量化大幅减少内存",
+            "性能保持：接近全精度微调",
+            "成本降低：可在消费级GPU训练",
+            "易于使用：简单配置即可使用",
+            "广泛应用：资源受限场景首选"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "4-bit量化、LoRA、NF4量化、双量化、PagedAdam"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "资源受限微调、消费级GPU训练、大规模微调、成本优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📊 流程图解",
       "content": [
         {

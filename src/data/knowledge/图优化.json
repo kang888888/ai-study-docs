@@ -1,0 +1,89 @@
+{
+  "title": "图优化",
+  "subtitle": "计算图优化、算子融合",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "图优化是对模型计算图进行优化的过程，包括算子融合、常量折叠、死代码消除等优化技术。图优化是推理优化的重要手段，能够减少计算开销、内存占用和通信开销，提高推理性能。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "计算图优化：优化模型计算图",
+            "算子融合：融合多个算子",
+            "常量折叠：折叠常量计算",
+            "性能提升：显著提升推理性能",
+            "内存优化：减少内存占用"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "计算图优化、算子融合、常量折叠、死代码消除、推理优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "计算图优化",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "计算图优化"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "推理优化、模型部署、性能优化、边缘推理、生产推理"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "TensorRT图优化",
+          "language": "python",
+          "code": "import tensorrt as trt\n\n# 创建TensorRT引擎\nbuilder = trt.Builder(logger)\nnetwork = builder.create_network()\nparser = trt.OnnxParser(network, logger)\n\n# 解析ONNX模型\nparser.parse_from_file(\"model.onnx\")\n\n# 构建优化引擎\nbuilder.max_batch_size = 1\nbuilder.max_workspace_size = 1 << 30\nengine = builder.build_cuda_engine(network)"
+        }
+      ]
+    }
+  ]
+}

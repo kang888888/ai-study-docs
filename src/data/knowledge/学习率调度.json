@@ -1,0 +1,157 @@
+{
+  "title": "学习率调度 (Learning Rate Scheduling)",
+  "subtitle": "学习率衰减策略、Warmup、Cosine Annealing等调度方法",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "学习率调度是在训练过程中动态调整学习率的策略。固定的学习率可能导致训练不稳定或收敛缓慢，而合理的学习率调度能够加速收敛、提高模型性能。常见的学习率调度策略包括固定衰减、余弦退火、Warmup等。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "StepLR：固定步长衰减，每隔一定epoch降低学习率",
+            "CosineAnnealingLR：余弦退火，学习率按余弦函数平滑下降",
+            "ReduceLROnPlateau：自适应衰减，当损失不再下降时降低学习率",
+            "Warmup：训练初期逐步增加学习率，避免训练不稳定",
+            "OneCycleLR：单周期策略，先增后减的学习率曲线",
+            "PolynomialLR：多项式衰减，按多项式函数衰减",
+            "ExponentialLR：指数衰减，学习率按指数函数衰减"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "学习率衰减、Warmup策略、余弦退火、自适应调度、学习率查找、学习率预热"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "深度学习训练（CosineAnnealingLR）、Transformer训练（Warmup + CosineAnnealing）、图像分类（StepLR）、大模型训练（Warmup + 多项式衰减）、快速训练（OneCycleLR）"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "学习率调度策略对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "学习率调度"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "StepLR（固定步长衰减）",
+          "formulas": [
+            {
+              "text": "每隔 $\\gamma$ 个epoch，学习率乘以衰减因子："
+            },
+            {
+              "display": "\\eta_t = \\begin{cases} \\eta_0 & \\text{if } t < \\gamma \\\\ \\eta_0 \\times \\alpha^{\\lfloor t/\\gamma \\rfloor} & \\text{otherwise} \\end{cases}"
+            },
+            {
+              "text": "其中 $\\eta_0$ 是初始学习率，$\\alpha$ 是衰减因子，通常取0.1"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "CosineAnnealingLR（余弦退火）",
+          "formulas": [
+            {
+              "text": "学习率按余弦函数从最大值衰减到最小值："
+            },
+            {
+              "display": "\\eta_t = \\eta_{\\min} + (\\eta_{\\max} - \\eta_{\\min}) \\times \\frac{1 + \\cos(\\pi t / T)}{2}"
+            },
+            {
+              "text": "其中 $T$ 是总epoch数，$\\eta_{\\max}$ 和 $\\eta_{\\min}$ 是最大和最小学习率"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Warmup（预热）",
+          "formulas": [
+            {
+              "text": "训练初期线性增加学习率："
+            },
+            {
+              "display": "\\eta_t = \\begin{cases} \\eta_{\\max} \\times \\frac{t}{T_{warmup}} & \\text{if } t < T_{warmup} \\\\ \\eta_{\\max} & \\text{otherwise} \\end{cases}"
+            },
+            {
+              "text": "其中 $T_{warmup}$ 是预热步数，通常为总步数的5-10%"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "OneCycleLR（单周期策略）",
+          "formulas": [
+            {
+              "text": "学习率先增后减，形成单周期曲线："
+            },
+            {
+              "display": "\\eta_t = \\begin{cases} \\eta_{\\min} + (\\eta_{\\max} - \\eta_{\\min}) \\times \\frac{t}{T_{rise}} & \\text{if } t < T_{rise} \\\\ \\eta_{\\max} - (\\eta_{\\max} - \\eta_{\\min}) \\times \\frac{t - T_{rise}}{T - T_{rise}} & \\text{otherwise} \\end{cases}"
+            },
+            {
+              "text": "其中 $T_{rise}$ 是上升阶段步数，通常为总步数的30-40%"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "学习率调度器实现与使用",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.optim as optim\nimport matplotlib.pyplot as plt\nimport numpy as np\n\n# 定义模型\nmodel = nn.Sequential(\n    nn.Linear(10, 50),\n    nn.ReLU(),\n    nn.Linear(50, 1)\n)\n\noptimizer = optim.Adam(model.parameters(), lr=0.001)\n\n# 1. StepLR：固定步长衰减\nscheduler_step = optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)\n\n# 2. CosineAnnealingLR：余弦退火\nscheduler_cosine = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100, eta_min=1e-6)\n\n# 3. ReduceLROnPlateau：自适应衰减\nscheduler_plateau = optim.lr_scheduler.ReduceLROnPlateau(\n    optimizer, mode='min', factor=0.5, patience=10, verbose=True\n)\n\n# 4. ExponentialLR：指数衰减\nscheduler_exp = optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.95)\n\n# 5. PolynomialLR：多项式衰减\nscheduler_poly = optim.lr_scheduler.PolynomialLR(optimizer, total_iters=100, power=0.9)\n\n# 6. OneCycleLR：单周期策略\nscheduler_onecycle = optim.lr_scheduler.OneCycleLR(\n    optimizer, max_lr=0.01, total_steps=100, pct_start=0.3\n)\n\n# 7. 自定义Warmup调度器\nclass WarmupScheduler:\n    def __init__(self, optimizer, warmup_steps, base_lr):\n        self.optimizer = optimizer\n        self.warmup_steps = warmup_steps\n        self.base_lr = base_lr\n        self.step_count = 0\n    \n    def step(self):\n        self.step_count += 1\n        if self.step_count <= self.warmup_steps:\n            lr = self.base_lr * (self.step_count / self.warmup_steps)\n        else:\n            lr = self.base_lr\n        \n        for param_group in self.optimizer.param_groups:\n            param_group['lr'] = lr\n        \n        return lr\n\n# 8. Warmup + CosineAnnealing组合\nclass WarmupCosineScheduler:\n    def __init__(self, optimizer, warmup_steps, total_steps, max_lr, min_lr=1e-6):\n        self.optimizer = optimizer\n        self.warmup_steps = warmup_steps\n        self.total_steps = total_steps\n        self.max_lr = max_lr\n        self.min_lr = min_lr\n        self.step_count = 0\n    \n    def step(self):\n        self.step_count += 1\n        \n        if self.step_count <= self.warmup_steps:\n            # Warmup阶段：线性增加\n            lr = self.max_lr * (self.step_count / self.warmup_steps)\n        else:\n            # CosineAnnealing阶段\n            progress = (self.step_count - self.warmup_steps) / (self.total_steps - self.warmup_steps)\n            lr = self.min_lr + (self.max_lr - self.min_lr) * 0.5 * (1 + np.cos(np.pi * progress))\n        \n        for param_group in self.optimizer.param_groups:\n            param_group['lr'] = lr\n        \n        return lr\n\n# 9. 可视化不同调度策略\nschedulers = {\n    'StepLR': optim.lr_scheduler.StepLR(optim.Adam(model.parameters(), lr=0.001), step_size=30, gamma=0.1),\n    'CosineAnnealing': optim.lr_scheduler.CosineAnnealingLR(optim.Adam(model.parameters(), lr=0.001), T_max=100, eta_min=1e-6),\n    'Exponential': optim.lr_scheduler.ExponentialLR(optim.Adam(model.parameters(), lr=0.001), gamma=0.95),\n    'OneCycle': optim.lr_scheduler.OneCycleLR(optim.Adam(model.parameters(), lr=0.001), max_lr=0.01, total_steps=100, pct_start=0.3)\n}\n\n# 记录学习率变化\nlr_history = {name: [] for name in schedulers.keys()}\n\nfor name, scheduler in schedulers.items():\n    # 重新初始化优化器\n    optimizer = optim.Adam(model.parameters(), lr=0.001)\n    scheduler.optimizer = optimizer\n    \n    for epoch in range(100):\n        lr = optimizer.param_groups[0]['lr']\n        lr_history[name].append(lr)\n        scheduler.step()\n\n# 绘制学习率曲线\nplt.figure(figsize=(14, 8))\nfor name, lrs in lr_history.items():\n    plt.plot(lrs, label=name, linewidth=2)\nplt.xlabel('Epoch', fontsize=12)\nplt.ylabel('Learning Rate', fontsize=12)\nplt.title('学习率调度策略对比', fontsize=14)\nplt.legend(fontsize=10)\nplt.grid(True, alpha=0.3)\nplt.yscale('log')\nplt.tight_layout()\nplt.savefig('lr_scheduler_comparison.png', dpi=300)\nprint(\"学习率调度对比图已保存\")\n\n# 10. 实际训练示例\ncriterion = nn.MSELoss()\nx_train = torch.randn(100, 10)\ny_train = torch.randn(100, 1)\n\noptimizer = optim.Adam(model.parameters(), lr=0.001)\n\n# 使用Warmup + CosineAnnealing\nwarmup_steps = 10\ntotal_steps = 100\nscheduler = WarmupCosineScheduler(optimizer, warmup_steps, total_steps, max_lr=0.001, min_lr=1e-6)\n\nlosses = []\nlrs = []\n\nfor epoch in range(total_steps):\n    # 前向传播\n    output = model(x_train)\n    loss = criterion(output, y_train)\n    \n    # 反向传播\n    optimizer.zero_grad()\n    loss.backward()\n    optimizer.step()\n    \n    # 更新学习率\n    current_lr = scheduler.step()\n    \n    losses.append(loss.item())\n    lrs.append(current_lr)\n    \n    if (epoch + 1) % 20 == 0:\n        print(f\"Epoch {epoch+1}, Loss: {loss.item():.4f}, LR: {current_lr:.6f}\")\n\n# 11. 学习率查找（Learning Rate Finder）\ndef find_learning_rate(model, train_loader, criterion, min_lr=1e-8, max_lr=1, num_iter=100):\n    \"\"\"查找最优学习率\"\"\"\n    lrs = np.logspace(np.log10(min_lr), np.log10(max_lr), num_iter)\n    losses = []\n    \n    for lr in lrs:\n        optimizer = optim.Adam(model.parameters(), lr=lr)\n        \n        # 一个batch的训练\n        for batch_idx, (data, target) in enumerate(train_loader):\n            output = model(data)\n            loss = criterion(output, target)\n            \n            optimizer.zero_grad()\n            loss.backward()\n            optimizer.step()\n            \n            losses.append(loss.item())\n            break  # 只用一个batch\n    \n    # 找到损失下降最快的学习率\n    best_lr_idx = np.argmin(np.gradient(losses))\n    best_lr = lrs[best_lr_idx]\n    \n    return lrs, losses, best_lr\n\nprint(\"\\n=== 学习率调度建议 ===\")\nprint(\"1. 小规模模型：StepLR 或 ExponentialLR\")\nprint(\"2. 大规模模型：CosineAnnealingLR\")\nprint(\"3. Transformer：Warmup + CosineAnnealingLR\")\nprint(\"4. 快速训练：OneCycleLR\")\nprint(\"5. 不稳定训练：Warmup + 固定学习率\")"
+        }
+      ]
+    }
+  ]
+}

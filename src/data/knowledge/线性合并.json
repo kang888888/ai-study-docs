@@ -30,8 +30,7 @@
               "interactive": true,
               "props": {
                 "type": "flow",
-                "title": "线性合并流程",
-                "data": null
+                "title": "线性合并流程"
               }
             },
             {
@@ -43,8 +42,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "权重分配",
-                "data": null
+                "title": "权重分配"
               }
             },
             {
@@ -56,8 +54,7 @@
               "interactive": true,
               "props": {
                 "type": "comparison",
-                "title": "合并效果对比",
-                "data": null
+                "title": "合并效果对比"
               }
             }
           ]
@@ -146,6 +143,16 @@
           "title": "使用MergeKit进行线性合并",
           "language": "python",
           "code": "from mergekit import MergeKit\n\n# 配置合并参数\nmerge_config = {\n    \"models\": [\n        {\n            \"model\": \"microsoft/DialoGPT-medium\",\n            \"weight\": 0.5\n        },\n        {\n            \"model\": \"microsoft/DialoGPT-large\", \n            \"weight\": 0.5\n        }\n    ],\n    \"merge_method\": \"linear\",\n    \"output_path\": \"./merged_model\"\n}\n\n# 执行合并\nmerger = MergeKit()\nmerged_model = merger.merge(merge_config)\nprint(\"模型合并完成！\")"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "加权平均、参数合并、权重分配、逐层合并、模型平均"
         }
       ]
     },

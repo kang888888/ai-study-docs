@@ -1,7 +1,55 @@
 {
-  "title": "数据清洗",
-  "subtitle": "通过去重、过滤、标准化、验证等技术，确保数据质量。",
+  "title": "数据清洗 (Data Cleaning)",
+  "subtitle": "通过去重、过滤、标准化、验证等技术，确保数据质量",
   "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "数据清洗是数据预处理的关键步骤，通过识别和修复数据中的错误、不一致、重复和缺失值，提高数据质量。高质量的训练数据是模型性能的基础，数据清洗直接影响模型的训练效果和泛化能力。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "去重：识别并移除重复的数据样本",
+            "过滤：根据质量指标过滤低质量数据",
+            "标准化：统一数据格式和编码",
+            "验证：检查数据完整性和一致性",
+            "修复：自动修复常见的数据错误"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "哈希去重、长度过滤、质量评分、格式标准化、编码统一、异常检测"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "数据预处理、模型训练、数据质量提升、数据集构建、数据治理"
+        }
+      ]
+    },
     {
       "type": "section",
       "title": "📊 架构图解",
@@ -18,21 +66,7 @@
               "interactive": true,
               "props": {
                 "type": "flow",
-                "title": "数据清洗流程",
-                "data": null
-              }
-            },
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "数据清洗方法",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "flow",
-                "title": "数据清洗方法",
-                "data": null
+                "title": "数据清洗流程"
               }
             }
           ]

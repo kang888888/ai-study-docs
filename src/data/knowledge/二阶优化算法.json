@@ -52,6 +52,29 @@
     },
     {
       "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "二阶优化算法原理",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "二阶优化算法"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📐 数学原理",
       "content": [
         {
@@ -59,15 +82,51 @@
           "title": "牛顿法更新规则",
           "formulas": [
             {
-              "text": "牛顿法更新：w_{t+1} = w_t - H^{-1}∇L(w_t)"
+              "text": "牛顿法更新："
             },
             {
-              "text": "其中H是Hessian矩阵，∇L是梯度"
+              "display": "w_{t+1} = w_t - H^{-1} \\nabla L(w_t)"
+            },
+            {
+              "text": "其中 $H$ 是Hessian矩阵，$\\nabla L$ 是梯度"
+            },
+            {
+              "text": "Hessian矩阵定义为："
+            },
+            {
+              "display": "H_{ij} = \\frac{\\partial^2 L}{\\partial w_i \\partial w_j}"
             },
             {
               "text": "拟牛顿法通过近似Hessian矩阵避免直接计算，如BFGS使用秩2更新"
             }
           ]
+        },
+        {
+          "type": "math-box",
+          "title": "L-BFGS（有限内存BFGS）",
+          "formulas": [
+            {
+              "text": "L-BFGS只存储最近m次迭代的信息，内存需求为O(mn)而非O(n²)："
+            },
+            {
+              "display": "H_k^{-1} = V_k^T H_{k-1}^{-1} V_k + \\rho_k s_k s_k^T"
+            },
+            {
+              "text": "其中 $s_k = w_k - w_{k-1}$，$y_k = \\nabla L(w_k) - \\nabla L(w_{k-1})$，$\\rho_k = 1/(y_k^T s_k)$"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "二阶优化算法实现",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport numpy as np\nfrom scipy.optimize import minimize\n\n# 1. 使用scipy的L-BFGS-B优化器\nclass LBFGSOptimizer:\n    def __init__(self, model, criterion):\n        self.model = model\n        self.criterion = criterion\n        self.closure = None\n    \n    def closure_func(self, x):\n        \"\"\"L-BFGS需要的闭包函数\"\"\"\n        # 恢复参数\n        self._set_params(x)\n        \n        # 计算损失和梯度\n        if self.closure:\n            loss = self.closure()\n        else:\n            # 默认实现\n            loss = 0\n        \n        # 获取梯度\n        grad = self._get_grad()\n        \n        return loss, grad\n    \n    def _get_params(self):\n        \"\"\"获取所有参数\"\"\"\n        return np.concatenate([p.data.cpu().numpy().flatten() for p in self.model.parameters()])\n    \n    def _set_params(self, x):\n        \"\"\"设置所有参数\"\"\"\n        idx = 0\n        for p in self.model.parameters():\n            size = p.numel()\n            p.data = torch.from_numpy(x[idx:idx+size]).reshape(p.shape).float()\n            idx += size\n    \n    def _get_grad(self):\n        \"\"\"获取所有梯度\"\"\"\n        return np.concatenate([p.grad.data.cpu().numpy().flatten() for p in self.model.parameters()])\n    \n    def step(self, closure):\n        \"\"\"执行一步优化\"\"\"\n        self.closure = closure\n        x0 = self._get_params()\n        \n        result = minimize(\n            self.closure_func,\n            x0,\n            method='L-BFGS-B',\n            jac=True,\n            options={'maxiter': 1}\n        )\n        \n        self._set_params(result.x)\n        return result.fun\n\n# 2. 简化的牛顿法实现（仅用于演示）\ndef newton_method_2d(f, grad, hessian, x0, max_iter=10):\n    \"\"\"二维牛顿法（仅用于演示）\"\"\"\n    x = x0.copy()\n    \n    for i in range(max_iter):\n        g = grad(x)\n        H = hessian(x)\n        \n        # 计算Hessian的逆\n        try:\n            H_inv = np.linalg.inv(H)\n            # 更新参数\n            x = x - H_inv @ g\n            print(f\"Iteration {i+1}: x = {x}, f(x) = {f(x):.4f}\")\n        except np.linalg.LinAlgError:\n            print(f\"Hessian矩阵不可逆，停止迭代\")\n            break\n    \n    return x\n\n# 示例：优化二次函数 f(x) = x^2 + y^2\nf = lambda x: x[0]**2 + x[1]**2\ngrad = lambda x: np.array([2*x[0], 2*x[1]])\nhessian = lambda x: np.array([[2, 0], [0, 2]])\n\nx0 = np.array([3.0, 4.0])\nx_opt = newton_method_2d(f, grad, hessian, x0)\nprint(f\"\\n最优解: {x_opt}\")\n\n# 3. 使用PyTorch的L-BFGS优化器\nmodel = nn.Sequential(\n    nn.Linear(10, 50),\n    nn.ReLU(),\n    nn.Linear(50, 1)\n)\n\ncriterion = nn.MSELoss()\noptimizer = torch.optim.LBFGS(model.parameters(), lr=0.1, max_iter=20)\n\nx_train = torch.randn(32, 10)\ny_train = torch.randn(32, 1)\n\n# L-BFGS需要闭包函数\nfor epoch in range(10):\n    def closure():\n        optimizer.zero_grad()\n        output = model(x_train)\n        loss = criterion(output, y_train)\n        loss.backward()\n        return loss\n    \n    loss = optimizer.step(closure)\n    print(f\"Epoch {epoch+1}, Loss: {loss.item():.4f}\")\n\n# 4. K-FAC（Kronecker-Factored Approximate Curvature）\n# K-FAC是用于深度学习的二阶优化方法\nclass KFACOptimizer:\n    \"\"\"K-FAC优化器（简化版）\"\"\"\n    def __init__(self, model, lr=0.001):\n        self.model = model\n        self.lr = lr\n        self.A = {}  # 激活协方差\n        self.G = {}  # 梯度协方差\n    \n    def update_covariances(self, activations, grads):\n        \"\"\"更新协方差矩阵\"\"\"\n        for name, (A, G) in zip(self.model.named_modules(), zip(activations, grads)):\n            if isinstance(A, torch.Tensor) and isinstance(G, torch.Tensor):\n                # 更新A和G（简化实现）\n                if name not in self.A:\n                    self.A[name] = torch.eye(A.size(-1))\n                    self.G[name] = torch.eye(G.size(-1))\n                \n                # 指数移动平均更新\n                self.A[name] = 0.95 * self.A[name] + 0.05 * torch.mean(A @ A.T, dim=0)\n                self.G[name] = 0.95 * self.G[name] + 0.05 * torch.mean(G @ G.T, dim=0)\n    \n    def step(self, grads):\n        \"\"\"执行一步更新\"\"\"\n        for (name, param), grad in zip(self.model.named_parameters(), grads):\n            if name in self.A and name in self.G:\n                # K-FAC更新规则（简化）\n                A_inv = torch.inverse(self.A[name] + 1e-8 * torch.eye(self.A[name].size(0)))\n                G_inv = torch.inverse(self.G[name] + 1e-8 * torch.eye(self.G[name].size(0)))\n                \n                # 更新参数\n                update = A_inv @ grad @ G_inv\n                param.data -= self.lr * update\n\nprint(\"\\n=== 二阶优化算法总结 ===\")\nprint(\"1. 牛顿法：收敛快但计算Hessian矩阵开销大\")\nprint(\"2. L-BFGS：内存高效的拟牛顿法，适合小规模模型\")\nprint(\"3. K-FAC：专门用于深度学习的二阶方法\")\nprint(\"4. 适用场景：小规模模型、凸优化问题、需要快速收敛\")\nprint(\"5. 不适用：大规模模型（内存和计算开销过大）\")"
         }
       ]
     }

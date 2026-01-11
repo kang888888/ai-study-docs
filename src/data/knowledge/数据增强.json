@@ -1,7 +1,55 @@
 {
-  "title": "数据增强",
-  "subtitle": "通过回译、同义词替换、句子重组等方法增加数据多样性。",
+  "title": "数据增强 (Data Augmentation)",
+  "subtitle": "通过回译、同义词替换、句子重组等方法增加数据多样性",
   "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "数据增强是通过对原始数据进行变换和扩展，生成新的训练样本的技术。在保持语义不变的前提下，增加数据的多样性和数量，提升模型的泛化能力和鲁棒性。数据增强是解决数据稀缺问题的有效方法。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "回译：通过翻译到中间语言再翻译回来生成新样本",
+            "同义词替换：使用同义词替换保持语义不变",
+            "句子重组：重新排列句子结构生成新表达",
+            "模板填充：使用模板生成多样化的样本",
+            "语义保持：在增强过程中保持原始语义"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "回译增强、同义词替换、句子重组、模板填充、数据合成、语义一致性"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "小数据集训练、数据稀缺场景、模型泛化提升、多语言数据增强、指令数据生成"
+        }
+      ]
+    },
     {
       "type": "section",
       "title": "📊 架构图解",
@@ -18,21 +66,7 @@
               "interactive": true,
               "props": {
                 "type": "flow",
-                "title": "数据增强方法",
-                "data": null
-              }
-            },
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "数据增强效果",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "flow",
-                "title": "数据增强效果",
-                "data": null
+                "title": "数据增强方法"
               }
             }
           ]

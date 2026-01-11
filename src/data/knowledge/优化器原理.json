@@ -1,0 +1,175 @@
+{
+  "title": "优化器原理 (Optimizer Theory)",
+  "subtitle": "SGD、Momentum、Adam、AdamW等优化器的数学原理与适用场景",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "优化器是神经网络训练中用于更新模型参数的算法。不同的优化器采用不同的策略来加速收敛、避免局部最优、提高训练稳定性。从基础的SGD到现代的Adam、AdamW，每种优化器都有其独特的数学原理和适用场景。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "SGD：随机梯度下降，最基础的优化器，简单但收敛慢",
+            "Momentum：引入动量项，累积历史梯度，加速收敛并减少震荡",
+            "RMSprop：自适应学习率，根据梯度平方的移动平均调整学习率",
+            "Adam：结合Momentum和RMSprop，维护一阶和二阶矩估计，广泛使用",
+            "AdamW：Adam的改进版，修正权重衰减的实现，Transformer推荐使用",
+            "AdaGrad：自适应学习率，适合稀疏梯度场景",
+            "Adafactor：内存高效的Adam变体，适合大模型训练"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "动量机制、自适应学习率、一阶矩估计、二阶矩估计、偏差修正、权重衰减"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "神经网络训练（Adam/AdamW）、CNN训练（SGD+Momentum）、Transformer训练（AdamW）、RNN训练（RMSprop）、大模型训练（Adafactor）"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "优化器原理对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "优化器原理对比"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📐 数学原理",
+      "content": [
+        {
+          "type": "math-box",
+          "title": "SGD（随机梯度下降）",
+          "formulas": [
+            {
+              "text": "基础的参数更新公式："
+            },
+            {
+              "display": "\\theta_{t+1} = \\theta_t - \\eta \\nabla L(\\theta_t)"
+            },
+            {
+              "text": "其中 $\\eta$ 是学习率，$\\nabla L$ 是梯度"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Momentum（动量）",
+          "formulas": [
+            {
+              "text": "引入动量项，累积历史梯度："
+            },
+            {
+              "display": "v_t = \\beta v_{t-1} + \\nabla L(\\theta_t)"
+            },
+            {
+              "display": "\\theta_{t+1} = \\theta_t - \\eta v_t"
+            },
+            {
+              "text": "其中 $\\beta$ 是动量系数，通常取0.9"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "Adam（自适应矩估计）",
+          "formulas": [
+            {
+              "text": "结合Momentum和RMSprop，维护一阶和二阶矩估计："
+            },
+            {
+              "display": "m_t = \\beta_1 m_{t-1} + (1-\\beta_1) \\nabla L(\\theta_t)"
+            },
+            {
+              "display": "v_t = \\beta_2 v_{t-1} + (1-\\beta_2) (\\nabla L(\\theta_t))^2"
+            },
+            {
+              "text": "偏差修正："
+            },
+            {
+              "display": "\\hat{m}_t = \\frac{m_t}{1-\\beta_1^t}, \\quad \\hat{v}_t = \\frac{v_t}{1-\\beta_2^t}"
+            },
+            {
+              "text": "参数更新："
+            },
+            {
+              "display": "\\theta_{t+1} = \\theta_t - \\eta \\frac{\\hat{m}_t}{\\sqrt{\\hat{v}_t} + \\epsilon}"
+            },
+            {
+              "text": "通常 $\\beta_1=0.9$，$\\beta_2=0.999$，$\\epsilon=10^{-8}$"
+            }
+          ]
+        },
+        {
+          "type": "math-box",
+          "title": "AdamW（修正权重衰减的Adam）",
+          "formulas": [
+            {
+              "text": "AdamW修正了权重衰减的实现："
+            },
+            {
+              "display": "\\theta_{t+1} = \\theta_t - \\eta \\left(\\frac{\\hat{m}_t}{\\sqrt{\\hat{v}_t} + \\epsilon} + \\lambda \\theta_t\\right)"
+            },
+            {
+              "text": "其中 $\\lambda$ 是权重衰减系数，直接作用于参数而非梯度"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "优化器实现与对比",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.optim as optim\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# 1. 不同优化器的使用\nmodel = nn.Sequential(\n    nn.Linear(10, 50),\n    nn.ReLU(),\n    nn.Linear(50, 1)\n)\n\n# SGD\noptimizer_sgd = optim.SGD(model.parameters(), lr=0.01)\n\n# SGD + Momentum\noptimizer_momentum = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)\n\n# Adam\noptimizer_adam = optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.999))\n\n# AdamW（推荐用于Transformer）\noptimizer_adamw = optim.AdamW(model.parameters(), lr=0.001, weight_decay=0.01)\n\n# RMSprop\noptimizer_rmsprop = optim.RMSprop(model.parameters(), lr=0.01, alpha=0.99)\n\n# 2. 手动实现Adam优化器\nclass AdamOptimizer:\n    def __init__(self, params, lr=0.001, betas=(0.9, 0.999), eps=1e-8):\n        self.params = list(params)\n        self.lr = lr\n        self.beta1, self.beta2 = betas\n        self.eps = eps\n        self.m = [torch.zeros_like(p) for p in self.params]\n        self.v = [torch.zeros_like(p) for p in self.params]\n        self.t = 0\n    \n    def step(self, grads):\n        self.t += 1\n        for i, (param, grad) in enumerate(zip(self.params, grads)):\n            # 更新一阶矩估计\n            self.m[i] = self.beta1 * self.m[i] + (1 - self.beta1) * grad\n            # 更新二阶矩估计\n            self.v[i] = self.beta2 * self.v[i] + (1 - self.beta2) * grad ** 2\n            \n            # 偏差修正\n            m_hat = self.m[i] / (1 - self.beta1 ** self.t)\n            v_hat = self.v[i] / (1 - self.beta2 ** self.t)\n            \n            # 参数更新\n            param.data -= self.lr * m_hat / (torch.sqrt(v_hat) + self.eps)\n    \n    def zero_grad(self):\n        pass  # 梯度需要手动清零\n\n# 3. 优化器对比实验\ncriterion = nn.MSELoss()\n\n# 模拟数据\nx_train = torch.randn(100, 10)\ny_train = torch.randn(100, 1)\n\noptimizers = {\n    'SGD': optim.SGD(model.parameters(), lr=0.01),\n    'SGD+Momentum': optim.SGD(model.parameters(), lr=0.01, momentum=0.9),\n    'Adam': optim.Adam(model.parameters(), lr=0.001),\n    'AdamW': optim.AdamW(model.parameters(), lr=0.001, weight_decay=0.01),\n    'RMSprop': optim.RMSprop(model.parameters(), lr=0.01)\n}\n\nresults = {}\n\nfor name, optimizer in optimizers.items():\n    # 重新初始化模型\n    for param in model.parameters():\n        param.data.normal_(0, 0.1)\n    \n    losses = []\n    for epoch in range(100):\n        output = model(x_train)\n        loss = criterion(output, y_train)\n        \n        optimizer.zero_grad()\n        loss.backward()\n        optimizer.step()\n        \n        losses.append(loss.item())\n    \n    results[name] = losses\n    print(f\"{name}: 最终损失 = {losses[-1]:.4f}\")\n\n# 4. 可视化优化器收敛对比\nplt.figure(figsize=(12, 6))\nfor name, losses in results.items():\n    plt.plot(losses, label=name)\nplt.xlabel('Epoch')\nplt.ylabel('Loss')\nplt.title('优化器收敛对比')\nplt.legend()\nplt.grid(True)\nplt.savefig('optimizer_comparison.png')\nprint(\"\\n优化器对比图已保存\")\n\n# 5. 学习率调度器配合优化器使用\noptimizer = optim.Adam(model.parameters(), lr=0.001)\n\n# StepLR：每30个epoch学习率衰减\nscheduler_step = optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)\n\n# CosineAnnealingLR：余弦退火\nscheduler_cosine = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100, eta_min=1e-6)\n\n# ReduceLROnPlateau：当损失不再下降时降低学习率\nscheduler_plateau = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=10)\n\n# 使用示例\nfor epoch in range(100):\n    output = model(x_train)\n    loss = criterion(output, y_train)\n    \n    optimizer.zero_grad()\n    loss.backward()\n    optimizer.step()\n    \n    # 更新学习率（根据调度器类型选择）\n    scheduler_step.step()  # 或 scheduler_cosine.step()\n    # scheduler_plateau.step(loss)  # 需要传入loss值\n    \n    if (epoch + 1) % 20 == 0:\n        current_lr = optimizer.param_groups[0]['lr']\n        print(f\"Epoch {epoch+1}, Loss: {loss.item():.4f}, LR: {current_lr:.6f}\")\n\n# 6. 优化器选择建议\nprint(\"\\n=== 优化器选择建议 ===\")\nprint(\"1. 小规模模型、凸优化：SGD + Momentum\")\nprint(\"2. 深度学习、通用场景：Adam 或 AdamW\")\nprint(\"3. Transformer模型：AdamW（推荐）\")\nprint(\"4. RNN/LSTM：RMSprop\")\nprint(\"5. 大模型训练：AdamW 或 Adafactor（内存高效）\")"
+        }
+      ]
+    }
+  ]
+}

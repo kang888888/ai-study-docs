@@ -4,6 +4,54 @@
   "content": [
     {
       "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "监督微调（Supervised Fine-Tuning）是在预训练模型基础上，使用标注数据对模型进行有监督训练，使模型适应特定任务。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "任务适配：针对特定任务进行优化",
+            "数据需求：需要标注数据",
+            "效果显著：显著提升任务性能",
+            "计算成本：需要完整模型训练",
+            "广泛应用：标准微调方法"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "监督学习、梯度下降、反向传播、任务适配、数据标注"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "任务微调、领域适配、下游任务、模型定制、应用开发"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📊 流程图解",
       "content": [
         {

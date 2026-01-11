@@ -25,6 +25,8 @@ import MirasDiagram from './MirasDiagram';
 import TitansDiagram from './TitansDiagram';
 import SpeculativeDecodingDiagram from './SpeculativeDecodingDiagram';
 import MathFunctionDiagram from './MathFunctionDiagram';
+import ParallelTrainingDiagram from './ParallelTrainingDiagram';
+import QuantizationDiagram from './QuantizationDiagram';
 
 // 组件映射表
 export const diagramComponents = {
@@ -54,6 +56,8 @@ export const diagramComponents = {
   TitansDiagram,
   SpeculativeDecodingDiagram,
   MathFunctionDiagram,
+  ParallelTrainingDiagram,
+  QuantizationDiagram,
 };
 
 // 根据组件名称获取组件

@@ -66,8 +66,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "DBN架构",
-                "data": null
+                "title": "DBN架构"
               }
             },
             {
@@ -79,8 +78,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "RBM结构",
-                "data": null
+                "title": "RBM结构"
               }
             }
           ]

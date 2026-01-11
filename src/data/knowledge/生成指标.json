@@ -4,6 +4,54 @@
   "content": [
     {
       "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "生成指标是评估文本生成质量的指标，包括BLEU、ROUGE、METEOR等。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "BLEU：基于n-gram的评估",
+            "ROUGE：基于召回率的评估",
+            "METEOR：考虑同义词的评估",
+            "多样性：评估生成多样性",
+            "广泛应用：文本生成标准指标"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "BLEU、ROUGE、METEOR、BERTScore、多样性指标"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "文本生成评估、模型性能评估、质量评估"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📊 架构图解",
       "content": [
         {
@@ -18,8 +66,7 @@
               "interactive": true,
               "props": {
                 "type": "comparison",
-                "title": "生成指标对比",
-                "data": null
+                "title": "生成指标对比"
               }
             },
             {
@@ -31,8 +78,7 @@
               "interactive": true,
               "props": {
                 "type": "flow",
-                "title": "生成指标计算流程",
-                "data": null
+                "title": "生成指标计算流程"
               }
             }
           ]

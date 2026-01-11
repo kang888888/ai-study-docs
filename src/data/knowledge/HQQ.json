@@ -4,37 +4,12 @@
   "content": [
     {
       "type": "section",
-      "title": "📊 架构图解",
+      "title": "📖 核心概念",
       "content": [
         {
-          "type": "diagram-gallery",
-          "images": [
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "HQQ流程",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "comparison",
-                "title": "HQQ流程",
-                "data": null
-              }
-            },
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "HQQ对比",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "comparison",
-                "title": "HQQ对比",
-                "data": null
-              }
-            }
+          "type": "desc-box",
+          "content": [
+            "Half-Quadratic Quantization是快速量化方法，通过优化算法实现高效量化。"
           ]
         }
       ]
@@ -51,6 +26,61 @@
             "解析更新：交替最小化 $||W - Q||^2 + \\lambda R(Q)$，将误差显式约束在可控范围。",
             "极速导出：单张 3090/4090 对 7B 模型可在数分钟内完成 INT4 导出。",
             "兼容常见推理引擎：产物可直接加载到 ExLlamaV2、TensorRT-LLM、llama.cpp。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "Half-Quadratic、快速量化、优化算法"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "快速量化、模型压缩、推理优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "HQQ流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "HQQ流程"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "HQQ对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "HQQ对比"
+              }
+            }
           ]
         }
       ]

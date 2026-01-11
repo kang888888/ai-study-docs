@@ -1,0 +1,89 @@
+{
+  "title": "AudioLM",
+  "subtitle": "语言模型方法生成高质量音频",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "AudioLM是使用语言模型方法生成高质量音频的模型。通过将音频表示为离散token序列，使用类似语言模型的方法进行生成。AudioLM能够生成自然、连贯的音频，支持语音、音乐等多种音频类型。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "语言模型方法：使用语言模型生成音频",
+            "离散表示：将音频表示为离散token",
+            "高质量生成：生成自然、连贯的音频",
+            "多类型支持：支持语音、音乐等类型",
+            "可控生成：支持条件生成和控制"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "音频生成、语言模型、离散token、音频编码、条件生成"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "AudioLM架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "AudioLM架构"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "音频生成、语音合成、音乐生成、音频编辑、创意音频"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "AudioLM生成",
+          "language": "python",
+          "code": "import torch\nfrom audiolm import AudioLM\n\n# 加载模型\nmodel = AudioLM.from_pretrained(\"google/audiolm\")\n\n# 生成音频\naudio = model.generate(prompt=\"A piano melody\", duration=5.0)"
+        }
+      ]
+    }
+  ]
+}

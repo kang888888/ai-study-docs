@@ -4,6 +4,54 @@
   "content": [
     {
       "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "LM Evaluation Harness是统一的语言模型评估框架，支持多种评估任务和指标。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "统一框架：统一的评估框架",
+            "任务丰富：支持多种评估任务",
+            "易于使用：简单的API接口",
+            "持续更新：不断添加新任务",
+            "广泛采用：主流评估工具"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "评估框架、任务支持、指标计算、统一接口"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "统一评估、多任务评估、模型测试、性能对比"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📊 架构图解",
       "content": [
         {
@@ -18,8 +66,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "LM Evaluation Harness架构",
-                "data": null
+                "title": "LM Evaluation Harness架构"
               }
             },
             {
@@ -31,8 +78,7 @@
               "interactive": true,
               "props": {
                 "type": "flow",
-                "title": "评估流程",
-                "data": null
+                "title": "评估流程"
               }
             }
           ]

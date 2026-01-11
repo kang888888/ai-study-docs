@@ -1,0 +1,89 @@
+{
+  "title": "DiT (Diffusion Transformer)",
+  "subtitle": "用于视频生成的扩散Transformer架构",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "DiT（Diffusion Transformer）是将Transformer架构与扩散模型结合的视频生成架构。通过将视频帧编码为潜在空间表示，使用Transformer处理时空信息，然后通过扩散过程生成高质量视频。DiT在视频生成任务上表现出色，能够生成连贯、高质量的视频内容。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "Transformer架构：使用Transformer处理视频的时空信息",
+            "扩散生成：通过扩散过程生成高质量视频帧",
+            "潜在空间：在潜在空间中进行生成，提高效率",
+            "时空建模：同时建模时间和空间信息",
+            "高质量输出：能够生成连贯、高质量的视频"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "Diffusion Transformer、潜在空间编码、时空注意力、扩散过程、视频生成"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "DiffusionDiagram",
+              "caption": "DiT架构图",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "DiT架构"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "视频生成、视频编辑、视频补全、创意内容生成、视频合成"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "DiT模型使用",
+          "language": "python",
+          "code": "from diffusers import DiffusionPipeline\nimport torch\n\n# 加载DiT模型\npipe = DiffusionPipeline.from_pretrained(\"facebook/dit-base\")\n\n# 生成视频\nprompt = \"A beautiful sunset over the ocean\"\nvideo = pipe(prompt, num_inference_steps=50).images[0]"
+        }
+      ]
+    }
+  ]
+}

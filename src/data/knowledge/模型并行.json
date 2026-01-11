@@ -1,0 +1,89 @@
+{
+  "title": "模型并行",
+  "subtitle": "张量并行、列并行、行并行、专家并行拆分方法",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "模型并行是将模型参数拆分到多个设备上，每个设备负责模型的一部分，通过通信传递中间结果的并行训练方法。模型并行包括张量并行、列并行、行并行、专家并行等多种拆分方法，适用于模型参数无法完全复制到单个设备的场景。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "参数拆分：将模型参数拆分到多个设备",
+            "多种方法：张量并行、列并行、行并行等",
+            "通信传递：通过通信传递中间结果",
+            "内存优化：减少单设备内存占用",
+            "灵活拆分：支持多种拆分策略"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "模型并行、张量并行、列并行、行并行、专家并行、参数拆分"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "ParallelTrainingDiagram",
+              "caption": "模型并行原理",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "model",
+                "title": "模型并行原理"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "大模型训练、内存受限训练、超大规模模型、分布式训练、训练优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "模型并行示例",
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nfrom torch.nn.parallel import parallel_apply\n\n# 将模型拆分到多个GPU\ndevice_ids = [0, 1]\nmodel_part1 = nn.Sequential(...).to(device_ids[0])\nmodel_part2 = nn.Sequential(...).to(device_ids[1])\n\n# 前向传播\ndef forward(input):\n    intermediate = model_part1(input)\n    output = model_part2(intermediate)\n    return output"
+        }
+      ]
+    }
+  ]
+}

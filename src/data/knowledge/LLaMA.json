@@ -66,8 +66,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "LLaMA整体架构图",
-                "data": null
+                "title": "LLaMA整体架构图"
               }
             },
             {
@@ -79,8 +78,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "RMSNorm、SwiGLU、RoPE等关键组件",
-                "data": null
+                "title": "RMSNorm、SwiGLU、RoPE等关键组件"
               }
             },
             {
@@ -92,8 +90,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "LLaMA与其他开源模型对比",
-                "data": null
+                "title": "LLaMA与其他开源模型对比"
               }
             }
           ]

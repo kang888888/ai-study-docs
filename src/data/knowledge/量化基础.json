@@ -4,50 +4,12 @@
   "content": [
     {
       "type": "section",
-      "title": "📊 架构图解",
+      "title": "📖 核心概念",
       "content": [
         {
-          "type": "diagram-gallery",
-          "images": [
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "量化基础",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "comparison",
-                "title": "量化基础",
-                "data": null
-              }
-            },
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "量化方法对比",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "comparison",
-                "title": "量化方法对比",
-                "data": null
-              }
-            },
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "量化效果",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "comparison",
-                "title": "量化效果",
-                "data": null
-              }
-            }
+          "type": "desc-box",
+          "content": [
+            "量化是将模型参数从高精度（FP32/FP16）转换为低精度（INT8/INT4）的技术，减少模型大小和推理时间。"
           ]
         }
       ]
@@ -64,6 +26,73 @@
             "逐张量/逐通道：scale 是否为全局或 per-channel，后者误差更低但存储更大。",
             "权重量化/激活量化：权重易离线处理，激活依赖运行时校准。",
             "KV Cache 量化：推理加速关键，常搭配 FP8/INT4 与误差补偿。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "INT8量化、INT4量化、量化感知训练、后训练量化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "模型压缩、推理加速、边缘部署、资源优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "量化基础",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "量化基础"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "量化方法对比",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "量化方法对比"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "量化效果",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "comparison",
+                "title": "量化效果"
+              }
+            }
           ]
         }
       ]

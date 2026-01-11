@@ -4,6 +4,54 @@
   "content": [
     {
       "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Axolotl是用于微调大语言模型的训练框架，支持多种微调方法，提供简单易用的配置和训练流程。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "易于使用：简单配置即可训练",
+            "方法支持：支持多种微调方法",
+            "功能完整：数据加载、训练、评估",
+            "社区活跃：持续更新和维护",
+            "文档完善：详细的使用文档"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "训练框架、数据加载、训练循环、评估、配置管理"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "微调框架、训练工具、模型开发、快速训练"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📊 图解",
       "content": [
         {

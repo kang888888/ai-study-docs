@@ -68,8 +68,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "Datasets架构",
-                "data": null
+                "title": "Datasets架构"
               }
             },
             {
@@ -81,8 +80,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "Datasets流程",
-                "data": null
+                "title": "Datasets流程"
               }
             }
           ]

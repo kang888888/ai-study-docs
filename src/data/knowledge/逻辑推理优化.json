@@ -4,37 +4,12 @@
   "content": [
     {
       "type": "section",
-      "title": "📊 架构图解",
+      "title": "📖 核心概念",
       "content": [
         {
-          "type": "diagram-gallery",
-          "images": [
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "逻辑推理优化方法",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "concept",
-                "title": "逻辑推理优化方法",
-                "data": null
-              }
-            },
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "逻辑推理优化效果",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "concept",
-                "title": "逻辑推理优化效果",
-                "data": null
-              }
-            }
+          "type": "desc-box",
+          "content": [
+            "逻辑推理优化是通过提示工程、思维链等技术，提高模型的逻辑推理能力。"
           ]
         }
       ]
@@ -49,6 +24,61 @@
             "Few-shot CoT：提供推理示例",
             "Zero-shot CoT：使用提示词引导",
             "CoT蒸馏：从大模型蒸馏到小模型"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "提示工程、思维链、推理增强、逻辑推理"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "推理增强、复杂任务、逻辑推理、问题求解"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "逻辑推理优化方法",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "逻辑推理优化方法"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "逻辑推理优化效果",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "concept",
+                "title": "逻辑推理优化效果"
+              }
+            }
           ]
         }
       ]

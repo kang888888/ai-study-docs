@@ -1,0 +1,89 @@
+{
+  "title": "智能体框架",
+  "subtitle": "LangGraph、CrewAI、AutoGen等多智能体协作框架",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "智能体框架是用于构建和协调多个智能体的框架，包括LangGraph、CrewAI、AutoGen等。智能体框架提供了智能体协作、通信、任务分配等功能，支持构建复杂的多智能体系统。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "多智能体协作：支持多个智能体协作",
+            "通信机制：提供智能体通信机制",
+            "任务分配：智能任务分配和调度",
+            "框架支持：多种框架支持",
+            "易于使用：简单的框架接口"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "智能体框架、LangGraph、CrewAI、AutoGen、多智能体、协作机制"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "智能体框架架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "智能体框架架构"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "多智能体系统、任务自动化、智能协作、复杂任务执行、智能体开发"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "LangGraph示例",
+          "language": "python",
+          "code": "from langgraph.graph import StateGraph, END\n\n# 定义状态图\nworkflow = StateGraph(AgentState)\n\n# 添加节点\nworkflow.add_node(\"agent\", agent_node)\nworkflow.add_node(\"tools\", tool_node)\n\n# 添加边\nworkflow.add_edge(\"agent\", \"tools\")\nworkflow.add_edge(\"tools\", END)\n\n# 编译并运行\napp = workflow.compile()\nresult = app.invoke({\"messages\": [(\"user\", \"Hello\")]})"
+        }
+      ]
+    }
+  ]
+}

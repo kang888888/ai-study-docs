@@ -4,37 +4,12 @@
   "content": [
     {
       "type": "section",
-      "title": "📊 架构图解",
+      "title": "📖 核心概念",
       "content": [
         {
-          "type": "diagram-gallery",
-          "images": [
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "知识图谱增强架构",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "architecture",
-                "title": "知识图谱增强架构",
-                "data": null
-              }
-            },
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "知识图谱增强流程",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "architecture",
-                "title": "知识图谱增强流程",
-                "data": null
-              }
-            }
+          "type": "desc-box",
+          "content": [
+            "知识图谱增强是将结构化知识图谱与语言模型结合，提高模型的知识准确性和推理能力。"
           ]
         }
       ]
@@ -50,6 +25,61 @@
             "领域特化：针对特定领域优化知识检索",
             "关系推理：基于实体关系进行推理",
             "事实验证：提供可验证的事实信息"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "知识图谱、图嵌入、知识融合、推理增强"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "知识问答、推理增强、知识应用、智能系统"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "知识图谱增强架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "知识图谱增强架构"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "知识图谱增强流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "知识图谱增强流程"
+              }
+            }
           ]
         }
       ]

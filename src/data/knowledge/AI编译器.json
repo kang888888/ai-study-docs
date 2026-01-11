@@ -4,37 +4,12 @@
   "content": [
     {
       "type": "section",
-      "title": "📊 架构图解",
+      "title": "📖 核心概念",
       "content": [
         {
-          "type": "diagram-gallery",
-          "images": [
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "AI编译器架构",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "architecture",
-                "title": "AI编译器架构",
-                "data": null
-              }
-            },
-            {
-              "type": "svg-d3",
-              "component": "GenericDiagram",
-              "caption": "AI编译器流程",
-              "width": 1000,
-              "height": 800,
-              "interactive": true,
-              "props": {
-                "type": "architecture",
-                "title": "AI编译器流程",
-                "data": null
-              }
-            }
+          "type": "desc-box",
+          "content": [
+            "AI编译器是将模型计算图优化和编译为高效执行代码的工具，如TVM、TensorRT等。"
           ]
         }
       ]
@@ -49,6 +24,61 @@
             "三段式：前端（语法/语义）→ 中端（IR 优化）→ 后端（指令生成）。",
             "常用优化：循环展开/融合、常量折叠、死代码消除、内联。",
             "IR：SSA、CFG、DAG、MLIR 方言、Relay、XLA HLO。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "图优化、内核融合、量化、编译优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "推理优化、模型部署、性能优化、编译优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "AI编译器架构",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "AI编译器架构"
+              }
+            },
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "AI编译器流程",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "AI编译器流程"
+              }
+            }
           ]
         }
       ]

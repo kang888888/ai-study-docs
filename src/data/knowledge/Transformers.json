@@ -1,0 +1,89 @@
+{
+  "title": "Transformers",
+  "subtitle": "Pipeline、模型加载、Encoder-Decoder架构",
+  "content": [
+    {
+      "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "Transformers是HuggingFace提供的深度学习框架，提供了Pipeline、模型加载、Encoder-Decoder架构等功能。Transformers是使用最广泛的NLP框架，支持大量预训练模型，提供了简单易用的API，是NLP开发的标准工具。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "模型库：大量预训练模型",
+            "Pipeline：简单的Pipeline接口",
+            "易于使用：简单易用的API",
+            "广泛支持：支持多种模型架构",
+            "社区活跃：活跃的社区支持"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "Transformers、Pipeline、模型加载、Encoder-Decoder、预训练模型"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "📊 架构图解",
+      "content": [
+        {
+          "type": "diagram-gallery",
+          "images": [
+            {
+              "type": "svg-d3",
+              "component": "GenericDiagram",
+              "caption": "Transformers框架",
+              "width": 1000,
+              "height": 800,
+              "interactive": true,
+              "props": {
+                "type": "architecture",
+                "title": "Transformers框架"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "NLP开发、模型使用、快速原型、应用开发、研究实验"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "💻 Python 代码示例",
+      "content": [
+        {
+          "type": "code-box",
+          "title": "使用Pipeline",
+          "language": "python",
+          "code": "from transformers import pipeline\n\n# 创建Pipeline\nclassifier = pipeline(\"sentiment-analysis\")\n\n# 使用Pipeline\nresult = classifier(\"I love this product!\")\nprint(result)"
+        }
+      ]
+    }
+  ]
+}

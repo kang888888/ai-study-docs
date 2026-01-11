@@ -16,6 +16,22 @@
     },
     {
       "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "解决死神经元：负值区域有小的正梯度",
+            "计算简单：只需比较和线性变换",
+            "参数可调：泄漏系数α通常为0.01",
+            "非零中心：输出均值不为0",
+            "性能提升：在某些任务上优于ReLU"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📐 数学表达",
       "content": [
         {
@@ -103,6 +119,16 @@
         {
           "type": "tech-box",
           "content": "PReLU (Parametric ReLU): α作为可学习参数，在训练中自动优化\nRReLU (Randomized ReLU): 训练时α随机采样，测试时取平均，提供正则化效果"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "泄漏修正线性单元、负值梯度、可调泄漏系数、死神经元解决"
         }
       ]
     },

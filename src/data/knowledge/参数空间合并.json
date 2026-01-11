@@ -30,8 +30,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "参数空间操作",
-                "data": null
+                "title": "参数空间操作"
               }
             },
             {
@@ -43,8 +42,7 @@
               "interactive": true,
               "props": {
                 "type": "flow",
-                "title": "参数对齐",
-                "data": null
+                "title": "参数对齐"
               }
             },
             {
@@ -56,8 +54,7 @@
               "interactive": true,
               "props": {
                 "type": "comparison",
-                "title": "合并策略对比",
-                "data": null
+                "title": "合并策略对比"
               }
             }
           ]
@@ -141,6 +138,16 @@
           "title": "最大值合并策略",
           "language": "python",
           "code": "import torch\nfrom transformers import AutoModelForCausalLM\n\n# 加载模型\nmodel1 = AutoModelForCausalLM.from_pretrained(\"model1-path\")\nmodel2 = AutoModelForCausalLM.from_pretrained(\"model2-path\")\n\n# 执行最大值合并\nmerged_state_dict = {}\nfor key in model1.state_dict():\n    # 逐元素取最大值\n    merged_state_dict[key] = torch.maximum(\n        model1.state_dict()[key],\n        model2.state_dict()[key]\n    )\n\n# 创建合并后的模型\nmerged_model = AutoModelForCausalLM.from_pretrained(\"model1-path\")\nmerged_model.load_state_dict(merged_state_dict)\nmerged_model.save_pretrained(\"./merged_model\")"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "参数空间、空间映射、参数对齐、空间融合、几何方法"
         }
       ]
     },

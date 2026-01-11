@@ -16,6 +16,22 @@
     },
     {
       "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "回归任务标准：回归任务的标准损失函数",
+            "平方误差：对大误差惩罚更重",
+            "可导性：处处可导，梯度计算简单",
+            "对异常值敏感：平方项放大异常值影响",
+            "计算简单：实现简单，计算效率高"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📐 数学表达",
       "content": [
         {
@@ -121,6 +137,16 @@
         {
           "type": "tech-box",
           "content": "MAE (Mean Absolute Error): L = (1/n)Σ|y_i - ŷ_i|，对异常值更鲁棒\nHuber Loss: 结合MSE和MAE的优点，对异常值不敏感\nSmooth L1 Loss: 在0附近平滑的L1损失，用于目标检测"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "均方误差、平方损失、L2损失、回归任务、异常值处理"
         }
       ]
     },

@@ -16,6 +16,22 @@
     },
     {
       "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "平滑非线性：结合ReLU和Sigmoid的优点",
+            "自适应门控：根据输入值自适应调整激活",
+            "零中心化：输出均值接近0",
+            "Transformer标准：BERT、GPT等模型广泛使用",
+            "计算开销：涉及误差函数，计算相对较慢"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📐 数学表达",
       "content": [
         {
@@ -96,6 +112,16 @@
               }
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "高斯误差线性单元、自适应门控、误差函数、平滑激活、Transformer激活"
         }
       ]
     },

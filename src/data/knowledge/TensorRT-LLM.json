@@ -4,6 +4,54 @@
   "content": [
     {
       "type": "section",
+      "title": "📖 核心概念",
+      "content": [
+        {
+          "type": "desc-box",
+          "content": [
+            "TensorRT-LLM是NVIDIA推出的高性能LLM推理框架，通过图优化、内核融合、量化等技术实现极致推理性能。"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🌟 核心特点",
+      "content": [
+        {
+          "type": "features",
+          "items": [
+            "极致性能：NVIDIA硬件优化",
+            "图优化：自动优化计算图",
+            "内核融合：减少内核启动开销",
+            "量化支持：INT8/INT4量化",
+            "生产就绪：工业级推理框架"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "图优化、内核融合、量化、动态形状、批处理优化"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "🚀 应用场景",
+      "content": [
+        {
+          "type": "app-box",
+          "content": "生产推理、NVIDIA GPU、高性能推理、量化推理、工业部署"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "title": "📊 图解",
       "content": [
         {

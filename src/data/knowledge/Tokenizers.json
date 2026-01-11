@@ -68,8 +68,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "Tokenizers架构",
-                "data": null
+                "title": "Tokenizers架构"
               }
             },
             {
@@ -81,8 +80,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "Tokenizers流程",
-                "data": null
+                "title": "Tokenizers流程"
               }
             }
           ]

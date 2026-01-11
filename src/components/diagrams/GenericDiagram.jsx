@@ -219,12 +219,28 @@ const GenericDiagram = ({
     const titleLower = (title || '').toLowerCase();
     
     // 根据标题识别不同的概念并绘制相应的可视化
-    if (titleLower.includes('梯度') || titleLower.includes('gradient')) {
+    // 注意：顺序很重要，更具体的匹配应该放在前面
+    if (titleLower.includes('梯度下降') || titleLower.includes('gradient descent')) {
+      renderGradientDescentConcept(g, width, height, colors, interactive);
+    } else if (titleLower.includes('梯度') || titleLower.includes('gradient')) {
       renderGradientConcept(g, width, height, colors, interactive);
     } else if (titleLower.includes('反向传播') || titleLower.includes('backpropagation')) {
       renderBackpropagationConcept(g, width, height, colors, interactive);
+    } else if (titleLower.includes('优化器原理') || titleLower.includes('optimizer theory')) {
+      // 优化器原理显示更详细的内容
+      renderOptimizerTheoryConcept(g, width, height, colors, interactive);
     } else if (titleLower.includes('优化器') || titleLower.includes('optimizer')) {
       renderOptimizerConcept(g, width, height, colors, interactive);
+    } else if (titleLower.includes('学习率调度') || titleLower.includes('lr scheduler') || titleLower.includes('learning rate')) {
+      renderLRSchedulerConcept(g, width, height, colors, interactive);
+    } else if (titleLower.includes('sam') || titleLower.includes('sharpness')) {
+      renderSAMConcept(g, width, height, colors, interactive);
+    } else if (titleLower.includes('二阶优化') || titleLower.includes('second order') || titleLower.includes('newton')) {
+      renderSecondOrderConcept(g, width, height, colors, interactive);
+    } else if (titleLower.includes('数据清洗') || titleLower.includes('data cleaning')) {
+      renderDataCleaningConcept(g, width, height, colors, interactive);
+    } else if (titleLower.includes('数据增强') || titleLower.includes('data augmentation')) {
+      renderDataAugmentationConcept(g, width, height, colors, interactive);
     } else if (titleLower.includes('正则化') || titleLower.includes('regularization')) {
       renderRegularizationConcept(g, width, height, colors, interactive);
     } else if (titleLower.includes('残差') || titleLower.includes('residual')) {
@@ -799,6 +815,355 @@ const GenericDiagram = ({
       .attr('font-size', '12px')
       .attr('fill', colors.success)
       .text('归一化后');
+  }
+
+  // 渲染梯度下降概念图
+  function renderGradientDescentConcept(g, width, height, colors, interactive) {
+    // 与梯度概念图类似，但更强调下降过程
+    renderGradientConcept(g, width, height, colors, interactive);
+    
+    // 添加下降路径示意
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    // 绘制下降路径
+    const pathData = [
+      { x: centerX + 200, y: centerY - 100 },
+      { x: centerX + 100, y: centerY - 50 },
+      { x: centerX, y: centerY },
+      { x: centerX - 50, y: centerY + 30 }
+    ];
+    
+    const line = d3.line()
+      .x(d => d.x)
+      .y(d => d.y)
+      .curve(d3.curveBasis);
+    
+    g.append('path')
+      .datum(pathData)
+      .attr('d', line)
+      .attr('fill', 'none')
+      .attr('stroke', colors.success)
+      .attr('stroke-width', 2)
+      .attr('stroke-dasharray', '5,5')
+      .attr('opacity', 0.7);
+    
+    g.append('text')
+      .attr('x', centerX)
+      .attr('y', height - 30)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '14px')
+      .attr('fill', colors.text)
+      .text('梯度下降：沿着负梯度方向更新参数');
+  }
+
+  // 渲染学习率调度概念图
+  function renderLRSchedulerConcept(g, width, height, colors, interactive) {
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    // 绘制不同的学习率调度曲线
+    const xScale = d3.scaleLinear().domain([0, 100]).range([100, width - 100]);
+    const yScale = d3.scaleLinear().domain([0, 0.01]).range([height - 100, 100]);
+    
+    // StepLR
+    const stepData = d3.range(0, 100, 1).map(i => ({
+      x: i,
+      y: 0.01 * Math.pow(0.1, Math.floor(i / 30))
+    }));
+    
+    // CosineAnnealing
+    const cosineData = d3.range(0, 100, 1).map(i => ({
+      x: i,
+      y: 0.001 + (0.009 - 0.001) * 0.5 * (1 + Math.cos(Math.PI * i / 100))
+    }));
+    
+    const line = d3.line()
+      .x(d => xScale(d.x))
+      .y(d => yScale(d.y))
+      .curve(d3.curveBasis);
+    
+    g.append('path')
+      .datum(stepData)
+      .attr('d', line)
+      .attr('fill', 'none')
+      .attr('stroke', colors.primary)
+      .attr('stroke-width', 2)
+      .attr('opacity', 0.8);
+    
+    g.append('path')
+      .datum(cosineData)
+      .attr('d', line)
+      .attr('fill', 'none')
+      .attr('stroke', colors.success)
+      .attr('stroke-width', 2)
+      .attr('opacity', 0.8);
+    
+    // 图例
+    g.append('circle')
+      .attr('cx', 120)
+      .attr('cy', 150)
+      .attr('r', 5)
+      .attr('fill', colors.primary);
+    
+    g.append('text')
+      .attr('x', 135)
+      .attr('y', 155)
+      .attr('font-size', '12px')
+      .attr('fill', colors.text)
+      .text('StepLR');
+    
+    g.append('circle')
+      .attr('cx', 120)
+      .attr('cy', 180)
+      .attr('r', 5)
+      .attr('fill', colors.success);
+    
+    g.append('text')
+      .attr('x', 135)
+      .attr('y', 185)
+      .attr('font-size', '12px')
+      .attr('fill', colors.text)
+      .text('CosineAnnealing');
+    
+    // 坐标轴标签
+    g.append('text')
+      .attr('x', centerX)
+      .attr('y', height - 50)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '12px')
+      .attr('fill', colors.text)
+      .text('Epoch');
+    
+    g.append('text')
+      .attr('x', 50)
+      .attr('y', centerY)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '12px')
+      .attr('fill', colors.text)
+      .attr('transform', `rotate(-90, 50, ${centerY})`)
+      .text('Learning Rate');
+  }
+
+  // 渲染SAM概念图
+  function renderSAMConcept(g, width, height, colors, interactive) {
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    // 绘制损失景观（简化）
+    const xScale = d3.scaleLinear().domain([-2, 2]).range([100, width - 100]);
+    const yScale = d3.scaleLinear().domain([0, 5]).range([height - 100, 100]);
+    
+    // 尖锐区域（高损失）
+    const sharpData = d3.range(-2, 2, 0.1).map(x => ({
+      x: x,
+      y: 2 + Math.abs(x) * 1.5
+    }));
+    
+    // 平坦区域（低损失）
+    const flatData = d3.range(-2, 2, 0.1).map(x => ({
+      x: x,
+      y: 1 + 0.3 * x * x
+    }));
+    
+    const line = d3.line()
+      .x(d => xScale(d.x))
+      .y(d => yScale(d.y))
+      .curve(d3.curveBasis);
+    
+    g.append('path')
+      .datum(sharpData)
+      .attr('d', line)
+      .attr('fill', 'none')
+      .attr('stroke', colors.error)
+      .attr('stroke-width', 2)
+      .attr('stroke-dasharray', '5,5')
+      .attr('opacity', 0.7);
+    
+    g.append('path')
+      .datum(flatData)
+      .attr('d', line)
+      .attr('fill', 'none')
+      .attr('stroke', colors.success)
+      .attr('stroke-width', 3);
+    
+    // 标记最优解
+    g.append('circle')
+      .attr('cx', xScale(0))
+      .attr('cy', yScale(1))
+      .attr('r', 8)
+      .attr('fill', colors.success);
+    
+    // 图例
+    g.append('text')
+      .attr('x', 120)
+      .attr('y', 150)
+      .attr('font-size', '12px')
+      .attr('fill', colors.error)
+      .text('尖锐区域（标准SGD）');
+    
+    g.append('text')
+      .attr('x', 120)
+      .attr('y', 180)
+      .attr('font-size', '12px')
+      .attr('fill', colors.success)
+      .text('平坦区域（SAM）');
+    
+    g.append('text')
+      .attr('x', centerX)
+      .attr('y', height - 30)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '14px')
+      .attr('fill', colors.text)
+      .text('SAM：在平坦区域寻找最优解');
+  }
+
+  // 渲染二阶优化算法概念图
+  function renderSecondOrderConcept(g, width, height, colors, interactive) {
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    // 绘制优化路径对比
+    const xScale = d3.scaleLinear().domain([-2, 2]).range([100, width - 100]);
+    const yScale = d3.scaleLinear().domain([-2, 2]).range([height - 100, 100]);
+    
+    // 损失函数等高线（简化）
+    for (let r = 0.5; r <= 2; r += 0.5) {
+      const circle = g.append('ellipse')
+        .attr('cx', centerX)
+        .attr('cy', centerY)
+        .attr('rx', r * 80)
+        .attr('ry', r * 60)
+        .attr('fill', 'none')
+        .attr('stroke', colors.border)
+        .attr('stroke-width', 1)
+        .attr('opacity', 0.3);
+    }
+    
+    // 一阶方法路径（SGD，曲折）
+    const sgdPath = [
+      { x: -1.5, y: 1.5 },
+      { x: -1.0, y: 1.0 },
+      { x: -0.5, y: 0.5 },
+      { x: 0, y: 0 }
+    ];
+    
+    // 二阶方法路径（牛顿法，直接）
+    const newtonPath = [
+      { x: -1.5, y: 1.5 },
+      { x: 0, y: 0 }
+    ];
+    
+    const line = d3.line()
+      .x(d => xScale(d.x))
+      .y(d => yScale(d.y))
+      .curve(d3.curveBasis);
+    
+    g.append('path')
+      .datum(sgdPath)
+      .attr('d', line)
+      .attr('fill', 'none')
+      .attr('stroke', colors.primary)
+      .attr('stroke-width', 2)
+      .attr('stroke-dasharray', '5,5');
+    
+    g.append('path')
+      .datum(newtonPath)
+      .attr('d', line)
+      .attr('fill', 'none')
+      .attr('stroke', colors.success)
+      .attr('stroke-width', 3);
+    
+    // 图例
+    g.append('text')
+      .attr('x', 120)
+      .attr('y', 150)
+      .attr('font-size', '12px')
+      .attr('fill', colors.primary)
+      .text('一阶方法（SGD）');
+    
+    g.append('text')
+      .attr('x', 120)
+      .attr('y', 180)
+      .attr('font-size', '12px')
+      .attr('fill', colors.success)
+      .text('二阶方法（牛顿法）');
+    
+    g.append('text')
+      .attr('x', centerX)
+      .attr('y', height - 30)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '14px')
+      .attr('fill', colors.text)
+      .text('二阶方法：利用Hessian矩阵信息，收敛更快');
+  }
+
+  // 渲染数据清洗概念图
+  function renderDataCleaningConcept(g, width, height, colors, interactive) {
+    renderFlow(g, width, height, colors, interactive);
+  }
+
+  // 渲染数据增强概念图
+  function renderDataAugmentationConcept(g, width, height, colors, interactive) {
+    renderFlow(g, width, height, colors, interactive);
+  }
+
+  // 渲染优化器原理概念图（更详细）
+  function renderOptimizerTheoryConcept(g, width, height, colors, interactive) {
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    // 显示优化器算法的详细对比
+    const optimizers = [
+      { name: 'SGD', x: 200, color: colors.primary, formula: 'θ = θ - η∇L' },
+      { name: 'Momentum', x: centerX, color: colors.secondary, formula: 'v = βv + ∇L\nθ = θ - ηv' },
+      { name: 'Adam', x: width - 200, color: colors.success, formula: 'm = β₁m + (1-β₁)∇L\nv = β₂v + (1-β₂)(∇L)²\nθ = θ - ηm̂/√v̂' }
+    ];
+    
+    optimizers.forEach((opt, idx) => {
+      // 优化器框
+      g.append('rect')
+        .attr('x', opt.x - 80)
+        .attr('y', centerY - 60)
+        .attr('width', 160)
+        .attr('height', 120)
+        .attr('fill', opt.color)
+        .attr('stroke', colors.text)
+        .attr('stroke-width', 2)
+        .attr('rx', 5)
+        .attr('opacity', 0.8);
+      
+      // 优化器名称
+      g.append('text')
+        .attr('x', opt.x)
+        .attr('y', centerY - 30)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '16px')
+        .attr('font-weight', 'bold')
+        .attr('fill', 'white')
+        .text(opt.name);
+      
+      // 公式（简化显示）
+      const formulaLines = opt.formula.split('\n');
+      formulaLines.forEach((line, i) => {
+        g.append('text')
+          .attr('x', opt.x)
+          .attr('y', centerY + i * 20)
+          .attr('text-anchor', 'middle')
+          .attr('font-size', '11px')
+          .attr('fill', 'white')
+          .text(line);
+      });
+    });
+    
+    // 说明
+    g.append('text')
+      .attr('x', centerX)
+      .attr('y', height - 30)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '14px')
+      .attr('fill', colors.text)
+      .text('优化器原理：不同优化算法的数学公式对比');
   }
 
   // 渲染占位符

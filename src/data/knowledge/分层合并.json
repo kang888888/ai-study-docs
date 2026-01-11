@@ -30,8 +30,7 @@
               "interactive": true,
               "props": {
                 "type": "architecture",
-                "title": "分层合并策略",
-                "data": null
+                "title": "分层合并策略"
               }
             },
             {
@@ -43,8 +42,7 @@
               "interactive": true,
               "props": {
                 "type": "flow",
-                "title": "不同层的权重分配",
-                "data": null
+                "title": "不同层的权重分配"
               }
             },
             {
@@ -56,8 +54,7 @@
               "interactive": true,
               "props": {
                 "type": "comparison",
-                "title": "合并效果对比",
-                "data": null
+                "title": "合并效果对比"
               }
             }
           ]
@@ -143,6 +140,16 @@
           "title": "使用MergeKit进行分层合并",
           "language": "python",
           "code": "from mergekit import MergeKit\n\n# 配置分层合并\nmerge_config = {\n    \"models\": [\n        {\"model\": \"model1-path\", \"weight\": 0.5},\n        {\"model\": \"model2-path\", \"weight\": 0.5}\n    ],\n    \"merge_method\": \"layer_wise\",\n    \"layer_strategy\": {\n        \"embeddings\": \"weighted_average\",\n        \"attention\": \"max\",\n        \"feedforward\": \"weighted_average\",\n        \"output\": \"weighted_average\"\n    },\n    \"output_path\": \"./merged_model\"\n}\n\n# 执行合并\nmerger = MergeKit()\nmerged_model = merger.merge(merge_config)\nprint(\"分层合并完成！\")"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "⚙️ 关键技术",
+      "content": [
+        {
+          "type": "tech-box",
+          "content": "分层策略、逐层合并、层选择、权重分配、架构适配"
         }
       ]
     },
